@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고1 서민지 - 약점 보완 맞춤형 문제</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 2em; background-color: #f4f7f9; color: #333; }
+        .quiz-container { max-width: 800px; margin: auto; background: white; padding: 2em; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        h1, h2 { text-align: center; color: #2c3e50; }
+        .info-block { margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #e0e0e0; }
+        .question-block { margin-bottom: 2.5em; border-top: 1px solid #e0e0e0; padding-top: 1.5em; }
+        .question-block .q-title { font-weight: bold; margin-bottom: 1em; line-height: 1.5; }
+        .passage { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 1em; margin: 1em 0; font-size: 0.95em; color: #555; white-space: pre-wrap; line-height: 1.6; }
+        .options label { display: block; margin-bottom: 0.8em; cursor: pointer; padding: 0.5em; border-radius: 5px; transition: background-color 0.2s; }
+        .options label:hover { background-color: #e9ecef; }
+        input[type="radio"], input[type="text"] { margin-right: 0.5em; vertical-align: middle; }
+        input[type="text"] { width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { display: block; width: 100%; padding: 1em; font-size: 1.1em; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; margin-top: 2em; }
+        .submit-btn:hover { background-color: #218838; }
+        .results-area { margin-top: 2em; padding: 1.5em; background-color: #eef8ff; border: 1px solid #b8dcf1; border-radius: 8px; }
+        textarea { width: 100%; height: 200px; margin-top: 1em; font-family: monospace; }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+        .explanation-details { margin-top: 10px; font-size: 0.9em; }
+        .explanation-details summary { cursor: pointer; color: #0056b3; font-weight: normal; display: inline-block; padding: 2px 6px; border-radius: 4px; background-color: #e9ecef; }
+        .explanation-details[open] summary { background-color: #007bff; color: white; }
+        .explanation-content { margin-top: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #444; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>고1 서민지 - 약점 보완 퀴즈</h1>
+        <div class="info-block">
+            <label for="studentName">이름:</label>
+            <input type="text" id="studentName" placeholder="이름을 입력하세요" value="고1_서민지">
+        </div>
+        <div id="quiz-form"></div>
+        <button class="submit-btn" onclick="submitQuiz()">결과 확인 및 복사하기</button>
+        <div id="results" class="results-area" style="display:none;">
+            <h2>📝 채점 결과</h2>
+            <p id="score"></p>
+            <div id="feedback"></div>
+            <h3>📋 결과 복사하기</h3>
+            <p>아래 내용을 복사하여 선생님께 제출하세요.</p>
+            <textarea id="resultText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: `1. 다음 우리말과 같은 뜻이 되도록 <조건>에 맞게 문장을 완성하시오.<br><br>> 나는 그것이 실제로 여러 다른 국가들에서도 흔하다는 것을 거의 알지 못했다.<br><br><b>&lt;조건&gt;</b><br>- 'Little'로 시작할 것<br>- 'know'를 어법에 맞게 활용할 것<br>- 총 16단어로 완성할 것<br><br><b>Little ___________________________________________________.</b>`,
+                answer: "did I know that it's actually common in many other countries, too",
+                type: 'text',
+                explanation: "`Little`과 같은 부정어구가 문두에 올 경우, 주어와 동사가 도치되어야 한다. 일반동사 `know`의 과거형이므로 `did + 주어(I) + 동사원형(know)`의 어순을 사용한다."
+            },
+            {
+                question: `2. 다음 두 문장을 <조건>에 맞게 ‘관계대명사 what’을 사용하여 하나의 문장으로 만드시오.<br><br>> The band had achieved something together.<br>> The members were proud of it.<br><br><b>&lt;조건&gt;</b><br>- 'The members were proud of'로 시작할 것<br>- 총 9단어의 한 문장으로 완성할 것<br><br><b>___________________________________________________.</b>`,
+                answer: "The members were proud of what the band had achieved together",
+                type: 'text',
+                explanation: "`something`을 선행사로 포함하는 관계대명사 `what`을 사용하여 `of`의 목적어절을 만든다. `what`은 '~하는 것'으로 해석되며, 뒤에는 불완전한 문장이 온다."
+            },
+            {
+                question: "3. 다음 글의 (A), (B), (C)의 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?",
+                passage: `Growing up, I thought Lee was a common last name only in Korea. Little (A) [ did I know / I knew ] that it’s actually common in many other countries, too. When I searched “Sam Lee” on a social media website, I was amazed at (B) [ what / that ] I saw. There were so many people all over the world with that name! Just for fun, I randomly chose several Sam Lees and sent them friend requests. A lot of them accepted my friend request. While (C) [ looking / looked ] through their profiles, I noticed something interesting. Several Sam Lees of various ages and nationalities were interested in music.`,
+                options: ["(A) I knew (B) that (C) looked", "(A) I knew (B) what (C) looking", "(A) did I know (B) what (C) looking", "(A) did I know (B) that (C) looked", "(A) did I know (B) what (C) looked"],
+                answer: 2,
+                type: 'mc',
+                explanation: "(A) 부정어구 `Little`이 문두에 있으므로 `did I know`로 도치해야 한다. (B) 전치사 `at`의 목적어절을 이끌며 선행사가 없으므로 관계대명사 `what`이 적절하다. (C) `While` 뒤에 주어와 동사가 생략된 분사구문으로, 능동의 의미이므로 현재분사 `looking`이 맞다."
+            },
+            {
+                question: "4. 다음 글의 밑줄 친 ①~⑤ 중, 어법상 <u>틀린</u> 것은?",
+                passage: `Shortly after we started the band, a global pandemic began. Since all of our normal lives ① <u>were put</u> on hold, we valued our online interactions more than ever. At one point, Singaporean Sam became ill and needed to spend some time in the hospital, so the band took a break. However, we still met from time to time by ② <u>using</u> the video chat app. We talked about our lives and did ③ <u>what</u> we could do to cheer Singaporean Sam up. Since he had to stay in the hospital on his birthday, the rest of us recorded his favorite song as his birthday present. When we played it for him, he laughed so hard that he cried. That was mainly because the song was sung by the worst singer in the band — me! It was good to see him ④ <u>laugh</u> even though he was lying in his hospital bed. After Singaporean Sam recovered, we decided to write and record our own song. We called the song “Long-Distance Friendship,” and we posted it online. The song didn’t get much attention, but we were proud of ⑤ <u>that</u> we had achieved together.`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 4,
+                type: 'mc',
+                explanation: "⑤ 전치사 `of`의 목적어 역할을 하는 명사절을 이끌어야 하며, 선행사가 없으므로 `that`이 아닌 관계대명사 `what`을 사용해야 한다. (that → what)"
+            },
+            {
+                question: "5. 다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
+                passage: `Our band is something really special. Never did we expect that we would build such strong relationships with one another. After all, we don’t come from similar backgrounds, nor have we had the same life experiences. Yet we now talk about almost everything together, including the hardships we face in life. I think it’s been really valuable to get advice from people with such different perspectives. We would all like to meet in person and play our music on the street someday. But even if that never happens, we’ve still been incredibly lucky. Four random people became great friends simply because of our names. Life can be amazing sometimes!`,
+                options: ["(A) weakened (B) similar", "(A) unexpectedly blossomed (B) valuable", "(A) was easily predicted (B) shared", "(A) faced hardships (B) different", "(A) started from luck (B) common"],
+                answer: 1,
+                type: 'mc',
+                explanation: "본문은 다양한 배경을 가진 멤버들이 예상치 못하게(unexpectedly) 강한 유대감을 형성했으며(blossomed), 서로 다른 관점(perspectives)이 소중한(valuable) 조언의 원천이 되었다고 서술한다. 따라서 정답은 ②번이다."
+            },
+            {
+                question: "6. 밑줄 친 <u>Never did we expect that we would build such strong relationships with one another</u>가 다음 글에서 의미하는 바로 가장 적절한 것은?",
+                passage: `Our band is something really special. <u>Never did we expect that we would build such strong relationships with one another</u>. After all, we don’t come from similar backgrounds, nor have we had the same life experiences. Yet we now talk about almost everything together, including the hardships we face in life. I think it’s been really valuable to get advice from people with such different perspectives. We would all like to meet in person and play our music on the street someday. But even if that never happens, we’ve still been incredibly lucky. Four random people became great friends simply because of our names. Life can be amazing sometimes!`,
+                options: ["The members' similar backgrounds and life experiences made their strong bond predictable.", "The friendship was a surprising outcome, given that there were no shared foundations to begin with.", "The hardships the members faced together were the primary reason they expected to form a strong relationship.", "The band was formed with the clear intention of building strong relationships through music.", "The members felt lucky because their different perspectives did not prevent them from becoming friends as expected."],
+                answer: 1,
+                type: 'mc',
+                explanation: "밑줄 친 문장은 '결코 예상하지 못했다'는 의미로, 멤버들의 배경이 서로 달랐기 때문에 강한 유대감 형성이 놀라운 결과였음을 강조한다. 따라서 ②번이 가장 적절한 의미이다."
+            },
+            {
+                question: "7. 다음 글의 밑줄 친 ①~⑤ 중, 문맥상 낱말의 쓰임이 적절하지 <u>않은</u> 것은?",
+                passage: `We tried to practice once a week through a video chat app, but we ① <u>encountered</u> several problems. First of all, we all lived in different time zones. This made it difficult to pick a ② <u>convenient</u> time for everyone to practice. Secondly, there were audio issues with the app, which caused us to be out of sync. So we put our heads together and ③ <u>devised</u> a better way of playing music. We decided to ④ <u>abandon</u> the songs as if we were working in a virtual music factory. After we decided on a song, I would play it on my keyboard and send it to Singaporean Sam. He would sing along with the keyboard and send the recording to American Sam. Then American Sam would add his guitar part, and Samantha would finish the song with her drumming. This sequential process was how we ⑤ <u>assembled</u> our music.`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 3,
+                type: 'mc',
+                explanation: "문맥상 밴드는 문제를 해결하기 위해 '가상 음악 공장'처럼 노래를 '조립하는(assemble)' 새로운 방식을 고안했다. 따라서 노래를 '포기하다(abandon)'는 것은 흐름에 맞지 않는다."
+            },
+            {
+                question: "8. [8-10] 다음 글을 읽고 물음에 답하시오.<br><br>주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+                passage: `Shortly after we started the band, a global pandemic began. Since all of our normal lives were put on hold, we valued our online interactions more than ever.\n\n(A)\nIt was good to see him laugh even though he was lying in his hospital bed. After Singaporean Sam recovered, we decided to write and record our own song. We called the song “Long-Distance Friendship,” and we posted it online. The song didn’t get much attention, but we were proud of what we had achieved together.\n\n(B)\nAt one point, Singaporean Sam became ill and needed to spend some time in the hospital, so the band took a break. However, we still met from time to time by using the video chat app. We talked about our lives and did what we could do to cheer Singaporean Sam up.\n\n(C)\nSince he had to stay in the hospital on his birthday, the rest of us recorded his favorite song as his birthday present. When we played it for him, he laughed so hard that he cried. That was mainly because the song was sung by the worst singer in the band — me!`,
+                options: ["(A) - (C) - (B)", "(B) - (A) - (C)", "(B) - (C) - (A)", "(C) - (A) - (B)", "(C) - (B) - (A)"],
+                answer: 2,
+                type: 'mc',
+                explanation: "팬데믹 상황에서 (B) 한 멤버가 아파 밴드가 중단되었지만 온라인 소통은 계속했다. -> (C) 아픈 멤버의 생일 선물로 노래를 녹음해주어 웃게 만들었다. -> (A) 멤버가 회복된 후 다 함께 자작곡을 만들고 그 성과에 자부심을 느꼈다. 이 순서가 가장 자연스럽다."
+            },
+            {
+                question: "9. [8-10] 윗글의 내용과 일치하면 [T], 일치하지 않으면 [F]라 할 때, 판단이 옳게 연결된 것의 개수는?",
+                passage: `Shortly after we started the band, a global pandemic began. Since all of our normal lives were put on hold, we valued our online interactions more than ever.\n\n(A)\nIt was good to see him laugh even though he was lying in his hospital bed. After Singaporean Sam recovered, we decided to write and record our own song. We called the song “Long-Distance Friendship,” and we posted it online. The song didn’t get much attention, but we were proud of what we had achieved together.\n\n(B)\nAt one point, Singaporean Sam became ill and needed to spend some time in the hospital, so the band took a break. However, we still met from time to time by using the video chat app. We talked about our lives and did what we could do to cheer Singaporean Sam up.\n\n(C)\nSince he had to stay in the hospital on his birthday, the rest of us recorded his favorite song as his birthday present. When we played it for him, he laughed so hard that he cried. That was mainly because the song was sung by the worst singer in the band — me!`,
+                options: ["1개", "2개", "3개", "4개", "5개"],
+                answer: 3,
+                type: 'mc',
+                explanation: "(1) 팬데믹으로 온라인 소통을 더 소중히 여겼으므로 [F]는 옳다. (2) 밴드는 휴식했지만 온라인 만남은 계속했으므로 [F]는 옳다. (3) 생일 선물은 자작곡이 아닌 그가 좋아하는 노래였으므로 [F]는 옳다. (4) 글쓴이의 서툰 노래가 친구를 웃게 했으므로 [T]는 옳다. (5) 노래가 많은 관심을 받지 못했다고 했으므로 [F]는 옳다. 따라서 총 5개 중 (3)번만 잘못 연결되었고, 옳은 연결은 4개이다."
+            },
+            {
+                question: `10. [8-10] 윗글의 내용을 바탕으로, 다음 우리말과 같은 뜻이 되도록 <조건>에 맞게 문장을 완성하시오.<br><br>> 그 노래는 많은 관심을 받지는 못했지만, 우리는 우리가 함께 이룬 것에 자랑스러웠다.<br><br><b>&lt;조건&gt;</b><br>- 'but'을 사용하여 두 절을 연결할 것<br>- 'be proud of'와 관계대명사 'what'을 활용할 것<br>- 총 17단어로 완성할 것<br><br><b>___________________________________________________.</b>`,
+                answer: "The song didn’t get much attention, but we were proud of what we had achieved together",
+                type: 'text',
+                explanation: "두 개의 대조되는 내용을 `but`으로 연결한다. '우리가 함께 이룬 것'은 선행사를 포함하는 관계대명사 `what`을 사용하여 `what we had achieved together`로 표현한다. 자부심을 느낀 시점보다 성취한 시점이 더 과거이므로 과거완료 `had achieved`를 사용한다."
+            }
+        ];
+
+        const quizForm = document.getElementById('quiz-form');
+        const circledNumbers = ['①', '②', '③', '④', '⑤'];
+
+        quizData.forEach((q, index) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+            
+            let content = `<div class="q-title">${q.question}</div>`;
+            if (q.passage) {
+                content += `<div class="passage">${q.passage}</div>`;
+            }
+            if (q.question_follow_up) {
+                content += `<div class="q-title">${q.question_follow_up}</div>`;
+            }
+
+            if (q.type === 'mc') {
+                content += '<div class="options">';
+                q.options.forEach((opt, i) => {
+                    content += `<label><input type="radio" name="q${index}" value="${i}"> ${circledNumbers[i]} ${opt}</label>`;
+                });
+                content += '</div>';
+            } else if (q.type === 'text') {
+                content += `<input type="text" name="q${index}" placeholder="정답을 입력하세요.">`;
+            }
+            questionBlock.innerHTML = content;
+            quizForm.appendChild(questionBlock);
+        });
+
+        function submitQuiz() {
+            const studentName = document.getElementById('studentName').value || '익명';
+            let score = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '';
+            let resultString = `학생 ID: ${studentName}\n날짜: ${new Date().toLocaleDateString()}\n\n[채점 결과]\n\n`;
+
+            quizData.forEach((q, index) => {
+                const inputs = document.getElementsByName(`q${index}`);
+                let userAnswerRaw;
+                let userAnswerText = "답변 안 함";
+                let isCorrect = false;
+
+                if (q.type === 'mc') {
+                    for (const input of inputs) {
+                        if (input.checked) {
+                            userAnswerRaw = parseInt(input.value);
+                            userAnswerText = `${circledNumbers[userAnswerRaw]} ${q.options[userAnswerRaw]}`;
+                            break;
+                        }
+                    }
+                    isCorrect = (userAnswerRaw === q.answer);
+                } else if (q.type === 'text') {
+                    userAnswerRaw = inputs[0].value.trim();
+                    userAnswerText = userAnswerRaw;
+                    const correctAnswer = q.answer.toLowerCase().replace(/\.$/, '');
+                    isCorrect = (userAnswerRaw.toLowerCase().replace(/\.$/, '') === correctAnswer);
+                }
+                
+                const feedbackP = document.createElement('p');
+                let resultLine;
+                const correctAnswerText = q.type === 'mc' ? `${circledNumbers[q.answer]} ${q.options[q.answer]}` : q.answer;
+
+                const detailsBlock = `
+                    <details class="explanation-details">
+                        <summary>해설 보기</summary>
+                        <div class="explanation-content">${q.explanation}</div>
+                    </details>`;
+                
+                if (isCorrect) {
+                    score++;
+                    feedbackP.innerHTML = `${index + 1}번: <span class="correct">정답 (1)</span> ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 1\n`;
+                } else {
+                    feedbackP.innerHTML = `${index + 1}번: <span class="incorrect">오답 (0)</span> (정답: ${correctAnswerText}) ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 0\t학생이 고른 오답: ${userAnswerText}\n`;
+                }
+                feedbackDiv.appendChild(feedbackP);
+                resultString += resultLine;
+            });
+
+            const finalScore = (score / quizData.length) * 100;
+            document.getElementById('score').innerText = `총점: ${score} / ${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('results').style.display = 'block';
+            
+            resultString += `\n총점: ${score}/${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('resultText').value = resultString;
+        }
+    </script>
+</body>
+</html>
