@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>능률(오선영) 고1 · 1과 지식맵 — An Unexpected Connection</title>
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#ffffff; --border:#e6e8ef; --text:#0f172a; --muted:#64748b;
+      --indigo:#4f46e5; --green:#16a34a; --yellow:#f59e0b; --red:#ef4444; --blue:#3b82f6;
+      --lav:#E6E6FA; --mint:#D5F5E3; --lemon:#FFF9C4;
+      --shadow: 0 10px 30px rgba(2,6,23,.06);
+      --radius: 16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;background:linear-gradient(180deg,#ffffff,var(--bg));color:var(--text);
+      font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial
+    }
+    .wrap{max-width:1200px;margin:28px auto;padding:0 16px}
+    .header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .title{font-weight:800;font-size:22px;letter-spacing:.2px}
+    .subtitle{color:var(--muted);font-size:14px}
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .controls{padding:14px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+    .btn{appearance:none;border:1px solid var(--border);background:#fff;border-radius:12px;padding:8px 12px;cursor:pointer;font-weight:600}
+    .btn[data-active="true"]{border-color:var(--indigo);color:#fff;background:var(--indigo)}
+    .field{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:12px;padding:6px 10px;background:#fff}
+    .field input{border:0;outline:0;min-width:200px}
+    .slider{accent-color:var(--indigo)}
+    .legend{padding:10px 14px;border-top:1px dashed var(--border);display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:13px}
+    .dot{display:inline-block;width:10px;height:10px;border-radius:999px;margin-right:6px;vertical-align:-1px}
+    .grid{display:grid;grid-template-columns: 1.2fr 1fr;gap:16px;margin-top:16px}
+    .stage{position:relative;min-height:640px;overflow:hidden}
+    .stage-inner{position:relative;height:100%;padding:8px}
+    svg{width:100%;height:620px;display:block}
+    .node{cursor:pointer;transition:transform .15s ease}
+    .node:hover{transform:translateY(-1px)}
+    .node rect{rx:12;ry:12;stroke:#333;stroke-width:1.2}
+    .node text{font-size:12px}
+    .node .code{font-weight:800}
+    .node .label{fill:#222}
+    .edge{stroke:#93a1b0;stroke-width:1.3;opacity:.25;marker-end:url(#arrow)}
+    .edge.hl{stroke:var(--blue);opacity:.9;stroke-width:2.3}
+    .side{padding:16px;display:flex;flex-direction:column;gap:10px;max-height:620px;overflow:auto;scroll-behavior:smooth}
+    .badge{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid var(--border);font-size:12px;background:#fff}
+    .pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;border:1px solid var(--border);background:#fff;margin-right:6px}
+    .h2{font-size:16px;font-weight:800;margin:6px 0}
+    .muted{color:var(--muted)}
+    .sep{height:1px;background:var(--border);margin:8px 0}
+    .kbd{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+      background:#f8fafc;border:1px solid var(--border);padding:2px 6px;border-radius:6px;font-size:12px}
+    .foot{color:var(--muted);font-size:12px}
+    .hl{background:#fff3;box-shadow:0 0 0 3px rgba(79,70,229,.18) inset}
+    .hint{font-size:12px;color:var(--muted)}
+    details{border:1px solid var(--border);border-radius:12px;padding:10px 12px;background:#fff}
+    details+details{margin-top:8px}
+    details summary{cursor:pointer;font-weight:700}
+    .note{white-space:pre-wrap;line-height:1.65}
+    .sec-title{font-size:15px;font-weight:800;margin:4px 0}
+    .mini{font-size:12px;color:var(--muted)}
+    .note mark{background:#fff3bf;padding:0 .15em;border-radius:.25em}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <div class="title">능률(오선영) 고1 · 1과 지식맵</div>
+        <div class="subtitle">Unit 1 — <em>An Unexpected Connection</em> · G/V → R 구조 시각화 (클릭 시 KC별 ‘풀 설명’)</div>
+      </div>
+      <div class="toolbar">
+        <button id="btnAll" class="btn" data-active="true" title="모든 연결선을 나타냅니다.">전체 보기</button>
+        <button id="btnFocus" class="btn" title="선택한 노드와 직접 연결만 강조합니다.">집중 보기</button>
+        <button id="btnReset" class="btn" title="선택 해제 및 초기화">선택 해제</button>
+        <button id="btnPNG" class="btn" title="현재 지도를 PNG로 내보내기">PNG로 저장</button>
+      </div>
+    </div>
+
+    <div class="card controls">
+      <label class="field" title="코드 또는 키워드로 노드 찾기">
+        🔎
+        <input id="search" placeholder="예: KC-1G1, 부정어 도치, what, Long-Distance..." />
+      </label>
+      <label class="field" title="지도의 배율을 조절합니다.">
+        🔍 배율
+        <input id="zoom" class="slider" type="range" min="80" max="140" step="5" value="100" />
+        <span id="zoomVal" class="hint">100%</span>
+      </label>
+      <span class="badge">미리보기 모드: <strong id="previewMode">전체</strong></span>
+    </div>
+
+    <div class="card legend">
+      <span><i class="dot" style="background:var(--lav);border:1px solid #333"></i>문법 (G)</span>
+      <span><i class="dot" style="background:var(--lemon);border:1px solid #333"></i>어휘 (V)</span>
+      <span><i class="dot" style="background:var(--mint);border:1px solid #333"></i>본문 단락 (R1~R5)</span>
+      <span>클릭: KC별 원문·해석·문법·어휘 / 다시 클릭: 해제</span>
+    </div>
+
+    <div class="grid">
+      <div class="card stage">
+        <div class="stage-inner">
+          <svg id="map" viewBox="0 0 1100 620" xmlns="http://www.w3.org/2000/svg" aria-label="지식맵">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#93a1b0"></path>
+              </marker>
+            </defs>
+            <g id="zoomGroup"></g>
+          </svg>
+        </div>
+      </div>
+
+      <aside class="card side" id="side">
+        <div class="badge">ℹ️ 맵 사용법</div>
+        <div class="h2">노드를 클릭하면 해당 KC의 ‘정리된 풀 세트’(원문/해석/핵심 문법/요약/어휘)가 표시됩니다.</div>
+        <div class="sep"></div>
+        <div class="muted">
+          • 예시 문장: <span class="pill">Little did I know</span>
+          <span class="pill">While looking</span>
+          <span class="pill">made it difficult</span>
+          <span class="pill">what we had achieved</span>
+          <span class="pill">Never did we expect</span>
+        </div>
+        <div class="sep"></div>
+        <div class="foot">Tip: <span class="kbd">집중 보기</span>로 연결선만 강조 / <span class="kbd">PNG로 저장</span>으로 이미지 저장</div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    // ---------- 1) 데이터 ----------
+    const grammar = [
+      { id:'KC-1G1', group:'G', color:'var(--lav)', title:'부정어(구) 도치',
+        desc:'Little/Never 등 부정어(구)가 문두로 오면 도치. 일반동사는 do/does/did를 사용.',
+        examples:['Little did I know','Never did we expect'] },
+      { id:'KC-1G2', group:'G', color:'var(--lav)', title:'관계대명사 what',
+        desc:'선행사를 포함해 “~하는 것/것들”. what절 전체가 명사절 역할.',
+        examples:['what we had achieved','what I wrote'] },
+      { id:'KC-1G3', group:'G', color:'var(--lav)', title:'5형식 동사 (make/call/see)',
+        desc:'make/call + O + OC(명사), see + O + 동사원형 등 5형식. 가목적어 it 주의.',
+        examples:['made it difficult','called the song','see him laugh'] },
+      { id:'KC-1G4', group:'G', color:'var(--lav)', title:'분사 활용 (분사구문/후치수식)',
+        desc:'While/After ~ing 분사구문, a band called ~, something interesting(후치 수식).',
+        examples:['While looking','a band called ~','something interesting'] },
+    ];
+    const vocab = [
+      { id:'KC-1V1', group:'V', color:'var(--lemon)', title:'온라인 소통/밴드 어휘',
+        desc:'friend request, profile, virtual, interaction, encounter, achieve, perspective 등 핵심 어휘와 쓰임.',
+        examples:['friend request','virtual band','profiles','interactions','perspective'] },
+    ];
+    const reading = [
+      { id:'KC-1R1', group:'R', color:'var(--mint)', title:'본문1: 발견과 연결',
+        desc:'이름이 전세계적으로 흔함을 깨닫고 Sam Lee들에게 친구 요청.',
+        quote:'“Little did I know that it’s actually common in many other countries, too.”' },
+      { id:'KC-1R2', group:'R', color:'var(--mint)', title:'본문2: 밴드 결성',
+        desc:'프로필 탐색 → 공통 관심(음악) → The Sam Lees 결성 제안/수락.',
+        quote:'“How about making a virtual band called The Sam Lees?”' },
+      { id:'KC-1R3', group:'R', color:'var(--mint)', title:'본문3: 문제 해결과 협업',
+        desc:'시차/오디오 문제 → ‘가상의 음악 공장’ 협업 방식.',
+        quote:'“This made it difficult to pick a convenient time for everyone to practice.”' },
+      { id:'KC-1R4', group:'R', color:'var(--mint)', title:'본문4: 시련과 우정',
+        desc:'팬데믹·입원 속에서도 온라인 소통/응원/자작곡 제작.',
+        quote:'“we were proud of what we had achieved together.”' },
+      { id:'KC-1R5', group:'R', color:'var(--mint)', title:'본문5: 성찰과 의미',
+        desc:'서로 다른 배경을 넘어선 깊은 우정에 대한 성찰.',
+        quote:'“Never did we expect that we would build such strong relationships …”' },
+    ];
+
+    // 모든 G/V → 모든 R 연결
+    const edges = [];
+    const allBases = [...grammar, ...vocab].map(n=>n.id);
+    const allReads = reading.map(n=>n.id);
+    allBases.forEach(b=> allReads.forEach(r=> edges.push({from:b, to:r})));
+
+    // ---------- 2) KC 상세 콘텐츠 (클릭 시 표시) ----------
+    // 본문 표기 '본문 ... 본문' → <mark> 하이라이트로 변환해 가독성 향상
+    const detailsHTML = {
+      // R1
+      'KC-1R1': `
+        <div class="badge" style="background:var(--mint)">📖 본문 · KC-1R1</div>
+        <div class="sec-title">READING 본문 1</div>
+        <details open><summary>영문</summary><div class="note">
+My name is Lee Saem. My first name has an impressive meaning in Korean: “a source of power and vitality.” Since Saem sounds like Sam, I decided to make that my English name. Growing up, I thought Lee was a common last name only in Korea. Little did I know that it’s actually common in many other countries, too. When I searched “Sam Lee” on a social media website, I was amazed at what I saw. There were so many people all over the world with that name! Just for fun, I randomly chose several Sam Lees and sent them friend requests.
+        </div></details>
+        <details><summary>한글</summary><div class="note">
+내 이름은 이샘이다. 내 이름은 한국어로 '힘과 생명력의 원천'이라는 인상적인 뜻을 가진다. 샘은 Sam과 비슷하게 들리기 때문에, 나는 그것을 내 영어 이름으로 하기로 결정했다. 자라면서, 나는 Lee가 한국에서만 흔한 성이라고 생각했다. 나는 그것이 실제로 많은 다른 국가들에서도 흔하다는 것을 거의 알지 못했다. 내가 소셜 미디어 웹사이트에서 'Sam Lee'를 검색해 봤을 때, 나는 내가 본 것에 깜짝 놀랐다. 전 세계에 그 이름을 가진 많은 사람들이 있었다! 단순히 재미로, 나는 몇 명의 Sam Lee들을 무작위로 선택해 그들에게 친구 요청을 보냈다.
+        </div></details>
+        <details><summary>본문에 대한 상세 설명</summary><div class="note">
+'My first name has an impressive meaning in Korean: “a source of power and vitality.”'
+동사파생명사: 준동사의 –ing 형태인 <mark>meaning</mark>이 ‘뜻, 의미’의 동사파생명사로 쓰여, 앞의 부정관사 <mark>an</mark>과 형용사 <mark>impressive</mark>가 수식합니다.
+
+'Since Saem sounds like Sam, I decided to make that my English name.'
+접속사 <mark>since</mark>가 이유 부사절을 이끌며, 완전한 절(Saem <mark>sounds like</mark> Sam)이 이어집니다.
+<mark>sound like + 명사(구)</mark>: ‘~처럼 들리다’. 과거동사 <mark>decided</mark> 뒤에는 <mark>to make</mark>가 목적어(명사적 용법)로 옵니다.
+5형식 <mark>make</mark>: make + O(that) + OC(<mark>my English name</mark>).
+
+'Growing up, I thought (that) Lee was a common last name only in Korea.'
+분사구문: 주어 I와 능동 관계 → 현재분사 <mark>Growing</mark> 사용. <mark>As I grew up</mark>으로 바꿀 수 있습니다.
+명사절 접속사 <mark>that</mark>은 생략.
+
+'Little did I know that it’s actually common in many other countries, too.'
+부정부사 문두 도치: <mark>Little</mark> → <mark>did</mark> + 주어 + <mark>know</mark>. 목적어 명사절을 <mark>that</mark>이 이끕니다. 긍정 의미라 문장 끝 <mark>too</mark> 사용.
+
+'When I searched “Sam Lee” on a social media website, I was amazed at what I saw.'
+보어 형용사: <mark>was amazed</mark>(과거분사 형용사) + <mark>at what</mark> ~. 관계대명사 <mark>what</mark>은 ‘~하는 것’을 이끌며 불완전한 절.
+
+'There were so many people all over the world with that name!'
+유도부사 <mark>there</mark> 도치 + 수일치(<mark>were</mark> ↔ <mark>people</mark>). 수식 전치사구 <mark>with that name</mark>의 외치(뒤로 이동)로 강조.
+
+'Just for fun, I randomly chose several Sam Lees and sent them friend requests.'
+병렬: <mark>chose</mark> · <mark>sent</mark>. 4형식 <mark>send</mark> (간접목적어 <mark>them</mark> → 직접목적어 <mark>friend requests</mark>).
+        </div></details>
+        <details><summary>Grammar+ (도치·외치 핵심)</summary><div class="note">
+• [be/조동사 도치] 부정부사/구, so/nor/neither, 의문문, 가정법 if 생략 등에서 사용
+• [동사 도치] there/장소·시간 부사(구) 선행, 보어/전치사구 도치 등
+• 외치: 동격절/관계사절/to부정사/전치사구 등을 절 뒤로 보내 강조
+        </div></details>
+        <details><summary>Master’s Pick · 요약/핵심 포인트</summary><div class="note">
+이름 ‘Sam Lee’ 검색 → 전 세계 동명이인 다수 발견 → 호기심 기반 친구 요청. ‘Little did I know’로 도치 강조.
+        </div></details>
+        <details><summary>어휘 & 숙어</summary><div class="note">
+actually(실제로), amazed(깜짝 놀란), band(악단/무리), common(흔한), first name(이름), friend request(친구 요청),
+fun(재미), impressive(인상적인), last name(성), many other(많은 다른), randomly(무작위로), search(검색하다),
+source(원천), unite(연합하다), vitality(생명력)
+        </div></details>
+      `,
+
+      // R2
+      'KC-1R2': `
+        <div class="badge" style="background:var(--mint)">📖 본문 · KC-1R2</div>
+        <div class="sec-title">READING 본문 2 · An Unexpected Connection</div>
+        <details open><summary>영문</summary><div class="note">
+A lot of them accepted my friend request. While looking through their profiles, I noticed something interesting. Several Sam Lees of various ages and nationalities were interested in music. There was a Sam Lee in his mid-30s from Singapore who enjoyed singing and writing lyrics. And there was a 42-year-old Canadian Sam Lee who was a drummer. According to her profile, everyone called her Sam even though her real name was Samantha. Finally, there was an American Sam Lee who played the electric guitar. Suddenly, I had a great idea. I sent a message to all three. Here is what I wrote: “Hi! I’m Sam Lee from Korea. I write songs and play the keyboard. How about making a virtual band called The Sam Lees?” To my surprise, all three eagerly agreed. That was the start of our band’s journey.
+        </div></details>
+        <details><summary>한글</summary><div class="note">
+그들 중 많은 사람들이 내 친구 요청을 수락했다. 프로필을 살펴보는 동안, 나는 흥미로운 무언가를 알게 되었다. 다양한 나이와 국적의 Sam Lee들 중 몇몇이 음악에 관심이 있었다. 싱가포르 출신의 30대 중반 Sam Lee는 노래와 작사를 즐겼고, 42살 캐나다인 Sam Lee는 드러머였다. 그녀의 프로필에 따르면, 본명은 Samantha지만 모두 그녀를 Sam이라 불렀다. 미국인 Sam Lee는 전기 기타를 연주했다. 나는 훌륭한 생각이 떠올라 세 명 모두에게 메시지를 보냈다. “The Sam Lees”라는 가상 밴드를 만들자는 제안이었다. 놀랍게도 세 명 모두 열렬히 동의했다. 그것이 밴드 여정의 시작이었다.
+        </div></details>
+        <details><summary>본문에 대한 상세 설명</summary><div class="note">
+'While looking through their profiles, I noticed something interesting.'
+시간관계 명확화: 접속사 <mark>While</mark> + 현재분사 <mark>looking</mark> (분사구문).
+look through ~: ‘~을 살펴보다’(자동사+전치사).
+
+'Several Sam Lees of various ages and nationalities were interested in music.'
+수일치: <mark>Several ...</mark> → 복수동사 <mark>were</mark>. 고유명사의 보통명사화: <mark>Sam Lees</mark>.
+
+'There was a Sam Lee in his mid-30s from Singapore who enjoyed ...'
+유도부사 <mark>There</mark> 도치 + 주격 관계대명사 <mark>who</mark>.
+enjoy + 동명사: <mark>enjoyed singing and writing lyrics</mark> (병렬).
+
+'According to her profile, everyone called her Sam ...'
+5형식 <mark>call</mark>: call + O(her) + OC(Sam).
+
+'Here is what I wrote: … How about making a virtual band called The Sam Lees?'
+부사 도치: <mark>Here is</mark> + 명사절 <mark>what I wrote</mark>.
+How about + 동명사(구) 제안 표현. 과거분사 <mark>called</mark>의 후치 수식.
+
+'To my surprise, all three eagerly agreed.'
+to one’s + 감정명사(수식): <mark>To my surprise</mark>.
+        </div></details>
+        <details><summary>Grammar+ (고유명사 수식, 수일치)</summary><div class="note">
+• 고유명사는 직접 수식이 어렵지만, 관사/복수형으로 보통명사화될 때 한정적 수식 가능 (a 42-year-old Canadian Sam Lee).
+• several + 복수명사 → 복수동사, a(n) + 단수명사 → 단수동사.
+        </div></details>
+        <details><summary>Master’s Pick · 요약/핵심 포인트</summary><div class="note">
+수락 → 공통 관심(음악) 확인 → 각 구성원 역할·국적 제시 → ‘가상 밴드’ 제안 → 즉각 동의(동기 강화).
+        </div></details>
+        <details><summary>어휘 & 숙어</summary><div class="note">
+accept, according to, be interested in, in one’s mid-30s, journey, look through, lyrics,
+nationality, notice, profile, suddenly, to one’s surprise, virtual, various, eagerly
+        </div></details>
+      `,
+
+      // R3
+      'KC-1R3': `
+        <div class="badge" style="background:var(--mint)">📖 본문 · KC-1R3</div>
+        <div class="sec-title">READING 본문 3 · The Virtual Music Factory</div>
+        <details open><summary>영문</summary><div class="note">
+We tried to practice once a week through a video chat app, but we encountered several problems. First of all, we all lived in different time zones. This made it difficult to pick a convenient time for everyone to practice. Secondly, there were audio issues with the app, which caused us to be out of sync. So we put our heads together and devised a better way of playing music. We decided to assemble the songs as if we were working in a virtual music factory. After we decided on a song, I would play it on my keyboard and send it to Singaporean Sam. He would sing along with the keyboard and send the recording to American Sam. Then American Sam would add his guitar part, and Samantha would finish the song with her drumming. When it came to choosing songs to play, we took turns. Since each of us prefers a different genre of music and comes from a different culture, we all ended up learning a lot about different kinds of music. It was interesting and a lot of fun.
+        </div></details>
+        <details><summary>한글</summary><div class="note">
+우리는 주 1회 영상 채팅 앱으로 연습하려 했지만, 여러 문제에 부딪혔다. 서로 다른 시간대에 살아 모두에게 편한 시간을 정하기가 어려웠고, 앱의 오디오 문제로 박자가 맞지 않았다. 그래서 머리를 맞대고 ‘가상의 음악 공장’처럼 각자 파트를 녹음해 조립하는 방식을 고안했다. 곡을 정하면 글쓴이가 키보드 연주를 녹음해 싱가포르 Sam에게 보내고, 그는 노래를 얹어 미국 Sam에게 넘겼다. 미국 Sam은 기타 파트를 추가했고, Samantha가 드럼으로 완성했다. 곡 선택은 번갈아 가며 했고, 서로 다른 장르·문화를 지닌 덕분에 다양한 음악을 배우며 즐거웠다.
+        </div></details>
+        <details><summary>본문에 대한 상세 설명</summary><div class="note">
+'We tried to practice ... but we encountered several problems.'
+try + to부정사 / 타동사 <mark>encounter</mark> 목적어 직취.
+
+'This made it difficult to pick a convenient time for everyone to practice.'
+5형식 <mark>make</mark>: make + it + 형용사(<mark>difficult</mark>) + to부정사구(진목적어).
+전치사 <mark>for</mark> + 의미상 주어 + to부정사: <mark>for everyone to practice</mark>.
+
+'Secondly, there were audio issues with the app, which caused us to be out of sync.'
+there 도치 + 복수동사 <mark>were</mark>. 계속적 용법 <mark>which</mark>가 선행사 보충.
+5형식 <mark>cause</mark>: cause + O(us) + to부정사.
+
+'So we put our heads together and devised a better way of playing music.'
+구동사 <mark>put ~ together</mark>, 전치사 <mark>of</mark> + 동명사 <mark>playing</mark>.
+
+'We decided to assemble the songs as if we were working in a virtual music factory.'
+<mark>decide to</mark> ~, 가정법 과거: <mark>as if ... were</mark>.
+
+'After we decided on a song, I would play it ... and send it to Singaporean Sam.'
+구동사 <mark>decide on</mark>. 과거의 규칙적 습관 <mark>would</mark> + 동사원형 (병렬).
+
+'When it came to choosing songs to play, we took turns.'
+관용표현 <mark>when it comes to ~</mark>, <mark>take turns</mark>.
+
+'Since each of us prefers ... and comes ..., we all ended up learning ...'
+<mark>each of</mark> 단수 취급(동사 <mark>prefers/comes</mark>). <mark>end up -ing</mark>.
+        </div></details>
+        <details><summary>Grammar+ (as if, end up, make-it-OC)</summary><div class="note">
+• as if + 가정법(과거/과거완료) — 사실과 다른 가정 표현
+• end up + -ing / at/in 장소 / as 명사
+• make + it + 형용사 + to부정사(진목적어) — 난이도/용이성/가능성 묘사
+        </div></details>
+        <details><summary>Master’s Pick · 요약/핵심 포인트</summary><div class="note">
+문제(시차·오디오) → 해결(파트별 녹음 조립) → 작업 순서(키보드→보컬→기타→드럼) → 번갈아 곡 선택 → 학습적 이득.
+        </div></details>
+        <details><summary>어휘 & 숙어</summary><div class="note">
+assemble, convenient, devise, encounter, out of sync, prefer, put heads together,
+sing along with, take turns, video chat app, when it comes to, genre, culture
+        </div></details>
+      `,
+
+      // R4
+      'KC-1R4': `
+        <div class="badge" style="background:var(--mint)">📖 본문 · KC-1R4</div>
+        <div class="sec-title">READING 본문 4 · “Long-Distance Friendship”</div>
+        <details open><summary>영문</summary><div class="note">
+Shortly after we started the band, a global pandemic began. Since all of our normal lives were put on hold, we valued our online interactions more than ever. At one point, Singaporean Sam became ill and needed to spend some time in the hospital, so the band took a break. However, we still met from time to time by using the video chat app. We talked about our lives and did what we could do to cheer Singaporean Sam up. Since he had to stay in the hospital on his birthday, the rest of us recorded his favorite song as his birthday present. When we played it for him, he laughed so hard that he cried. That was mainly because the song was sung by the worst singer in the band — me! It was good to see him laugh even though he was lying in his hospital bed. After Singaporean Sam recovered, we decided to write and record our own song. We called the song “Long-Distance Friendship,” and we posted it online. The song didn’t get much attention, but we were proud of what we had achieved together.
+        </div></details>
+        <details><summary>한글</summary><div class="note">
+밴드를 시작한 직후 세계적 유행병이 시작되었다. 우리의 평범한 삶이 보류되면서 온라인 상호작용을 더 소중히 여겼다. 싱가포르 Sam이 아파 입원하자 활동을 잠시 쉬었지만, 영상 채팅으로 가끔 만났다. 우리는 그를 응원했고, 생일에는 그가 가장 좋아하는 노래를 녹음해 선물했다. 그는 너무 웃어 눈물을 흘렸는데, 밴드에서 노래를 가장 못하는 글쓴이가 불렀기 때문이다. 회복 후 우리는 ‘Long-Distance Friendship’을 만들어 온라인에 올렸고, 큰 관심은 받지 못했지만 함께 이룬 것을 자랑스러워했다.
+        </div></details>
+        <details><summary>본문에 대한 상세 설명</summary><div class="note">
+'shortly after ~' / <mark>be put on hold</mark>(수동) / <mark>more than ever</mark> 비교 강화.
+from time to time(이따금) / by + -ing(수단) / <mark>what</mark> 명사절 / cheer ~ up(구동사).
+so ~ that(결과절) / because 절(보어절) / 가주어 <mark>It</mark> ... to부정사(진주어).
+see + O + 동사원형(<mark>see him laugh</mark>) / lie - lying(과거진행).
+call 5형식(<mark>We called the song …</mark>) / online(부사) / be proud of / 과거완료(<mark>had achieved</mark>).
+        </div></details>
+        <details><summary>Grammar+ (all(of)~, so-that)</summary><div class="note">
+• all + 명사 / all of + 대명사(us, our lives 등)
+• so + 형/부 + that + 완전한 절  vs  such + (a) + 형 + 명사 + that
+        </div></details>
+        <details><summary>Master’s Pick · 요약/핵심 포인트</summary><div class="note">
+팬데믹·입원 → 온라인 소통 강화 → 생일 선물(노래) → 유머와 위로 → 회복 후 자작곡 게시 → 공동 성취에 대한 자부심.
+        </div></details>
+        <details><summary>어휘 & 숙어</summary><div class="note">
+be put on hold, interaction, from time to time, cheer ~ up, so ~ that, because of,
+be proud of, record, recover, post(온라인에 올리다), long-distance
+        </div></details>
+      `,
+
+      // R5
+      'KC-1R5': `
+        <div class="badge" style="background:var(--mint)">📖 본문 · KC-1R5</div>
+        <div class="sec-title">READING 본문 5</div>
+        <details open><summary>영문</summary><div class="note">
+Our band is something really special. Never did we expect that we would build such strong relationships with one another. After all, we don’t come from similar backgrounds, nor have we had the same life experiences. Yet we now talk about almost everything together, including the hardships we face in life. I think it’s been really valuable to get advice from people with such different perspectives. We would all like to meet in person and play our music on the street someday. But even if that never happens, we’ve still been incredibly lucky. Four random people became great friends simply because of our names. Life can be amazing sometimes!
+        </div></details>
+        <details><summary>한글</summary><div class="note">
+우리 밴드는 정말 특별하다. 우리는 서로 이렇게 끈끈한 관계를 맺을 것이라 전혀 예상하지 못했다. 비슷한 배경이나 같은 인생 경험을 공유하지 않지만, 이제 거의 모든 것을 함께 이야기하고 서로 다른 관점에서 조언을 얻는 것을 소중히 여긴다. 언젠가 직접 만나 길거리에서 연주하고 싶지만, 그렇지 않더라도 우리는 여전히 믿을 수 없을 만큼 운이 좋았다. 네 명의 무작위 사람들이 단지 이름 때문에 좋은 친구가 되었다. 삶은 때때로 놀랍다.
+        </div></details>
+        <details><summary>본문에 대한 상세 설명</summary><div class="note">
+'something really special' — 부정대명사 <mark>something</mark>의 후치 수식(<mark>special</mark>).
+부정부사 문두 도치: <mark>Never did we expect</mark> ...
+nor + 도치: <mark>nor have we had</mark>.
+including ~ (포함) / 목적격 관계대명사 생략(we face …).
+가주어-진주어: <mark>I think (that) it’s been really valuable to get ...</mark>
+would like to + 동사(병렬) / even if 양보절 / 현재완료(<mark>we’ve been</mark>) / because of(구전치사).
+        </div></details>
+        <details><summary>Grammar+ (nor/neither 도치)</summary><div class="note">
+부정문 뒤 ‘또한 ~도 아니다’ 보강: (and) nor + 도치 / (and) neither + 도치
+        </div></details>
+        <details><summary>Master’s Pick · 요약/핵심 포인트</summary><div class="note">
+다양한 배경에도 우정 형성(이름 → 연결 → 공감/조언) · 현실적 소망(직접 만남) · 행운 인식(감사).
+        </div></details>
+        <details><summary>어휘 & 숙어</summary><div class="note">
+after all, almost, amazing, background, hardship, in person, incredibly, one another,
+perspective, random, valuable, simply because of
+        </div></details>
+      `,
+
+      // G1
+      'KC-1G1': `
+        <div class="badge" style="background:var(--lav)">📘 문법 · KC-1G1</div>
+        <div class="sec-title">문법 포인트 1 — 부정어(구)에 의한 도치 (Inversion)</div>
+        <details open><summary>기본 규칙/형태</summary><div class="note">
+의미: 부정 의미(not, never, little, hardly, seldom, rarely, only 등)를 강조하기 위해 문두로 올 때 주어-동사 도치.
+형태:
+• be/조동사: [부정어(구)] + 동사 + 주어
+• 일반동사: [부정어(구)] + do/does/did + 주어 + 동사원형
+• 완료형: [부정어(구)] + have/has/had + 주어 + p.p.
+        </div></details>
+        <details><summary>부사절·조건절 도치</summary><div class="note">
+Only + 시간/조건 부사절, Not until ~ 가 문두 → 주절 도치
+• Only when I opened the box did I realize ...
+• Not until the teacher explained it did she understand ...
+        </div></details>
+        <details><summary>교과서 연계 예문</summary><div class="note">
+• <mark>Little did I know</mark> that it’s actually common ...
+• <mark>Never did we expect</mark> that we would build such strong relationships ...
+• Little did I know that such a short encounter would bring back ...
+        </div></details>
+        <details><summary>출제 포인트 & 실수 방지</summary><div class="note">
+• 일반동사 도치에는 반드시 do/does/did 사용 (✗ Little knew I … → ✓ Little did I know …)
+• 도치 뒤 시제 일치: did + 동사원형 / have + p.p. 등
+• 문두 부정어가 절 전체를 수식하는지 확인(문장 성분 이동 여부)
+        </div></details>
+      `,
+
+      // G2
+      'KC-1G2': `
+        <div class="badge" style="background:var(--lav)">📘 문법 · KC-1G2</div>
+        <div class="sec-title">문법 포인트 2 — 관계대명사 what</div>
+        <details open><summary>의미/형태</summary><div class="note">
+• 선행사를 포함하는 관계대명사 → ‘~하는 것/것들’
+• <mark>the thing(s) which/that</mark>으로 전환 가능
+        </div></details>
+        <details><summary>문장 내 역할</summary><div class="note">
+• 주어: <mark>What</mark> makes her happy is …
+• 목적어: They couldn’t believe <mark>what</mark> they saw …
+• 보어: The problem is <mark>what</mark> we discussed …
+        </div></details>
+        <details><summary>주의사항</summary><div class="note">
+• 선행사 포함이므로 앞에 명사 쓰지 않음 (✗ Everything <mark>what</mark> …)
+• 계속적 용법 불가(콤마 뒤 X) — 그 자리는 <mark>which</mark>
+• 의문사 what(‘무엇’)과 구별
+        </div></details>
+        <details><summary>교과서 연계 예문</summary><div class="note">
+• proud of <mark>what</mark> we had achieved (전치사 of의 목적어인 명사절)
+• Here is <mark>what</mark> I wrote (주어 자리 명사절)
+        </div></details>
+        <details><summary>출제 포인트 & 실수 방지</summary><div class="note">
+• 뒤 절은 ‘불완전’(주어/목적어/보어 중 하나가 빠진 구조)이어야 적절
+• that/which 전환 시에는 선행사를 반드시 복원(the thing(s) …)
+        </div></details>
+      `,
+
+      // G3
+      'KC-1G3': `
+        <div class="badge" style="background:var(--lav)">📘 문법 · KC-1G3</div>
+        <div class="sec-title">문법 포인트 3 — 5형식 (make/call/see)</div>
+        <details open><summary>핵심 패턴</summary><div class="note">
+• make + O + OC(형/명/과거분사) — 상태/평가를 부여
+  Ex) This <mark>made</mark> it <mark>difficult</mark> <mark>to pick</mark> …
+• call + O + OC(명사) — 명명/호칭
+  Ex) We <mark>called</mark> the song “Long-Distance Friendship.”
+• see(지각) + O + OC(동사원형/현재분사)
+  Ex) to <mark>see him laugh</mark> (동사원형: 동작 전체 인지)
+        </div></details>
+        <details><summary>가목적어/진목적어</summary><div class="note">
+• make + <mark>it</mark> + 형용사 + <mark>to부정사</mark>(진목적어) — 난이도/용이성 표현에 매우 빈출
+        </div></details>
+        <details><summary>출제 포인트 & 실수 방지</summary><div class="note">
+• see/watch/hear 등 지각동사 뒤 목적격보어 선택(동사원형 vs 현재분사) 의미차 주의
+• call + O + as ~ (✗) — 일반적으로 as 생략
+• it-가목적어 구문에서 to부정사구 빠뜨리지 않기
+        </div></details>
+      `,
+
+      // G4
+      'KC-1G4': `
+        <div class="badge" style="background:var(--lav)">📘 문법 · KC-1G4</div>
+        <div class="sec-title">문법 포인트 4 — 분사구문 & 분사의 후치 수식</div>
+        <details open><summary>분사구문</summary><div class="note">
+• 시간/이유/조건: <mark>While/After/When</mark> + <mark>~ing</mark> (주절 주어와 능동 관계)
+  Ex) <mark>While looking</mark> through their profiles, I noticed …
+• 등가 전환: While I looked/was looking … (절 → 구)
+        </div></details>
+        <details><summary>후치 수식</summary><div class="note">
+• 현재분사(능동/진행): something <mark>interesting</mark>
+• 과거분사(수동/완료): a band <mark>called</mark> The Sam Lees
+        </div></details>
+        <details><summary>출제 포인트 & 실수 방지</summary><div class="note">
+• 분사구문 주어 일치(달라지면 논리 오류)
+• 분사 형태(ing/pp) 의미 차이 명확화
+• 관계사절 축약 여부 판단(불완전/완전 검사)
+        </div></details>
+      `,
+
+      // V1
+      'KC-1V1': `
+        <div class="badge" style="background:var(--lemon)">📗 어휘 · KC-1V1</div>
+        <div class="sec-title">어휘 — 온라인 소통 & 밴드 활동 핵심</div>
+        <details open><summary>핵심 어휘 + 콜로케이션</summary><div class="note">
+• friend request (친구 요청): send/accept a friend request
+• profile (프로필): browse/read/update one’s profile
+• virtual (가상의): a <mark>virtual band</mark>, a virtual meeting
+• interaction (상호작용): online/social interactions, meaningful interactions
+• encounter (마주하다): <mark>encounter</mark> problems/difficulties
+• achieve (성취하다): <mark>achieve</mark> a goal/result — be proud of <mark>what</mark> we had achieved
+• perspective (관점): different perspectives, from a new perspective
+• out of sync (박자가 안 맞는): be/get out of sync with …
+• take turns (번갈아 하다): <mark>take turns</mark> choosing songs
+• put ~ on hold (보류하다): plans were <mark>put on hold</mark>
+        </div></details>
+        <details><summary>시험 포인트</summary><div class="note">
+• 동사-목적어 짝 정확도(accept a friend request / send a message to ~)
+• virtual/online/remote의 미묘한 뉘앙스 차이
+• 추상명사(achievement, interaction)와 전치사 패턴(of/with)
+        </div></details>
+      `,
+    };
+
+    // ---------- 3) 레이아웃 ----------
+    const layout = {};
+    const leftX = 140, rightX = 870;
+    const topY = 80, gapY = 105;
+
+    [...grammar, ...vocab].forEach((n,i)=> layout[n.id] = { x:leftX, y: topY + i*gapY });
+    reading.forEach((n,i)=> layout[n.id] = { x:rightX, y: topY + i*gapY });
+
+    // ---------- 4) 렌더링 ----------
+    const zoomGroup = document.getElementById('zoomGroup');
+    const NS = 'http://www.w3.org/2000/svg';
+
+    function makeNode(node){
+      const g = document.createElementNS(NS,'g');
+      g.setAttribute('class','node');
+      g.setAttribute('data-id',node.id);
+      g.setAttribute('data-group',node.group);
+      const {x,y} = layout[node.id];
+
+      const w = 220, h = 68;
+      const rect = document.createElementNS(NS,'rect');
+      rect.setAttribute('x', x - w/2);
+      rect.setAttribute('y', y - h/2);
+      rect.setAttribute('width', w);
+      rect.setAttribute('height', h);
+      rect.setAttribute('fill', node.color);
+      rect.setAttribute('stroke','#333');
+      rect.setAttribute('stroke-width','1.2');
+
+      const code = document.createElementNS(NS,'text');
+      code.setAttribute('x', x - (w/2) + 10);
+      code.setAttribute('y', y - 10);
+      code.setAttribute('class','code');
+      code.textContent = node.id;
+
+      const label = document.createElementNS(NS,'text');
+      label.setAttribute('x', x - (w/2) + 10);
+      label.setAttribute('y', y + 12);
+      label.setAttribute('class','label');
+      label.textContent = node.title;
+
+      g.appendChild(rect); g.appendChild(code); g.appendChild(label);
+
+      // 이벤트
+      g.addEventListener('click', ()=> onSelect(node.id));
+      g.addEventListener('mouseenter', ()=> previewHover(node.id,true));
+      g.addEventListener('mouseleave', ()=> previewHover(node.id,false));
+      return g;
+    }
+
+    function makeEdge(e){
+      const g = document.createElementNS(NS,'g');
+      const line = document.createElementNS(NS,'path');
+      const from = layout[e.from], to = layout[e.to];
+      const midX = (from.x + to.x)/2;
+      const d = `M ${from.x+120} ${from.y} C ${midX} ${from.y}, ${midX} ${to.y}, ${to.x-120} ${to.y}`;
+      line.setAttribute('d', d);
+      line.setAttribute('class','edge');
+      g.appendChild(line);
+      e._el = line;
+      return g;
+    }
+
+    function render(){
+      zoomGroup.innerHTML = '';
+      edges.forEach(e => zoomGroup.appendChild(makeEdge(e)));
+      [...grammar, ...vocab, ...reading].forEach(n => zoomGroup.appendChild(makeNode(n)));
+    }
+    render();
+
+    // ---------- 5) 상호작용 ----------
+    let selected = null;
+    let focusMode = 'all'; // 'all' | 'focus'
+    const side = document.getElementById('side');
+
+    function setSideContent(html){
+      side.innerHTML = html;
+      // 본문 하이라이트 처리: '본문...본문' → <mark>...</mark>
+      const notes = side.querySelectorAll('.note');
+      notes.forEach(el=>{
+        el.innerHTML = el.innerHTML.replace(/본문(.*?)본문/g, '<mark>$1</mark>');
+      });
+      side.scrollTop = 0;
+    }
+
+    function fallbackInfo(node){
+      const badgeColor = node.group==='G' ? 'var(--lav)' : (node.group==='V'?'var(--lemon)':'var(--mint)');
+      const ex = node.examples ? node.examples.map(x=>`<span class="pill">${x}</span>`).join(' ') : '';
+      const quote = node.quote ? `<div class="sep"></div><div class="muted">📖 본문 예시<br><em>“${node.quote.replace(/^“|”$/g,'')}”</em></div>`:'';
+      const groupLabel = node.group==='G'?'문법':'V'===node.group?'어휘':'본문';
+      return `
+        <div class="badge" style="background:${badgeColor}">🔹 ${groupLabel} · ${node.id}</div>
+        <div class="h2">${node.title}</div>
+        <div class="muted">${node.desc||''}</div>
+        ${ex ? `<div class="sep"></div><div>${ex}</div>`:''}
+        ${quote}
+        <div class="sep"></div>
+        <div class="mini">※ 이 KC의 확장 노트는 준비 중입니다.</div>
+      `;
+    }
+
+    function onSelect(id){
+      if(selected===id){ // 토글 해제
+        selected = null;
+        clearHighlights();
+        setDefaultSide();
+        return;
+      }
+      selected = id;
+      highlightFor(id);
+      const node = [...grammar, ...vocab, ...reading].find(n=>n.id===id);
+      const html = detailsHTML[id] || fallbackInfo(node);
+      setSideContent(html + controlFooter(id));
+    }
+
+    function controlFooter(id){
+      return `
+        <div class="sep"></div>
+        <div class="mini">선택 KC: <b>${id}</b> · <span class="kbd">집중 보기</span>를 눌러 연결선만 강조해 보세요.</div>
+      `;
+    }
+
+    function clearHighlights(){
+      edges.forEach(e=> e._el.classList.remove('hl'));
+      document.querySelectorAll('.node rect').forEach(r=> r.classList.remove('hl'));
+    }
+
+    function highlightFor(id){
+      clearHighlights();
+      const group = document.querySelector(`.node[data-id="${id}"]`);
+      if(group) group.querySelector('rect').classList.add('hl');
+
+      const isBase = allBases.includes(id);
+      const isRead = allReads.includes(id);
+      edges.forEach(e=>{
+        const match = (isBase && e.from===id) || (isRead && e.to===id);
+        if(match) e._el.classList.add('hl');
+        else if(focusMode==='focus') e._el.classList.remove('hl');
+      });
+    }
+
+    function setDefaultSide(){
+      setSideContent(`
+        <div class="badge">ℹ️ 맵 사용법</div>
+        <div class="h2">노드를 클릭하면 해당 KC의 ‘정리된 풀 세트’(원문/해석/핵심 문법/요약/어휘)가 표시됩니다.</div>
+        <div class="sep"></div>
+        <div class="muted">
+          • 예시 문장: <span class="pill">Little did I know</span>
+          <span class="pill">While looking</span>
+          <span class="pill">made it difficult</span>
+          <span class="pill">what we had achieved</span>
+          <span class="pill">Never did we expect</span>
+        </div>
+        <div class="sep"></div>
+        <div class="foot">Tip: <span class="kbd">PNG로 저장</span>으로 현재 강조 상태 그대로 이미지를 저장할 수 있습니다.</div>
+      `);
+    }
+
+    function previewHover(id,enter){
+      if(focusMode==='focus') return; // 집중 보기에서는 hover 미리보기 비활성 (선택 중심)
+      clearHighlights();
+      if(enter){
+        highlightFor(id);
+      }else if(!selected){
+        edges.forEach(e=> e._el.classList.remove('hl'));
+      }else{
+        highlightFor(selected);
+      }
+    }
+
+    // 검색 필터 (노드 희미화)
+    const search = document.getElementById('search');
+    search.addEventListener('input', ()=>{
+      const q = search.value.trim().toLowerCase();
+      const nodes = document.querySelectorAll('.node');
+      nodes.forEach(n=>{
+        const id = n.getAttribute('data-id').toLowerCase();
+        const obj = [...grammar, ...vocab, ...reading].find(x=>x.id.toLowerCase()===id);
+        const hay = (id + ' ' + (obj.title||'') + ' ' + (obj.desc||'') + ' ' + (obj.examples||[]).join(' ')).toLowerCase();
+        const hit = q==='' || hay.includes(q);
+        n.style.opacity = hit ? '1' : '.18';
+      });
+    });
+
+    // 모드/리셋
+    const btnAll = document.getElementById('btnAll');
+    const btnFocus = document.getElementById('btnFocus');
+    const btnReset = document.getElementById('btnReset');
+    const previewMode = document.getElementById('previewMode');
+
+    function setMode(mode){
+      focusMode = mode;
+      btnAll.dataset.active = (mode==='all');
+      btnFocus.dataset.active = (mode==='focus');
+      previewMode.textContent = mode==='all' ? '전체' : '집중';
+      if(selected) highlightFor(selected);
+      else clearHighlights();
+    }
+    btnAll.onclick = ()=> setMode('all');
+    btnFocus.onclick = ()=> setMode('focus');
+    btnReset.onclick = ()=>{
+      selected = null; search.value='';
+      document.querySelectorAll('.node').forEach(n=> n.style.opacity='1');
+      clearHighlights(); setDefaultSide();
+    };
+
+    // 배율
+    const zoom = document.getElementById('zoom');
+    const zoomVal = document.getElementById('zoomVal');
+    function applyZoom(){
+      const s = parseInt(zoom.value,10)/100;
+      zoomVal.textContent = `${Math.round(s*100)}%`;
+      zoomGroup.setAttribute('transform', `translate(${(1-s)*200}, ${(1-s)*100}) scale(${s})`);
+    }
+    zoom.addEventListener('input', applyZoom);
+    applyZoom();
+
+    // PNG 내보내기
+    const btnPNG = document.getElementById('btnPNG');
+    btnPNG.onclick = ()=>{
+      const svg = document.getElementById('map');
+      const serializer = new XMLSerializer();
+      const src = serializer.serializeToString(svg);
+      const svgBlob = new Blob([src], {type:'image/svg+xml;charset=utf-8'});
+      const url = URL.createObjectURL(svgBlob);
+
+      const img = new Image();
+      img.onload = function(){
+        const canvas = document.createElement('canvas');
+        canvas.width = svg.clientWidth * 2;
+        canvas.height = svg.clientHeight * 2;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(url);
+        canvas.toBlob(blob=>{
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = '능률_고1_1과_지식맵.png';
+          a.click();
+        }, 'image/png');
+      };
+      img.src = url;
+    };
+
+    // 초기 사이드
+    setDefaultSide();
+  </script>
+</body>
+</html>
