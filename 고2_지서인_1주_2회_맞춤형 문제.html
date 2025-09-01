@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고2 지서인 - 영어Ⅱ 2과 약점 보완 퀴즈</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 2em; background-color: #f4f7f9; color: #333; }
+        .quiz-container { max-width: 800px; margin: auto; background: white; padding: 2em; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        h1, h2 { text-align: center; color: #2c3e50; }
+        .info-block { margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #e0e0e0; }
+        .question-block { margin-bottom: 2.5em; border-top: 1px solid #e0e0e0; padding-top: 1.5em; }
+        .question-block .q-title { font-weight: bold; margin-bottom: 1em; line-height: 1.5; }
+        .passage { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 1em; margin: 1em 0; font-size: 0.95em; color: #555; white-space: pre-wrap; line-height: 1.6; }
+        .options label { display: block; margin-bottom: 0.8em; cursor: pointer; padding: 0.5em; border-radius: 5px; transition: background-color 0.2s; }
+        .options label:hover { background-color: #e9ecef; }
+        input[type="radio"], input[type="text"] { margin-right: 0.5em; vertical-align: middle; }
+        input[type="text"] { width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { display: block; width: 100%; padding: 1em; font-size: 1.1em; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; margin-top: 2em; }
+        .submit-btn:hover { background-color: #218838; }
+        .results-area { margin-top: 2em; padding: 1.5em; background-color: #eef8ff; border: 1px solid #b8dcf1; border-radius: 8px; }
+        textarea { width: 100%; height: 200px; margin-top: 1em; font-family: monospace; }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+        .explanation-details { margin-top: 10px; font-size: 0.9em; }
+        .explanation-details summary { cursor: pointer; color: #0056b3; font-weight: normal; display: inline-block; padding: 2px 6px; border-radius: 4px; background-color: #e9ecef; }
+        .explanation-details[open] summary { background-color: #007bff; color: white; }
+        .explanation-content { margin-top: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #444; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>고2 지서인 - 영어Ⅱ 2과 약점 보완 퀴즈</h1>
+        <div class="info-block">
+            <label for="studentName">이름:</label>
+            <input type="text" id="studentName" placeholder="이름을 입력하세요" value="고2_지서인">
+        </div>
+        <div id="quiz-form"></div>
+        <button class="submit-btn" onclick="submitQuiz()">결과 확인 및 복사하기</button>
+        <div id="results" class="results-area" style="display:none;">
+            <h2>📝 채점 결과</h2>
+            <p id="score"></p>
+            <div id="feedback"></div>
+            <h3>📋 결과 복사하기</h3>
+            <p>아래 내용을 복사하여 선생님께 제출하세요.</p>
+            <textarea id="resultText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: `다음 글의 (A), (B), (C)의 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?`,
+                passage: `Before participating in this documentary, Trent had had very little interaction with elderly people except for his 77-year-old grandfather. He enjoyed his day-to-day life without worry and thought (A) [it / that] quite satisfying to live in his parents’ house. During the weekdays, Trent would spend his time (B) [working / to work] part-time at a restaurant. On the weekends, he would play basketball or go shopping with his friends. In short, Trent had little ambition and little money saved up for the future, but he didn't care. As he only lived in the present, Trent never thought about (C) [getting / to get] old. He just regarded the elderly as a strange tribe that he would never join.`,
+                options: ["it / working / getting", "it / to work / to get", "that / working / getting", "that / to work / to get", "it / working / to get"],
+                answer: 0,
+                type: 'mc',
+                explanation: "(A)에서는 뒤따르는 to부정사구 'to live in his parents’ house'를 대신하는 가목적어 'it'이 필요하다. (B)에서는 `spend + 시간 + ~ing` 구문에 따라 'working'이 와야 한다. (C)에서는 전치사 'about'의 목적어로 동명사 'getting'이 와야 한다."
+            },
+            {
+                question: `밑줄 친 우리말과 같은 뜻이 되도록 <보기>의 단어들을 배열할 때, 네 번째에 오는 단어는?`,
+                passage: `Early in the experiment, Trent tried to get on a bus to go downtown. Due to the special body suit and lenses, he had trouble climbing up the stairs of the bus. Then a person waiting behind him started rushing him, expressing annoyance. In his hurry to step onto the bus, Trent almost fell on the stairs. He was astonished to see the disrespectful attitude toward old people and the way they were treated. Later he visited the restaurant where he once worked, but he noticed that no one paid much attention to him. People acted as if he weren't there.\n\n<u>Trent는 보이지 않게 되는 것이 어떤 기분인지 깨닫기 시작했다.</u>\n\n<b><보기></b>\nwhat / felt / invisible / like / to / it / be`,
+                options: ["like", "to", "it", "be", "invisible"],
+                answer: 2,
+                type: 'mc',
+                explanation: "정답 문장은 'Trent started to realize what it felt like to be invisible.'이다. 배열해야 할 부분은 간접의문문 `what it felt like to be invisible`이다. 올바른 어순은 `what it felt like to...` 이므로, 네 번째 단어는 'it'이다."
+            },
+            {
+                question: `다음 글의 밑줄 친 ①~⑤ 중, 어법상 쓰임이 적절하지 <u>않은</u> 것은?`,
+                passage: `“I realized life was too short to just sit around and wait for things to happen to me,” he said. Now that Trent knows ① <u>how important it is</u> to plan and save for the future, he has decided to find a more stable job and move out of his parents’ house. Trent has also started to exercise regularly so that he can stay healthy and fully enjoy his golden years in the future. Living as an older person was a hard experience for both Regina and Trent, but they consider ② <u>it</u> an invaluable one. This once-in-a-lifetime opportunity helped them ③ <u>understand</u> not only the physical changes that older people go through but also the way society treats them. By walking in someone else’s shoes, Regina and Trent were able to see ④ <u>that</u> the elderly also enjoy life with passion. Moreover, the experience changed the way they ⑤ <u>to conduct</u> their lives.`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 4,
+                type: 'mc',
+                explanation: "⑤ `the way` 뒤에는 주어와 동사를 갖춘 완전한 절이 와서 `the way`를 수식해야 한다. `they conduct their lives`가 올바른 형태이며, `to conduct`는 문장의 동사 역할을 할 수 없다. `the way`와 `they` 사이에는 관계부사 `how` 또는 `in which`가 생략되어 있다."
+            },
+            {
+                question: `글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?`,
+                passage: `<b><주어진 문장></b>\nHowever, there were some brighter moments that helped Trent have a more cheerful view of growing older.\n\n---\nEarly in the experiment, Trent tried to get on a bus to go downtown. Due to the special body suit and lenses, he had trouble climbing up the stairs of the bus. Then a person waiting behind him started rushing him, expressing annoyance. In his hurry to step onto the bus, Trent almost fell on the stairs. He was astonished to see the disrespectful attitude toward old people and the way they were treated. ( ① ) Later he visited the restaurant where he once worked, but he noticed that no one paid much attention to him. ( ② ) People acted as if he weren't there. Trent started to realize what it felt like to be invisible. ( ③ ) When Trent took a short trip to Colombia, he encountered a delightful older couple—Andre, 78, and Eunice, 76—who were there to learn salsa dancing. ( ④ ) While having a conversation with them, Trent was impressed by the fact that they were still healthy and content with their lives. ( ⑤ ) The passion they still had for life inspired Trent to start making some huge changes in his life.`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 2,
+                type: 'mc',
+                explanation: "주어진 문장은 `However`로 시작하며, 노화에 대한 더 긍정적인 시각을 갖게 해준 '더 밝은 순간들'이 있었다는 내용이다. 따라서 이 문장은 Trent가 노인으로서 겪는 무례함과 무관심 같은 부정적인 경험에 대한 서술이 끝나는 지점인 ③ 바로 앞에 위치하여 글의 흐름을 전환하는 것이 가장 자연스럽다."
+            },
+            {
+                question: `주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?`,
+                passage: `As part of the experiment, Regina worked at a grocery store that many elderly people visit. Thinking that they would be boring and stuffy, she was reluctant to have conversations with them at first.\n\n(A) At her retirement complex, Regina joined a companionship group, and she was surprised to find that older people could still fall in love and suffer from broken hearts. Her new friendships continued to grow stronger over the next couple of weeks, and she began to feel as if she were their peer.\n(B) As time went on, Regina started feeling guilty for deceiving them. She decided to come clean about her real age to her two closest elderly friends, Susan and Charlotte, a week before the challenge was over.\n(C) However, she soon found it very enjoyable to talk with them. She met older people who still enjoyed bike riding and others who liked playing video games.`,
+                options: ["(A) - (C) - (B)", "(B) - (A) - (C)", "(B) - (C) - (A)", "(C) - (A) - (B)", "(C) - (B) - (A)"],
+                answer: 3,
+                type: 'mc',
+                explanation: "Regina가 처음에는 대화를 꺼렸다는 내용 뒤에, (C) '그러나' 곧 대화가 즐거워졌다는 반전이 이어져야 한다. → 대화가 즐거워지면서 (A) 교우 관계가 깊어지고 또래처럼 느끼게 되었다. → 관계가 깊어지자 (B) 그들을 속이는 것에 죄책감을 느끼고 고백을 결심했다. 이 순서가 시간과 감정의 흐름상 가장 논리적이다."
+            },
+            {
+                question: `밑줄 친 ⓐ~ⓔ 중, 문맥상 낱말의 쓰임이 적절하지 <u>않은</u> 것은?`,
+                passage: `As time went on, Regina started feeling guilty for deceiving them. She decided to come clean about her real age to her two closest elderly friends, Susan and Charlotte, a week before the challenge was over. She worried that they might feel ⓐ <u>betrayed</u> after her confession, but they just laughed it off and shared some life tips with her to help her enjoy her youth more. At the end of the experiment, Regina said, "I don't look at the elderly in the same way that I used to anymore. I have realized how ⓑ <u>ignorant</u> I was. I couldn't see that old people are just like me. Now I can look past their gray hair and wrinkles and see the young people inside them. Instead of worrying about my looks ⓒ <u>fading</u>, I'm now fully ⓓ <u>rejecting</u> the idea of growing old." She was no longer ⓔ <u>uncomfortable</u> around old people.`,
+                options: ["ⓐ", "ⓑ", "ⓒ", "ⓓ", "ⓔ"],
+                answer: 3,
+                type: 'mc',
+                explanation: "글의 마지막 부분은 Regina가 노인 체험을 통해 노화에 대한 긍정적인 시각을 갖게 되었음을 보여준다. 따라서 그녀가 '나이 드는 생각'을 '거부하는(rejecting)' 것이 아니라 '온전히 받아들이고 있다(embracing)'고 해야 문맥상 자연스럽다."
+            },
+            {
+                question: `다음 글을 통해 추론할 수 있는 이 다큐멘터리의 궁극적인 목적으로 가장 적절한 것은?`,
+                passage: `Living as an older person was a hard experience for both Regina and Trent, but they consider it an invaluable one. This once-in-a-lifetime opportunity helped them understand not only the physical changes that older people go through but also the way society treats them. By walking in someone else’s shoes, Regina and Trent were able to see that the elderly also enjoy life with passion. Moreover, the experience changed the way they conduct their lives. They hope that this documentary will help raise awareness of the problems the elderly continue to face and help young people have a more positive view of growing older.`,
+                options: ["노인들이 겪는 신체적 변화를 과학적으로 분석하여 해결책을 제시하는 것", "젊은이들이 노인 체험을 통해 자신의 삶을 더 열정적으로 살도록 동기를 부여하는 것", "사회가 노인을 대하는 방식을 개선하고 세대 간의 공감대를 형성하는 것", "노인들이 은퇴 후 겪는 재정적 어려움에 대한 사회적 지원을 촉구하는 것", "노인들도 젊은이들처럼 열정적인 삶을 즐길 수 있다는 사실을 증명하는 것"],
+                answer: 2,
+                type: 'mc',
+                explanation: "본문의 마지막 문장은 이 다큐멘터리가 '노인들이 직면한 문제에 대한 인식을 높이고(raise awareness)', '젊은이들이 나이 드는 것에 대해 더 긍정적인 시각을 갖도록 돕기를(help young people have a more positive view)' 희망한다고 말한다. 이를 종합하면, 사회적 인식을 개선하고 세대 간의 이해와 공감을 높이는 것이 궁극적인 목적임을 추론할 수 있다."
+            },
+            {
+                question: `밑줄 친 ⓐ~ⓔ가 가리키는 대상이 나머지 넷과 <u>다른</u> 하나는?`,
+                passage: `As part of the experiment, Regina worked at a grocery store that many elderly people visit. Thinking that ⓐ <u>they</u> would be boring and stuffy, she was reluctant to have conversations with them at first. However, she soon found it very enjoyable to talk with ⓑ <u>them</u>. She met older people who still enjoyed bike riding and others who liked playing video games. At her retirement complex, Regina joined a companionship group. She was surprised to find that older people could still fall in love and suffer from broken hearts. Her new friendships continued to grow stronger over the next couple of weeks, and ⓒ <u>she</u> began to feel as if she were their peer. As time went on, Regina started feeling guilty for deceiving ⓓ <u>them</u>. She decided to come clean about her real age to her two closest elderly friends, ⓔ <u>Susan and Charlotte</u>.`,
+                options: ["ⓐ", "ⓑ", "ⓒ", "ⓓ", "ⓔ"],
+                answer: 2,
+                type: 'mc',
+                explanation: "ⓐ, ⓑ, ⓓ, ⓔ는 모두 Regina가 만나는 '노인들' 또는 그녀의 '노인 친구들'을 가리킨다. 하지만 ⓒ의 'she'는 문맥상 주체인 'Regina' 자신을 가리킨다."
+            },
+            {
+                question: `다음 대화문의 내용과 일치하지 <u>않는</u> 것은?`,
+                passage: `W: In the mid-1970s, a woman in her twenties named Patricia Moore began working as an industrial designer. One day, she noticed that a lot of common household products were not suitable for the elderly. To understand the needs of the elderly better, she did an experiment. She put on elderly women's clothes and wore make-up to look older. In addition, she wore a special suit and devices that limited her physical abilities. Over a period of three years, she visited more than a hundred cities in America to see what life was like for seniors. As she traveled around, she learned some of the everyday challenges of elderly people. Based on this experience she improved many products by creating versions for the elderly, such as potato peelers with thicker handles. Today, she is known as one of the founders of universal design.`,
+                options: ["Patricia Moore는 노인들의 필요를 이해하기 위해 직접 실험을 진행했다.", "그녀는 신체 능력을 제한하는 특수 장비를 착용하고 미국 전역을 여행했다.", "그녀는 자신의 경험을 바탕으로 감자칼처럼 기존 제품의 디자인을 개선했다.", "그녀는 노인들이 겪는 어려움을 해결하기 위해 유니버설 디자인을 창시했다.", "그녀는 노인 분장을 하고 3년 이상 노인의 삶을 직접 체험했다."],
+                answer: 4,
+                type: 'mc',
+                explanation: "대화문에서는 Patricia Moore가 3년 동안(Over a period of three years) 실험을 했다고 명시하고 있다. 이는 '3년 이상'이 아니라 정확히 '3년 동안'을 의미하므로, ⑤번은 내용과 미세하게 일치하지 않는다."
+            },
+            {
+                question: `<보기>의 단어들을 모두 사용하여 "그녀는 노인들이 글자를 읽는 것을 어렵다고 생각했다."라는 의미의 문장을 만들 때, 순서가 올바른 것은?`,
+                passage: `<b><보기></b>\ndifficult / found / for / letters / it / the elderly / read / to / she`,
+                options: ["She found it difficult for the elderly to read letters.", "She found for the elderly it difficult to read letters.", "It was found difficult for her to read letters for the elderly.", "For the elderly, she found to read letters it was difficult.", "She found to read letters difficult for the elderly it."],
+                answer: 0,
+                type: 'mc',
+                explanation: "이 문장은 5형식 구문에서 가목적어 `it`을 사용하는 대표적인 예이다. `주어(She) + 동사(found) + 가목적어(it) + 목적격보어(difficult) + 의미상 주어(for the elderly) + 진목적어(to read letters)`의 어순을 따라야 한다. 따라서 ①번이 문법적으로 올바른 문장이다."
+            }
+        ];
+
+        const quizForm = document.getElementById('quiz-form');
+        const circledNumbers = ['①', '②', '③', '④', '⑤'];
+
+        quizData.forEach((q, index) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+            
+            let content = `<div class="q-title">${index + 1}. ${q.question.replace(/<u>/g, '<u>').replace(/<\/u>/g, '</u>')}</div>`;
+            
+            if (q.passage) {
+                content += `<div class="passage">${q.passage.replace(/<b>/g, '<strong>').replace(/<\/b>/g, '</strong>').replace(/\n/g, '<br>')}</div>`;
+            }
+
+            if (q.type === 'mc') {
+                content += '<div class="options">';
+                q.options.forEach((opt, i) => {
+                    content += `<label><input type="radio" name="q${index}" value="${i}"> ${circledNumbers[i]} ${opt}</label>`;
+                });
+                content += '</div>';
+            } else if (q.type === 'text') {
+                content += `<input type="text" name="q${index}" placeholder="정답을 입력하세요.">`;
+            }
+            questionBlock.innerHTML = content;
+            quizForm.appendChild(questionBlock);
+        });
+
+        function submitQuiz() {
+            const studentName = document.getElementById('studentName').value || '익명';
+            let score = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '';
+            let resultString = `학생 ID: ${studentName}\n날짜: ${new Date().toLocaleDateString()}\n\n[채점 결과]\n\n`;
+
+            quizData.forEach((q, index) => {
+                const inputs = document.getElementsByName(`q${index}`);
+                let userAnswerRaw;
+                let userAnswerText = "답변 안 함";
+                let isCorrect = false;
+
+                if (q.type === 'mc') {
+                    for (const input of inputs) {
+                        if (input.checked) {
+                            userAnswerRaw = parseInt(input.value);
+                            userAnswerText = `${circledNumbers[userAnswerRaw]} ${q.options[userAnswerRaw]}`;
+                            break;
+                        }
+                    }
+                    isCorrect = (userAnswerRaw === q.answer);
+                } else if (q.type === 'text') {
+                    userAnswerRaw = inputs[0].value.trim();
+                    userAnswerText = userAnswerRaw;
+                    const correctAnswer = q.answer.toLowerCase().replace(/\.$/, '');
+                    isCorrect = (userAnswerRaw.toLowerCase().replace(/\.$/, '') === correctAnswer);
+                }
+                
+                const feedbackP = document.createElement('p');
+                let resultLine;
+                const correctAnswerText = q.type === 'mc' ? `${circledNumbers[q.answer]} ${q.options[q.answer]}` : q.answer;
+
+                const detailsBlock = `
+                    <details class="explanation-details">
+                        <summary>해설 보기</summary>
+                        <div class="explanation-content">${q.explanation}</div>
+                    </details>`;
+                
+                if (isCorrect) {
+                    score++;
+                    feedbackP.innerHTML = `${index + 1}번: <span class="correct">정답 (1)</span> ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 1\n`;
+                } else {
+                    feedbackP.innerHTML = `${index + 1}번: <span class="incorrect">오답 (0)</span> (정답: ${correctAnswerText}) ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 0\t학생이 고른 오답: ${userAnswerText}\n`;
+                }
+                feedbackDiv.appendChild(feedbackP);
+                resultString += resultLine;
+            });
+
+            const finalScore = (score / quizData.length) * 100;
+            document.getElementById('score').innerText = `총점: ${score} / ${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('results').style.display = 'block';
+            
+            resultString += `\n총점: ${score}/${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('resultText').value = resultString;
+        }
+        
+        // Expose the function to the global scope
+        window.submitQuiz = submitQuiz;
+    </script>
+</body>
+</html>

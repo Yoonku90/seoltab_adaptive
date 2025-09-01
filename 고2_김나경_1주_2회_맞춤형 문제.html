@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고2 김나경 - 약점 보완 맞춤형 문제</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 2em; background-color: #f4f7f9; color: #333; }
+        .quiz-container { max-width: 800px; margin: auto; background: white; padding: 2em; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        h1, h2 { text-align: center; color: #2c3e50; }
+        .info-block { margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #e0e0e0; }
+        .question-block { margin-bottom: 2.5em; border-top: 1px solid #e0e0e0; padding-top: 1.5em; }
+        .question-block .q-title { font-weight: bold; margin-bottom: 1em; line-height: 1.5; }
+        .passage { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 1em; margin: 1em 0; font-size: 0.95em; color: #555; white-space: pre-wrap; line-height: 1.6; }
+        .options label { display: block; margin-bottom: 0.8em; cursor: pointer; padding: 0.5em; border-radius: 5px; transition: background-color 0.2s; }
+        .options label:hover { background-color: #e9ecef; }
+        input[type="radio"], input[type="text"] { margin-right: 0.5em; vertical-align: middle; }
+        input[type="text"] { width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { display: block; width: 100%; padding: 1em; font-size: 1.1em; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; margin-top: 2em; }
+        .submit-btn:hover { background-color: #218838; }
+        .results-area { margin-top: 2em; padding: 1.5em; background-color: #eef8ff; border: 1px solid #b8dcf1; border-radius: 8px; }
+        textarea { width: 100%; height: 200px; margin-top: 1em; font-family: monospace; }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+        .explanation-details { margin-top: 10px; font-size: 0.9em; }
+        .explanation-details summary { cursor: pointer; color: #0056b3; font-weight: normal; display: inline-block; padding: 2px 6px; border-radius: 4px; background-color: #e9ecef; }
+        .explanation-details[open] summary { background-color: #007bff; color: white; }
+        .explanation-content { margin-top: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #444; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>고2 김나경 - 2과 약점 보완 퀴즈</h1>
+        <div class="info-block">
+            <label for="studentName">이름:</label>
+            <input type="text" id="studentName" placeholder="이름을 입력하세요" value="고2_김나경">
+        </div>
+        <div id="quiz-form"></div>
+        <button class="submit-btn" onclick="submitQuiz()">결과 확인 및 복사하기</button>
+        <div id="results" class="results-area" style="display:none;">
+            <h2>📝 채점 결과</h2>
+            <p id="score"></p>
+            <div id="feedback"></div>
+            <h3>📋 결과 복사하기</h3>
+            <p>아래 내용을 복사하여 선생님께 제출하세요.</p>
+            <textarea id="resultText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: `다음 글의 밑줄 친 ⓐ~ⓔ 중, 어법상 쓰임이 적절하지 <u>않은</u> 것은?`,
+                passage: `Regina Martin has been a passionate dance instructor for the past three years. Although she is still a few years away from turning 30, Regina is starting to feel even more pressure to retain her looks. She obsessively takes care of her body and always eats healthy food. She has a strong fear of ⓐ<u>her youth disappearing</u> and feels uncomfortable around old people, to the point where she is unwilling to visit her 81-year-old grandmother. On the first day of her challenge, Regina could only stare at her transformed self in disbelief. After a few minutes, Regina sighed and said, “This wrinkled face doesn’t look ⓑ<u>nice</u>.” Later Regina was sent to a tiny flat in a retirement complex, ⓒ<u>where</u> she spent several days enduring solitude and gradually adapted to living alone. As part of the experiment, Regina worked at a grocery store that many elderly people visit. Thinking that they would be boring and stuffy, she was reluctant ⓓ<u>to have</u> conversations with them at first. However, she soon found ⓔ<u>it very enjoyably</u> to talk with them.`,
+                options: ["ⓐ", "ⓑ", "ⓒ", "ⓓ", "ⓔ"],
+                answer: 4,
+                type: 'mc',
+                explanation: "ⓔ: 5형식 동사 find의 가목적어 it 뒤에는 목적격 보어로 형용사가 와야 하므로, 부사인 enjoyably가 아닌 형용사 enjoyable이 와야 한다. ⓐ 동명사 disappearing의 의미상의 주어는 올바르다. ⓑ 2형식 동사 look의 보어로 형용사 nice는 올바르다. ⓒ 관계부사 where는 올바르다. ⓓ be reluctant to + 동사원형은 올바르다."
+            },
+            {
+                question: `다음 글의 밑줄 친 우리말과 같은 의미가 되도록 <보기>의 단어들을 <u>모두</u> 한 번씩 사용하여 배열한 것으로 <u>가장 적절한</u> 것은?`,
+                passage: `Spending a month fully disguised as a 72-year-old man was much more life-changing than Trent could have ever imagined. <u>그는 사회에서 노인으로 산다는 것이 어떤 것인지를 마침내 직접 알 수 있었다.</u> Early in the experiment, Trent tried to get on a bus to go downtown. Due to the special body suit and lenses, he had trouble climbing up the stairs of the bus. Then a person waiting behind him started rushing him, expressing annoyance.\n\n<보기>\nfor / see / it / himself / what / like / as / a senior citizen / was / to live / he / could / finally / in society`,
+                options: ["He could finally see for himself what was it like to live as a senior citizen in society.", "He could finally see for himself what to live like it was as a senior citizen in society.", "He could finally see for himself what it was like to live as a senior citizen in society.", "He could finally see for himself it was like what to live as a senior citizen in society.", "He could finally see for himself to live as a senior citizen in society what it was like."],
+                answer: 2,
+                type: 'mc',
+                explanation: "'~하는 것이 어떤 것인지'를 의미하는 간접의문문은 'what it is/was like to + 동사원형' 구문을 사용한다. 이는 진주어 to부정사구를 문장 뒤로 보내는 가주어-진주어 구문(KC-2G2)과 유사한 원리이다. 의문사 what 뒤에 `주어(it) + 동사(was)`의 어순이 와야 하므로 ③번이 정답이다."
+            },
+            {
+                question: `다음 글의 (A), (B), (C)의 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?`,
+                passage: `At the end of the experiment, Regina said, “I don’t look at the elderly in the same way that I used to anymore. I have realized how ignorant I was. I couldn’t see that old people are just like me. Now I can look past their gray hair and wrinkles and see the young people inside them. Instead of (A)[worry / worrying] about my looks fading, I’m now fully embracing the idea of growing old.” Living as an older person was a hard experience for both Regina and Trent, but they consider it an (B)[invaluable / valueless] one. This once-in-a-lifetime opportunity helped them understand not only the physical changes that older people go through but also the way society treats them. By walking in someone else’s shoes, Regina and Trent were able to see that the elderly also enjoy life with passion. Moreover, the experience changed the way they conduct their lives. They hope that this documentary will help (C)[raise / to raising] awareness of the problems the elderly continue to face.`,
+                options: ["(A) worry (B) valueless (C) to raising", "(A) worry (B) invaluable (C) raise", "(A) worrying (B) invaluable (C) raise", "(A) worrying (B) valueless (C) to raising", "(A) worrying (B) invaluable (C) to raising"],
+                answer: 2,
+                type: 'mc',
+                explanation: "(A) 전치사 `Instead of` 뒤에는 동명사 worrying이 와야 한다. (B) 문맥상 '매우 귀중한' 경험이라는 의미이므로 invaluable이 적절하다. (C) `help` 동사는 목적격 보어로 동사원형(raise)이나 to부정사(to raise)를 취할 수 있으므로 raise가 맞다."
+            },
+            {
+                question: `다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?`,
+                passage: `As part of the experiment, Regina worked at a grocery store that many elderly people visit. Thinking that they would be boring and stuffy, she was reluctant to have conversations with them at first. However, she soon found it very enjoyable to talk with them. She met older people who still enjoyed bike riding and others who liked playing video games. At her retirement complex, Regina joined a companionship group, and she was surprised to find that older people could still fall in love and suffer from broken hearts. Her new friendships continued to grow stronger over the next couple of weeks, and she began to feel as if she were their peer.\n\n-> Through (A)____________ with the elderly, Regina realized her initial stereotype was wrong and started to form a sense of (B)____________ with them.`,
+                options: ["(A) frequent conflicts (B) superiority", "(A) brief observations (B) detachment", "(A) direct interactions (B) kinship", "(A) financial support (B) sympathy", "(A) heated debates (B) isolation"],
+                answer: 2,
+                type: 'mc',
+                explanation: "Regina는 노인들과 직접적인 상호작용(direct interactions)을 통해 그들이 자신과 같은 또래(peer)라는 유대감(kinship)을 형성하기 시작했다."
+            },
+            {
+                question: `다음 글의 밑줄 친 ⓐ~ⓔ 중, 문맥상 낱말의 쓰임이 적절하지 <u>않은</u> 것은?`,
+                passage: `Early in the experiment, Trent tried to get on a bus to go downtown. Due to the special body suit and lenses, he had trouble climbing up the stairs of the bus. Then a person waiting behind him started rushing him, expressing ⓐ<u>annoyance</u>. In his hurry to step onto the bus, Trent almost fell on the stairs. He was astonished to see the ⓑ<u>disrespectful</u> attitude toward old people and the way they were treated. Later he visited the restaurant where he once worked, but he noticed that no one paid much ⓒ<u>attention</u> to him. People acted as if he weren’t there. Trent started to realize what it felt like to be ⓓ<u>invisible</u>. However, there were some brighter moments that helped Trent have a more cheerful view of growing older. When Trent took a short trip to Colombia, he encountered a delightful older couple who were there to learn salsa dancing. The passion they still had for life ⓔ<u>discouraged</u> Trent to start making some huge changes in his life.`,
+                options: ["ⓐ", "ⓑ", "ⓒ", "ⓓ", "ⓔ"],
+                answer: 4,
+                type: 'mc',
+                explanation: "콜롬비아 노부부의 삶에 대한 열정은 Trent가 자신의 삶에 큰 변화를 시작하도록 '낙담시킨 것(discouraged)'이 아니라 '영감을 주었다(inspired)'는 내용이 와야 한다."
+            },
+            {
+                question: `주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?`,
+                passage: `Early in the experiment, Trent tried to get on a bus to go downtown.\n\n(A) In his hurry to step onto the bus, Trent almost fell on the stairs. He was astonished to see the disrespectful attitude toward old people and the way they were treated.\n(B) Later he visited the restaurant where he once worked, but he noticed that no one paid much attention to him. People acted as if he weren’t there. Trent started to realize what it felt like to be invisible.\n(C) Due to the special body suit and lenses, he had trouble climbing up the stairs of the bus. Then a person waiting behind him started rushing him, expressing annoyance.`,
+                options: ["(A) - (C) - (B)", "(B) - (A) - (C)", "(C) - (A) - (B)", "(C) - (B) - (A)", "(B) - (C) - (A)"],
+                answer: 2,
+                type: 'mc',
+                explanation: "주어진 문장은 '버스를 타려고 했다'는 상황 제시이다. (C) 버스를 타는 데 어려움을 겪는 원인과 재촉이 이어진다. (A) 그 재촉 때문에 서두르다 넘어질 뻔했고, 그 경험을 통해 느낀 점이 나온다. (B) '나중에(Later)' 다른 장소에서의 경험이 추가로 이어지는 것이 가장 자연스러운 흐름이다."
+            },
+            {
+                question: `글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?`,
+                passage: `However, she soon found it very enjoyable to talk with them.\n\nAs part of the experiment, Regina worked at a grocery store that many elderly people visit. ( ① ) Thinking that they would be boring and stuffy, she was reluctant to have conversations with them at first. ( ② ) She met older people who still enjoyed bike riding and others who liked playing video games. ( ③ ) At her retirement complex, Regina joined a companionship group, and she was surprised to find that older people could still fall in love and suffer from broken hearts. ( ④ ) Her new friendships continued to grow stronger over the next couple of weeks, and she began to feel as if she were their peer. ( ⑤ )`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 1,
+                type: 'mc',
+                explanation: "주어진 문장은 'However'로 시작하며 '그들과 대화하는 것이 매우 즐겁다'는 긍정적인 내용이다. 따라서 그 앞에는 대화를 꺼렸다는 부정적인 내용이 와야 한다. ② 앞 문장에서 '처음에는 대화를 꺼렸다'고 했으므로, ②에 들어가 생각의 전환을 보여주는 것이 가장 적절하다."
+            },
+            {
+                question: `다음 대화의 빈칸에 들어갈 말로 가장 적절한 것은?`,
+                passage: `M: Good afternoon, everyone. I'm standing in front of the Empathy Museum. This museum is totally different from any museum you've ever been to. It is shaped like a giant shoebox. You may be wondering why it's shaped that way. ____________________________________ Visitors have a chance to wear the shoes of a complete stranger here. They then go out and literally walk a mile in that stranger's shoes, listening to a recorded narration of that person's life. One of the founders of the museum says that the purpose of this unique experience is to develop more empathy between people in society.`,
+                options: ["In fact, the museum's collection primarily consists of historical footwear.", "Actually, you get to walk in someone else's shoes at this unique museum.", "Therefore, visitors are encouraged to donate their own old shoes.", "However, the architectural design has been criticized for being impractical.", "For instance, the main exhibition hall is filled with modern art installations."],
+                answer: 1,
+                type: 'mc',
+                explanation: "빈칸 앞에서는 박물관이 '거대한 신발 상자' 모양인 이유를 궁금해할 것이라고 말했고, 빈칸 뒤에서는 방문객이 '낯선 사람의 신발을 신어보는' 체험을 한다고 설명한다. 따라서 빈칸에는 신발 상자 모양과 신발을 신는 체험을 연결하는 ②번이 가장 자연스럽다."
+            },
+            {
+                question: `다음은 Regina의 마지막 소감을 바탕으로 '나이 듦에 대한 태도 변화'를 요약한 문장이다. 빈칸에 들어갈 말을 <보기>의 단어들을 활용하여 바르게 배열한 것은?`,
+                passage: `At the end of the experiment, Regina said, “I don’t look at the elderly in the same way that I used to anymore. I have realized how ignorant I was. I couldn’t see that old people are just like me. Now I can look past their gray hair and wrinkles and see the young people inside them. Instead of worrying about my looks fading, I’m now fully embracing the idea of growing old.”\n\n-> The experiment taught Regina to embrace the idea of growing old ____________________________________.\n\n<보기>\nworrying / her looks / fading / instead of / about`,
+                options: ["instead of about worrying her looks fading", "instead of worrying about her looks fading", "her looks fading instead of worrying about", "about worrying her looks fading instead of", "worrying about instead of her looks fading"],
+                answer: 1,
+                type: 'mc',
+                explanation: "문장은 '실험은 Regina에게 나이 드는 생각을 포용하도록 가르쳤다, 그녀의 외모가 시드는 것을 걱정하는 대신에'라는 의미이다. 핵심 내용 뒤에 부가 정보를 제공하는 `instead of ~` 구문이 이어지는 것이 자연스럽다. `instead of`는 전치사이므로 뒤에 동명사 `worrying`이 와야 하고, `worrying about`의 목적어로는 `her looks fading`(동명사의 의미상 주어 + 동명사) 구문이 와야 한다. 따라서 ②번이 문법적으로 가장 올바른 배열이다."
+            },
+            {
+                question: `다음 글의 내용과 일치하는 것을 <보기>에서 <u>모두</u> 고른 것은?`,
+                passage: `Living as an older person was a hard experience for both Regina and Trent, but they consider it an invaluable one. This once-in-a-lifetime opportunity helped them understand not only the physical changes that older people go through but also the way society treats them. By walking in someone else’s shoes, Regina and Trent were able to see that the elderly also enjoy life with passion. Moreover, the experience changed the way they conduct their lives. They hope that this documentary will help raise awareness of the problems the elderly continue to face and help young people have a more positive view of growing older.\n\n<보기>\na. The experiment was physically demanding but emotionally worthless for the participants.\nb. The documentary's ultimate goal is to improve young people's perception of aging.\nc. The participants learned that societal treatment is a bigger challenge for the elderly than physical changes.\nd. The experience only affected the participants' understanding of others, not their own lifestyles.\ne. The core lesson of the experiment was that the elderly, despite challenges, live passionately.`,
+                options: ["a, c", "b, d", "b, e", "c, e", "a, d, e"],
+                answer: 2,
+                type: 'mc',
+                explanation: "b: 마지막 문장에서 다큐멘터리가 젊은이들의 노화에 대한 긍정적 시각을 돕길 희망한다고 했으므로 일치한다. e: 본문에서 참가자들이 노인들 또한 열정적으로 삶을 즐긴다는 것을 알게 되었다고 했으므로 일치한다. a: 경험이 힘들었지만 '매우 귀중했다(invaluable)'고 했으므로 '정서적으로 가치 없었다(emotionally worthless)'는 내용은 틀리다. c: 사회가 그들을 대하는 방식 '뿐만 아니라' 신체적 변화도 이해하게 되었다고 했지, 둘 중 어느 것이 더 큰 문제인지는 비교하지 않았다. d: 다른 사람에 대한 이해뿐만 아니라, 그 경험이 '그들이 삶을 살아가는 방식'도 바꾸었다고 했으므로 틀리다."
+            }
+        ];
+
+        const quizForm = document.getElementById('quiz-form');
+        const circledNumbers = ['①', '②', '③', '④', '⑤'];
+
+        quizData.forEach((q, index) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+            
+            let content = `<div class="q-title">${index + 1}. ${q.question}</div>`;
+            
+            if (q.passage) {
+                content += `<div class="passage">${q.passage.replace(/\n\n/g, '<br><br>')}</div>`;
+            }
+
+            if (q.type === 'mc') {
+                content += '<div class="options">';
+                q.options.forEach((opt, i) => {
+                    content += `<label><input type="radio" name="q${index}" value="${i}"> ${circledNumbers[i]} ${opt}</label>`;
+                });
+                content += '</div>';
+            } else if (q.type === 'text') {
+                content += `<input type="text" name="q${index}" placeholder="정답을 입력하세요.">`;
+            }
+            questionBlock.innerHTML = content;
+            quizForm.appendChild(questionBlock);
+        });
+
+        window.submitQuiz = function() {
+            const studentName = document.getElementById('studentName').value || '익명';
+            let score = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '';
+            let resultString = `학생 ID: ${studentName}\n날짜: ${new Date().toLocaleDateString()}\n\n[채점 결과]\n\n`;
+
+            quizData.forEach((q, index) => {
+                const inputs = document.getElementsByName(`q${index}`);
+                let userAnswerRaw;
+                let userAnswerText = "답변 안 함";
+                let isCorrect = false;
+
+                if (q.type === 'mc') {
+                    for (const input of inputs) {
+                        if (input.checked) {
+                            userAnswerRaw = parseInt(input.value);
+                            userAnswerText = `${circledNumbers[userAnswerRaw]} ${q.options[userAnswerRaw]}`;
+                            break;
+                        }
+                    }
+                    isCorrect = (userAnswerRaw === q.answer);
+                } else if (q.type === 'text') {
+                    userAnswerRaw = inputs[0].value.trim();
+                    userAnswerText = userAnswerRaw;
+                    const correctAnswer = q.answer.toLowerCase().replace(/\.$/, '');
+                    isCorrect = (userAnswerRaw.toLowerCase().replace(/\.$/, '') === correctAnswer);
+                }
+                
+                const feedbackP = document.createElement('p');
+                let resultLine;
+                const correctAnswerText = q.type === 'mc' ? `${circledNumbers[q.answer]} ${q.options[q.answer]}` : q.answer;
+
+                const detailsBlock = `
+                    <details class="explanation-details">
+                        <summary>해설 보기</summary>
+                        <div class="explanation-content">${q.explanation}</div>
+                    </details>`;
+                
+                if (isCorrect) {
+                    score++;
+                    feedbackP.innerHTML = `${index + 1}번: <span class="correct">정답 (1)</span> ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 1\n`;
+                } else {
+                    feedbackP.innerHTML = `${index + 1}번: <span class="incorrect">오답 (0)</span> (정답: ${correctAnswerText}) ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 0\t학생이 고른 오답: ${userAnswerText}\n`;
+                }
+                feedbackDiv.appendChild(feedbackP);
+                resultString += resultLine;
+            });
+
+            const finalScore = (score / quizData.length) * 100;
+            document.getElementById('score').innerText = `총점: ${score} / ${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('results').style.display = 'block';
+            
+            resultString += `\n총점: ${score}/${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('resultText').value = resultString;
+        }
+    </script>
+</body>
+</html>
+
