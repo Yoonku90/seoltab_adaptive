@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고1 서민지 - 약점 보완 맞춤형 문제</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 2em; background-color: #f4f7f9; color: #333; }
+        .quiz-container { max-width: 800px; margin: auto; background: white; padding: 2em; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        h1, h2 { text-align: center; color: #2c3e50; }
+        .info-block { margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #e0e0e0; }
+        .question-block { margin-bottom: 2.5em; border-top: 1px solid #e0e0e0; padding-top: 1.5em; }
+        .question-block .q-title { font-weight: bold; margin-bottom: 1em; line-height: 1.5; }
+        .passage { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 1em; margin: 1em 0; font-size: 0.95em; color: #555; white-space: pre-wrap; line-height: 1.6; }
+        .options label { display: block; margin-bottom: 0.8em; cursor: pointer; padding: 0.5em; border-radius: 5px; transition: background-color 0.2s; }
+        .options label:hover { background-color: #e9ecef; }
+        input[type="radio"], input[type="text"] { margin-right: 0.5em; vertical-align: middle; }
+        input[type="text"] { width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { display: block; width: 100%; padding: 1em; font-size: 1.1em; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; margin-top: 2em; }
+        .submit-btn:hover { background-color: #218838; }
+        .results-area { margin-top: 2em; padding: 1.5em; background-color: #eef8ff; border: 1px solid #b8dcf1; border-radius: 8px; }
+        textarea { width: 100%; height: 200px; margin-top: 1em; font-family: monospace; }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+        .explanation-details { margin-top: 10px; font-size: 0.9em; }
+        .explanation-details summary { cursor: pointer; color: #0056b3; font-weight: normal; display: inline-block; padding: 2px 6px; border-radius: 4px; background-color: #e9ecef; }
+        .explanation-details[open] summary { background-color: #007bff; color: white; }
+        .explanation-content { margin-top: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #444; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>고1 서민지 - 약점 보완 퀴즈</h1>
+        <div class="info-block">
+            <label for="studentName">이름:</label>
+            <input type="text" id="studentName" placeholder="이름을 입력하세요" value="고1_서민지">
+        </div>
+        <div id="quiz-form"></div>
+        <button class="submit-btn" onclick="submitQuiz()">결과 확인 및 복사하기</button>
+        <div id="results" class="results-area" style="display:none;">
+            <h2>📝 채점 결과</h2>
+            <p id="score"></p>
+            <div id="feedback"></div>
+            <h3>📋 결과 복사하기</h3>
+            <p>아래 내용을 복사하여 선생님께 제출하세요.</p>
+            <textarea id="resultText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "1. 다음 글의 밑줄 친 ⓐ~ⓔ 중, 어법상 쓰임이 적절하지 <u>않은</u> 것은?",
+                passage: `For years, the neighborhood was known for its high crime rates. Many apartments in Wallisblok were abandoned and then taken over by people who lived in them illegally. At first, the local government thought that the best solution was simply to tear the building down and build a new one in its place. ⓐ <u>However, having a limited budget</u>, the government was unable to do so and had to come up with a new plan. The plan was to sell the empty apartments for one euro each. The only condition was ⓑ <u>that people who bought these apartments needed to renovate them</u>. Although the new residents would have to pay for these renovations, the government's plan soon attracted many applicants. ⓒ <u>Apparently, it was not just the idea of one-euro apartments that people found attractive</u>. They were also excited by the opportunity ⓓ <u>to use their creativity to improve the building</u>. In the end, 42 new families moved into Wallisblok, ⓔ <u>transforming the old, worn-out building</u> into 42 unique apartments.`,
+                options: ["ⓐ", "ⓑ", "ⓒ", "ⓓ", "ⓔ"],
+                answer: 4,
+                type: 'mc',
+                explanation: "ⓔ의 transforming은 분사구문으로, 주절의 주어인 '42 new families'가 직접 건물을 변화시킨 주체로 보기에는 어색하다. 이 문맥에서는 '그리고 거주자들이 건물을 변화시켰다'는 연속 동작을 나타내는 'and they transformed'가 더 자연스럽다. 따라서 주어진 문장 구조에서 가장 어색한 표현이다."
+            },
+            {
+                question: "2. 다음 글을 통해 추론할 수 있는 내용으로 가장 적절한 것은?",
+                passage: `De Ceuvel is now known as one of the most active playgrounds for innovative green technology in all of Amsterdam. At the end of the lease, the project will also leave behind a more valuable piece of land for the next people who use it.\nThese two examples of urban revitalization in the Netherlands required much more than a budget and a plan. Innovative thinking, creativity, community spirit, and cooperation were all vital to their success. These projects are great sources of inspiration for other cities that are looking to bring new life to abandoned areas.`,
+                options: ["Successful urban revitalization primarily depends on securing a sufficient budget and a detailed plan.", "The value of land in revitalized areas inevitably decreases once the initial lease period is over.", "The methods used in the Netherlands are the only effective solutions for dealing with abandoned urban areas.", "The success of urban renewal projects hinges on intangible assets like creativity and community collaboration, not just financial resources.", "Abandoned areas can be effectively revitalized only through the implementation of innovative green technology."],
+                answer: 3,
+                type: 'mc',
+                explanation: "본문은 성공적인 도시 재생이 '예산과 계획 이상의 것(much more than a budget and a plan)'을 필요로 하며, '혁신적 사고, 창의성, 공동체 정신, 협력'이 성공에 필수적이었다고 강조한다. 이는 금전적 자원뿐만 아니라 창의성과 협력 같은 무형의 자산이 핵심임을 의미하므로, ④번이 글의 주제를 가장 잘 추론한 것이다."
+            },
+            {
+                question: "3. 다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?<br><br>-> Confronted with the challenge of (A)________________ land, the De Ceuvel project utilized upcycled boats to create a sustainable community, which now serves as a site for testing new green technologies and stands as a successful example of urban (B)________________.",
+                passage: `The plan was to turn the site into a sustainable office park. Since it was impossible to build foundations on the oily mud of the polluted land, the architects decided to use old, abandoned boats instead. They were able to purchase these at low prices from the boats' owners. The architects created a small community that includes creative workspaces, studios, meeting rooms, cultural spaces, and even a café, all by upcycling the boats. Then, to connect the boats, wooden paths were built. In addition, special plants that purify polluted soil were planted across the site. Today, some people come to De Ceuvel to test new sustainable technologies such as bio-filters and water reuse systems. Many others come to experience this successful revitalization project in person.`,
+                options: ["(A) constructing - (B) preservation", "(A) polluted - (B) revitalization", "(A) abandoned - (B) expansion", "(A) valuable - (B) investment", "(A) sustainable - (B) development"],
+                answer: 1,
+                type: 'mc',
+                explanation: "본문에서 De Ceuvel 부지는 '오염된(polluted)' 땅이었고, 이 프로젝트는 성공적인 '재활성화(revitalization)' 사례로 언급된다. 따라서 (A)에는 polluted, (B)에는 revitalization이 들어가는 것이 문맥상 가장 적절하다."
+            },
+            {
+                question: "4. 다음 문장을 분사구문을 사용하여 바꿔 쓴 것 중 어법상 가장 적절한 것은?",
+                passage: `As the city officials did not know what to do with the abandoned shipyard, they turned to the public for help.`,
+                options: ["Knowing not what to do with the abandoned shipyard, the city officials turned to the public for help.", "Not knowing what to do with the abandoned shipyard, they turned to the public for help.", "The abandoned shipyard not known what to do, the city officials turned to the public for help.", "Because not knowing what to do with the abandoned shipyard, the city officials turned to the public for help.", "Not known what to do with the abandoned shipyard, the city officials turned to the public for help."],
+                answer: 1,
+                type: 'mc',
+                explanation: "분사구문을 만들 때, 부사절과 주절의 주어가 같으면 접속사와 주어를 생략한다. 동사는 현재분사(-ing)로 바꾸며, 부정문일 경우 분사 앞에 Not을 붙인다. 따라서 'As they did not know'는 'Not knowing'으로 바뀌는 것이 올바르다. ②번이 정확한 변환이다."
+            },
+            {
+                question: "5. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+                passage: `For years, the neighborhood was known for its high crime rates. Many apartments in Wallisblok were abandoned and then taken over by people who lived in them illegally.\n\n(A) The plan was to sell the empty apartments for one euro each. The only condition was that people who bought these apartments needed to renovate them. Although the new residents would have to pay for these renovations, the government's plan soon attracted many applicants.\n(B) The residents transformed the old, worn-out building into 42 unique apartments with a community garden and rooftop terrace. The surrounding area soon began to improve as well. Today, Wallisblok is one of the most desirable places to live in Rotterdam.\n(C) At first, the local government thought that the best solution was simply to tear the building down and build a new one in its place. However, having a limited budget, the government was unable to do so and had to come up with a new plan.\n(D) Apparently, it was not just the idea of one-euro apartments that people found attractive. They were also excited by the opportunity to use their creativity to improve the building. In the end, 42 new families moved into Wallisblok.`,
+                options: ["(A) - (D) - (C) - (B)", "(C) - (A) - (D) - (B)", "(C) - (D) - (A) - (B)", "(D) - (A) - (C) - (B)", "(D) - (C) - (A) - (B)"],
+                answer: 1,
+                type: 'mc',
+                explanation: "글의 논리적 흐름은 '문제 상황 제시 → 초기 계획 및 실패(C) → 새로운 계획 제시(A) → 계획의 매력과 결과(D) → 최종 성공 및 현재 모습(B)' 순서로 이어진다. 따라서 (C)-(A)-(D)-(B)가 가장 자연스러운 배열이다."
+            },
+            {
+                question: "6. 다음 글의 (A), (B), (C)의 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?",
+                passage: `Wanting to do something to improve the area, the city purchased an abandoned shipyard (A) [called / calling] De Ceuvel. However, city officials did not know what to do with it. So they turned to the public for help by asking for plans that would achieve two primary goals. First, the plan had to include a method to clean up the land and turn it into a sustainable development. Second, it had to suggest a way to transform the site into a creative workspace. In the end, an architectural company submitted an innovative plan and (B) [was awarded / awarded] a ten-year lease on the former shipyard. The plan was to turn the site into a sustainable office park, a place (C) [where / which] innovative green technology could be developed and tested.`,
+                options: ["(A) called --- (B) was awarded --- (C) where", "(A) called --- (B) awarded --- (C) which", "(A) calling --- (B) was awarded --- (C) where", "(A) calling --- (B) awarded --- (C) where", "(A) called --- (B) was awarded --- (C) which"],
+                answer: 0,
+                type: 'mc',
+                explanation: "(A) an abandoned shipyard를 뒤에서 수식하는 과거분사 called가 맞다. (B) 건축 회사가 '수여 받은' 것이므로 수동태인 was awarded가 맞다. (C) 선행사 a place를 수식하며 뒤에 완전한 절이 오므로 관계부사 where가 맞다."
+            },
+            {
+                question: "7. 다음 글을 읽고 아래 질문에 대한 답으로 가장 적절한 것은?",
+                passage: `In the early 20th century, there was an area in the northern part of Amsterdam that was full of shipyards and factories. Over time, the shipyards closed down, and the work once done at the factories was moved abroad. As a result, the area was left abandoned and polluted for years. Wanting to do something to improve the area, the city purchased an abandoned shipyard called De Ceuvel. However, city officials did not know what to do with it. So they turned to the public for help by asking for plans that would achieve two primary goals. First, the plan had to include a method to clean up the land and turn it into a sustainable development. Second, it had to suggest a way to transform the site into a creative workspace.\n\nQuestion: Why did the city of Amsterdam ask the public for revitalization plans for De Ceuvel?`,
+                options: ["Because the city wanted to sell the polluted land to a private architectural company at a high price.", "Because the city lacked a clear vision for how to solve the site's pollution and simultaneously make it a productive space.", "Because the public demanded direct participation in cleaning up the abandoned shipyard and its surrounding factories.", "Because the city's primary goal was to quickly build a new shipyard to bring factory work back from abroad.", "Because the city's budget was only sufficient for purchasing the land, not for developing a concrete plan."],
+                answer: 1,
+                type: 'mc',
+                explanation: "본문에서 시 공무원들이 De Ceuvel 부지를 매입했지만 '그것으로 무엇을 해야 할지 몰랐다(did not know what to do with it)'고 언급한다. 또한 '땅을 정화'하고 '창의적인 업무 공간으로 변형'시키는 두 가지 목표를 달성할 계획을 요청했다. 이를 종합하면, 시가 부지 오염 문제 해결과 생산적 공간 활용이라는 두 가지 과제에 대한 명확한 비전이 없었기 때문에 대중에게 도움을 요청했음을 알 수 있다. 따라서 ②번이 가장 적절한 답이다."
+            },
+            {
+                question: "8. 다음 글의 내용과 일치하면 T, 일치하지 않으면 F로 표시할 때, 바르게 표시된 것을 <u>모두</u> 고른 것은?",
+                passage: `At first, the local government thought that the best solution was simply to tear the building down and build a new one in its place. However, having a limited budget, the government was unable to do so and had to come up with a new plan. The plan was to sell the empty apartments for one euro each. The only condition was that people who bought these apartments needed to renovate them. Although the new residents would have to pay for these renovations, the government's plan soon attracted many applicants. Apparently, it was not just the idea of one-euro apartments that people found attractive. They were also excited by the opportunity to use their creativity to improve the building.\n\na. The government's initial idea was abandoned due to financial constraints. (T/F)\nb. The one-euro apartment plan required the government to cover all renovation costs for the buyers. (T/F)\nc. The low price was the sole reason the project attracted numerous applicants. (T/F)\nd. The project offered residents a chance to creatively participate in improving their own living space. (T/F)`,
+                options: ["a, b", "c, d", "a, c, d", "b, c", "a, d"],
+                answer: 4,
+                type: 'mc',
+                explanation: "a: 정부의 초기 계획은 '제한된 예산(limited budget)' 때문에 포기했으므로 T이다. b: '새로운 거주자들이 보수 공사 비용을 지불해야 했다(new residents would have to pay for these renovations)'고 했으므로 F이다. c: '1유로 아파트 아이디어뿐만이 아니었다(not just the idea of one-euro apartments)'고 했으므로 F이다. d: '창의성을 이용할 기회(opportunity to use their creativity)'에 흥미를 느꼈다고 했으므로 T이다. 따라서 a와 d가 옳은 설명이다."
+            },
+            {
+                question: "9. 다음 중 분사구문의 쓰임이 어법상 어색한 것은?",
+                passage: null,
+                options: ["Hearing the loud noise, the baby started to cry.", "Exhausted from the long hike, she went to bed early.", "The book written in simple English, it is easy for beginners to read.", "Not having enough money for a taxi, he decided to walk home.", "Having finished all his homework, Tom went out to play with his friends."],
+                answer: 2,
+                type: 'mc',
+                explanation: "③번 문장은 부사절의 주어('The book')와 주절의 주어('it')가 같으므로 분사구문으로 바꿀 수 있다. 하지만 분사구문으로 바꿀 때 접속사와 주어를 생략해야 한다. 'The book written in simple English, it is easy...'와 같이 주절의 주어 'it'을 남겨두면 문법적으로 틀린 문장이 된다. 'Written in simple English, the book is easy...' 또는 'The book, written in simple English, is easy...'로 고쳐야 한다."
+            },
+            {
+                question: "10. 다음 글의 내용을 바탕으로 빈칸에 들어갈 말을 추론할 때 가장 적절한 것은?",
+                passage: `For years, the neighborhood was known for its high crime rates. Many apartments in Wallisblok were abandoned and then taken over by people who lived in them illegally. At first, the local government thought that the best solution was simply to tear the building down and build a new one in its place. However, having a limited budget, the government was unable to do so and had to come up with a new plan. The plan was to sell the empty apartments for one euro each. The only condition was that people who bought these apartments needed to renovate them.\nIn the end, 42 new families moved into Wallisblok. The government's bold plan was a success. The residents transformed the old, worn-out building into 42 unique apartments with a community garden and rooftop terrace. Today, Wallisblok is one of the most desirable places to live in Rotterdam.\n\nThis success story of Wallisblok suggests that urban problems can be solved not just by demolition and reconstruction, but by ________________________________________.`,
+                options: ["providing temporary housing for illegal residents", "selling abandoned properties to the government at a low price", "empowering citizens to invest their own resources and creativity", "lowering crime rates through stricter government control", "focusing solely on the architectural aspects of old buildings"],
+                answer: 2,
+                type: 'mc',
+                explanation: "본문은 정부가 단순히 건물을 철거하는 대신, 1유로에 아파트를 판매하고 거주자들이 직접 개조하도록 하는 창의적인 계획을 세웠다고 설명한다. 거주자들은 '창의성을 이용할 기회(opportunity to use their creativity)'에 매력을 느꼈고, 결국 낡은 건물을 '독특한 아파트(unique apartments)'로 변화시켰다. 이는 시민들에게 스스로의 자원과 창의성을 투자할 권한을 부여함으로써 도시 문제를 해결한 성공 사례임을 보여준다. 따라서 ③번이 가장 적절한 추론이다."
+            }
+        ];
+
+        const quizForm = document.getElementById('quiz-form');
+        const circledNumbers = ['①', '②', '③', '④', '⑤'];
+
+        quizData.forEach((q, index) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+            
+            let content = `<div class="q-title">${q.question.replace(/<u>/g, '<u>').replace(/<\/u>/g, '</u>')}</div>`;
+            
+            if (q.passage) {
+                 content += `<div class="passage">${q.passage.replace(/\n/g, '<br>')}</div>`;
+            }
+
+            if (q.type === 'mc') {
+                content += '<div class="options">';
+                q.options.forEach((opt, i) => {
+                    content += `<label><input type="radio" name="q${index}" value="${i}"> ${circledNumbers[i]} ${opt}</label>`;
+                });
+                content += '</div>';
+            } else if (q.type === 'text') {
+                content += `<input type="text" name="q${index}" placeholder="정답을 입력하세요.">`;
+            }
+            questionBlock.innerHTML = content;
+            quizForm.appendChild(questionBlock);
+        });
+
+        window.submitQuiz = function() {
+            const studentName = document.getElementById('studentName').value || '익명';
+            let score = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '';
+            let resultString = `학생 ID: ${studentName}\n날짜: ${new Date().toLocaleDateString()}\n\n[채점 결과]\n\n`;
+
+            quizData.forEach((q, index) => {
+                const inputs = document.getElementsByName(`q${index}`);
+                let userAnswerRaw;
+                let userAnswerText = "답변 안 함";
+                let isCorrect = false;
+
+                if (q.type === 'mc') {
+                    for (const input of inputs) {
+                        if (input.checked) {
+                            userAnswerRaw = parseInt(input.value);
+                            userAnswerText = `${circledNumbers[userAnswerRaw]} ${q.options[userAnswerRaw]}`;
+                            break;
+                        }
+                    }
+                    isCorrect = (userAnswerRaw === q.answer);
+                } else if (q.type === 'text') {
+                    userAnswerRaw = inputs[0].value.trim();
+                    userAnswerText = userAnswerRaw;
+                    const correctAnswer = q.answer.toLowerCase().replace(/\.$/, '');
+                    isCorrect = (userAnswerRaw.toLowerCase().replace(/\.$/, '') === correctAnswer);
+                }
+                
+                const feedbackP = document.createElement('p');
+                let resultLine;
+                const correctAnswerText = q.type === 'mc' ? `${circledNumbers[q.answer]} ${q.options[q.answer]}` : q.answer;
+
+                const detailsBlock = `
+                    <details class="explanation-details">
+                        <summary>해설 보기</summary>
+                        <div class="explanation-content">${q.explanation}</div>
+                    </details>`;
+                
+                if (isCorrect) {
+                    score++;
+                    feedbackP.innerHTML = `${index + 1}번: <span class="correct">정답 (1)</span> ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 1\n`;
+                } else {
+                    feedbackP.innerHTML = `${index + 1}번: <span class="incorrect">오답 (0)</span> (정답: ${correctAnswerText}) ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 0\t학생이 고른 오답: ${userAnswerText}\n`;
+                }
+                feedbackDiv.appendChild(feedbackP);
+                resultString += resultLine;
+            });
+
+            const finalScore = (score / quizData.length) * 100;
+            document.getElementById('score').innerText = `총점: ${score} / ${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('results').style.display = 'block';
+            
+            resultString += `\n총점: ${score}/${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('resultText').value = resultString;
+        }
+    </script>
+</body>
+</html>
