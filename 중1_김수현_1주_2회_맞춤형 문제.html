@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중1 김수현 - 약점 보완 맞춤형 문제</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 2em; background-color: #f4f7f9; color: #333; }
+        .quiz-container { max-width: 800px; margin: auto; background: white; padding: 2em; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        h1, h2 { text-align: center; color: #2c3e50; }
+        .info-block { margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #e0e0e0; }
+        .question-block { margin-bottom: 2.5em; border-top: 1px solid #e0e0e0; padding-top: 1.5em; }
+        .question-block .q-title { font-weight: bold; margin-bottom: 1em; line-height: 1.5; }
+        .passage { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 1em; margin: 1em 0; font-size: 0.95em; color: #555; white-space: pre-wrap; line-height: 1.6; }
+        .options label { display: block; margin-bottom: 0.8em; cursor: pointer; padding: 0.5em; border-radius: 5px; transition: background-color 0.2s; }
+        .options label:hover { background-color: #e9ecef; }
+        input[type="radio"], input[type="text"] { margin-right: 0.5em; vertical-align: middle; }
+        input[type="text"] { width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { display: block; width: 100%; padding: 1em; font-size: 1.1em; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; margin-top: 2em; }
+        .submit-btn:hover { background-color: #218838; }
+        .results-area { margin-top: 2em; padding: 1.5em; background-color: #eef8ff; border: 1px solid #b8dcf1; border-radius: 8px; }
+        textarea { width: 100%; height: 200px; margin-top: 1em; font-family: monospace; }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+        .explanation-details { margin-top: 10px; font-size: 0.9em; }
+        .explanation-details summary { cursor: pointer; color: #0056b3; font-weight: normal; display: inline-block; padding: 2px 6px; border-radius: 4px; background-color: #e9ecef; }
+        .explanation-details[open] summary { background-color: #007bff; color: white; }
+        .explanation-content { margin-top: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #444; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>중1 김수현 - 약점 보완 퀴즈</h1>
+        <div class="info-block">
+            <label for="studentName">이름:</label>
+            <input type="text" id="studentName" placeholder="이름을 입력하세요" value="중1_김수현">
+        </div>
+        <div id="quiz-form"></div>
+        <button class="submit-btn" onclick="submitQuiz()">결과 확인 및 복사하기</button>
+        <div id="results" class="results-area" style="display:none;">
+            <h2>📝 채점 결과</h2>
+            <p id="score"></p>
+            <div id="feedback"></div>
+            <h3>📋 결과 복사하기</h3>
+            <p>아래 내용을 복사하여 선생님께 제출하세요.</p>
+            <textarea id="resultText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: `1. 다음 글의 (A), (B), (C)의 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?`,
+                passage: `Carlos Diaz, a janitor
+An old man with gray hair was running away, and something fell off his head. It was his wig. I ran after him, but I couldn't catch him. He was (A) [faster / more fast] than me. In fact, the old man was not old. He was a young man with long brown hair.
+
+Diego Perez, a guard
+I went to the crime scene, and there (B) [was / were] pieces of cake all over the painting. There (C) [was / were] also a wheelchair near the painting, and I found a cake box next to the wheelchair. The box was from Camila's Bakery.`,
+                options: [
+                    "(A) faster (B) were (C) was",
+                    "(A) faster (B) was (C) were",
+                    "(A) more fast (B) were (C) was",
+                    "(A) more fast (B) was (C) were",
+                    "(A) faster (B) were (C) were"
+                ],
+                answer: 0,
+                type: 'mc',
+                explanation: `(A) 'fast'는 1음절 형용사이므로 비교급은 '-er'를 붙인 'faster'가 올바른 형태이다. (B) 'There is/are' 구문에서 동사의 수는 뒤에 오는 주어 'pieces of cake'(복수)에 일치시켜야 하므로 'were'가 와야 한다. (C) 'There is/are' 구문에서 주어는 동사 뒤의 'a wheelchair'(단수)이므로 단수 동사인 'was'가 적절하다.`
+            },
+            {
+                question: "2. 다음 글의 밑줄 친 부분 중, 어법상 <u>틀린</u> 것은?",
+                passage: `Carlos Diaz, a janitor
+An old man with gray hair ① <u>was running</u> away, and something ② <u>fell</u> off his head. It was his wig. I ran after him, but I couldn't catch him. He was ③ <u>much more fast</u> than me. In fact, the old man was ④ <u>not</u> old. He ⑤ <u>was</u> a young man with long brown hair.`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 2,
+                type: 'mc',
+                explanation: `형용사 'fast'는 1음절 단어이므로 비교급을 만들 때 'more'를 붙이지 않고 '-er'를 붙여 'faster'로 만들어야 한다. 비교급을 강조하는 'much'의 사용은 올바르지만, 비교급의 형태가 잘못되었다. 따라서 'much faster than me'가 되어야 어법에 맞다.`
+            },
+            {
+                question: "3. 다음 중 어법상 옳은 문장의 개수는?",
+                passage: `a. There is not enough evidences to prove his guilt.
+b. The more you practice, the more better you will become.
+c. He is one of the most influential artist in modern history.
+d. This new phone is significantly more expensive than the last one.
+e. There were a large amount of traffic on the highway this morning.`,
+                options: ["1개", "2개", "3개", "4개", "5개"],
+                answer: 0,
+                type: 'mc',
+                explanation: `a: 'evidence'는 셀 수 없는 명사이므로 복수형(-s)으로 쓰지 않고 단수 취급한다. b: 'good'의 비교급은 'better'이므로 앞에 'more'를 붙이지 않는다. c: 'one of the 최상급' 다음에는 복수 명사가 와야 하므로 'artists'가 맞다. e: 'a large amount of traffic'은 단수 취급하므로 'was'가 맞다. d번 문장만 어법상 올바르다.`
+            },
+            {
+                question: "4. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+                passage: `Carlos Diaz, a janitor
+An old man with gray hair was running away, and something fell off his head.
+
+(A) In fact, the old man was not old. He was a young man with long brown hair.
+(B) I ran after him, but I couldn't catch him. He was faster than me.
+(C) It was his wig.`,
+                options: ["(A) - (C) - (B)", "(B) - (A) - (C)", "(B) - (C) - (A)", "(C) - (A) - (B)", "(C) - (B) - (A)"],
+                answer: 4,
+                type: 'mc',
+                explanation: `주어진 문장에서 노인의 머리에서 무언가(something)가 떨어졌다고 언급한다. (C)에서 그것(It)이 가발(wig)이었다고 밝히는 것이 자연스럽다. 그 후, (B)에서 그를 뒤쫓았지만 너무 빨라 놓쳤다는 행동이 이어지고, 마지막으로 (A)에서 그가 사실은 노인이 아니었다는 결정적인 반전 정보를 밝히는 것이 가장 논리적인 흐름이다.`
+            },
+            {
+                question: "5. 다음 글의 내용으로부터 추론할 수 있는 것으로 가장 적절한 것은?",
+                passage: `Ann Jones, a visitor
+I was looking at the Monalisa, and someone threw a cake at the painting. I turned around and saw an old man. He was standing in front of a wheelchair. I’m about 170 cm tall, and he was a little taller than me.
+
+Carlos Diaz, a janitor
+An old man with gray hair was running away, and something fell off his head. It was his wig. I ran after him, but I couldn’t catch him. He was faster than me. In fact, the old man was not old. He was a young man with long brown hair.
+
+Camila Santos, the owner of Camila's Bakery
+Last Friday, a young man came in. I spoke to him in Spanish, but he didn't understand me. He spoke only English. We had a lot of different cakes, but he just wanted the smallest one. We sold only one cake that day, so I remember him clearly. Oh, he had blue eyes.`,
+                options: [
+                    "The suspect pretended to be a disabled old man to avoid suspicion.",
+                    "The janitor, Carlos Diaz, was the first person to witness the cake being thrown.",
+                    "The bakery owner remembered the suspect because he bought the most expensive cake.",
+                    "The suspect's height is confirmed to be exactly 171cm.",
+                    "The suspect was able to communicate in both Spanish and English at the bakery."
+                ],
+                answer: 0,
+                type: 'mc',
+                explanation: `Ann의 진술에서 용의자가 휠체어 앞에 서 있었고(장애인처럼 보이려 함), Carlos의 진술에서 그가 늙어 보이기 위해 가발을 썼다는 것을 종합하면, 용의자가 의심을 피하기 위해 장애가 있는 노인인 척 위장했음을 추론할 수 있다. ② Ann이 케이크 던지는 것을 먼저 목격했다. ③ 가장 작은(smallest) 케이크를 샀다. ④ 170cm보다 '조금 더 크다'고 했을 뿐 정확한 키는 알 수 없다. ⑤ 스페인어를 이해하지 못하고 영어만 사용했다.`
+            },
+            {
+                question: "6. 다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
+                passage: `Camila Santos, the owner of Camila's Bakery
+Last Friday, a young man came in. I spoke to him in Spanish, but he didn't understand me. He spoke only English. We had a lot of different cakes, but he just wanted the smallest one. We sold only one cake that day, so I remember him clearly. Oh, he had blue eyes.
+
+The bakery owner recalled a suspect with (A) ____________ who chose the (B) ____________ among various options, which was unusual as it was the only sale of the day.`,
+                options: [
+                    "(A) a clear memory (B) most popular cake",
+                    "(A) distinctive blue eyes (B) least sizable cake",
+                    "(A) fluency in Spanish (B) most different cake",
+                    "(A) gray hair (B) only English cake",
+                    "(A) a familiar face (B) smallest bakery"
+                ],
+                answer: 1,
+                type: 'mc',
+                explanation: `요약문은 '빵집 주인이 그날 유일한 판매였기 때문에 특이했던, 다양한 선택지 중에서 (B)를 선택한 (A)를 가진 용의자를 기억해냈다'는 내용이다. 본문에 따르면 용의자는 (A) 파란 눈(blue eyes)을 가졌고, (B) 가장 작은 케이크(the smallest one)를 원했다. 'distinctive blue eyes'는 '뚜렷한 파란 눈'으로, 'least sizable cake'는 '가장 크기가 작은 케이크'로 본문의 내용을 적절하게 바꾸어 표현한 것이다.`
+            },
+            {
+                question: "7. 다음 글을 읽고 알 수 <u>없는</u> 것은?",
+                passage: `Diego Perez, a guard
+I went to the crime scene, and there were pieces of cake all over the painting. There was also a wheelchair near the painting, and I found a cake box next to the wheelchair. The box was from Camila's Bakery.`,
+                options: [
+                    "What was found scattered on the painting?",
+                    "What brand was the cake box?",
+                    "What was the guard's name?",
+                    "Where exactly was the wheelchair located in relation to the painting?",
+                    "Why was a wheelchair left at the crime scene?"
+                ],
+                answer: 4,
+                type: 'mc',
+                explanation: `경비원 Diego의 진술을 통해 그림 위에 케이크 조각들이 있었고(①), 케이크 상자는 Camila's Bakery의 것이었고(②), 진술자의 이름이 Diego Perez이며(③), 휠체어가 그림 근처에 있었다는 것(④)은 알 수 있다. 하지만 왜 휠체어가 범죄 현장에 남겨졌는지에 대한 이유는 이 진술에서 찾을 수 없다.`
+            },
+            {
+                question: "8. 다음 밑줄 친 낱말의 영영풀이로 적절하지 <u>않은</u> 것은?",
+                passage: `① An <u>eyewitness</u> is someone who saw a crime or accident happen.
+② A <u>criminal</u> is a person who has committed a crime.
+③ A <u>janitor</u> is a person whose job is to take care of a building, such as by cleaning it.
+④ The <u>scene</u> of a crime is the place where the police and investigators work.
+⑤ A <u>wig</u> is an artificial covering of hair worn on the head to hide a person's real hair.`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 3,
+                type: 'mc',
+                explanation: `'scene'은 범죄나 사건이 '일어난 장소(the place where an incident occurs or occurred)'를 의미한다. '경찰과 수사관이 일하는 장소'라는 설명은 범죄 현장의 한 측면일 뿐, 단어의 핵심적인 정의는 아니다. 나머지 단어들의 영영풀이는 모두 적절하다.`
+            },
+            {
+                question: "9. 다음 글의 밑줄 친 ①~⑤ 중, 문맥상 낱말의 쓰임이 적절하지 <u>않은</u> 것은?",
+                passage: `Carlos Diaz, a janitor
+An old man with gray hair was ① <u>running</u> away, and something fell off his head. It was his wig. I ran after him, but I couldn't ② <u>catch</u> him. He was much ③ <u>slower</u> than me. In fact, the old man was not ④ <u>old</u>. He was a young man with long brown ⑤ <u>hair</u>.`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 2,
+                type: 'mc',
+                explanation: `바로 앞 문장에서 청소부가 용의자를 뒤쫓았지만 잡을 수 없었다("I couldn't catch him")고 말했다. 그 이유를 설명하는 문장이므로, 용의자가 '더 느렸다(slower)'는 것은 논리적으로 맞지 않다. 문맥상 '더 빨랐다'는 의미의 'faster'가 와야 한다.`
+            },
+            {
+                question: `10. 다음 글의 내용과 일치하면 [T], 일치하지 않으면 [F]라 할 때, 주어진 판단이 옳게 연결된 것의 개수는?`,
+                passage: `Last Saturday, someone threw a cake at the Monalisa in the Botero Museum in Bogota, Colombia. There were four eyewitnesses.
+
+Ann Jones, a visitor
+I turned around and saw an old man. He was standing in front of a wheelchair. I’m about 170 cm tall, and he was a little taller than me.
+
+Carlos Diaz, a janitor
+An old man with gray hair was running away, and something fell off his head. It was his wig. I couldn’t catch him. He was faster than me. In fact, the old man was not old.
+
+Diego Perez, a guard
+I went to the crime scene, and there were pieces of cake all over the painting. I found a cake box next to the wheelchair.
+
+Camila Santos, the owner of Camila's Bakery
+A young man came in. He spoke only English. We had a lot of different cakes, but he just wanted the smallest one.
+
+(1) The incident occurred on a weekend in a museum in Colombia. [T]
+(2) The suspect was a genuine old man who needed a wheelchair. [F]
+(3) The cake used in the crime was likely the largest one sold at the bakery. [T]
+(4) The guard, Diego Perez, personally witnessed the suspect running away. [F]
+(5) The suspect's actual appearance was a young man with a wig. [T]`,
+                options: ["1개", "2개", "3개", "4개", "5개"],
+                answer: 2,
+                type: 'mc',
+                explanation: `옳게 연결된 것은 (1), (2), (4)번으로 총 3개이다. (1) 'Last Saturday'(주말)와 콜롬비아의 박물관이라는 내용이 일치한다. (2) 가발을 썼고 빨리 달렸으므로 진짜 노인이 아니라는 내용이 일치한다. (3) 가장 작은(smallest) 케이크를 샀으므로 내용이 불일치하는데 [T]로 되어 있어 잘못 연결되었다. (4) 도망치는 것을 본 사람은 청소부 Carlos이므로 내용이 불일치한다. [F]와 일치하여 옳게 연결되었다. (5) 실제 모습은 'a young man with long brown hair'이므로 가발을 쓴 모습이 아니다. 내용이 불일치하는데 [T]로 되어 있어 잘못 연결되었다.`
+            }
+        ];
+
+        const quizForm = document.getElementById('quiz-form');
+        const circledNumbers = ['①', '②', '③', '④', '⑤'];
+
+        quizData.forEach((q, index) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+            
+            let content = `<div class="q-title">${index + 1}. ${q.question}</div>`;
+            
+            if (q.passage) {
+                 content += `<div class="passage">${q.passage.replace(/\n\n/g, '<br><br>')}</div>`;
+            }
+
+            if (q.type === 'mc') {
+                content += '<div class="options">';
+                q.options.forEach((opt, i) => {
+                    content += `<label><input type="radio" name="q${index}" value="${i}"> ${circledNumbers[i]} ${opt}</label>`;
+                });
+                content += '</div>';
+            } else if (q.type === 'text') {
+                content += `<input type="text" name="q${index}" placeholder="정답을 입력하세요.">`;
+            }
+            questionBlock.innerHTML = content;
+            quizForm.appendChild(questionBlock);
+        });
+
+        function submitQuiz() {
+            const studentName = document.getElementById('studentName').value || '익명';
+            let score = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '';
+            let resultString = `학생 ID: ${studentName}\n날짜: ${new Date().toLocaleDateString()}\n\n[채점 결과]\n\n`;
+
+            quizData.forEach((q, index) => {
+                const inputs = document.getElementsByName(`q${index}`);
+                let userAnswerRaw;
+                let userAnswerText = "답변 안 함";
+                let isCorrect = false;
+
+                if (q.type === 'mc') {
+                    for (const input of inputs) {
+                        if (input.checked) {
+                            userAnswerRaw = parseInt(input.value);
+                            userAnswerText = `${circledNumbers[userAnswerRaw]} ${q.options[userAnswerRaw]}`;
+                            break;
+                        }
+                    }
+                    isCorrect = (userAnswerRaw === q.answer);
+                } else if (q.type === 'text') {
+                    userAnswerRaw = inputs[0].value.trim();
+                    userAnswerText = userAnswerRaw;
+                    const correctAnswer = q.answer.toLowerCase().replace(/\.$/, '');
+                    isCorrect = (userAnswerRaw.toLowerCase().replace(/\.$/, '') === correctAnswer);
+                }
+                
+                const feedbackP = document.createElement('p');
+                let resultLine;
+                const correctAnswerText = q.type === 'mc' ? `${circledNumbers[q.answer]} ${q.options[q.answer]}` : q.answer;
+
+                const detailsBlock = `
+                    <details class="explanation-details">
+                        <summary>해설 보기</summary>
+                        <div class="explanation-content">${q.explanation}</div>
+                    </details>`;
+                
+                if (isCorrect) {
+                    score++;
+                    feedbackP.innerHTML = `${index + 1}번: <span class="correct">정답 (1)</span> ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 1\n`;
+                } else {
+                    feedbackP.innerHTML = `${index + 1}번: <span class="incorrect">오답 (0)</span> (정답: ${correctAnswerText}) ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 0\t학생이 고른 오답: ${userAnswerText}\n`;
+                }
+                feedbackDiv.appendChild(feedbackP);
+                resultString += resultLine;
+            });
+
+            const finalScore = (score / quizData.length) * 100;
+            document.getElementById('score').innerText = `총점: ${score} / ${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('results').style.display = 'block';
+            
+            resultString += `\n총점: ${score}/${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('resultText').value = resultString;
+        }
+    </script>
+</body>
+</html>
