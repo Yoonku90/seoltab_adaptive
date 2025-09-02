@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중1 박지율 - 3과 약점 보완 퀴즈</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 2em; background-color: #f4f7f9; color: #333; }
+        .quiz-container { max-width: 800px; margin: auto; background: white; padding: 2em; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        h1, h2 { text-align: center; color: #2c3e50; }
+        .info-block { margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #e0e0e0; }
+        .question-block { margin-bottom: 2.5em; border-top: 1px solid #e0e0e0; padding-top: 1.5em; }
+        .question-block .q-title { font-weight: bold; margin-bottom: 1em; line-height: 1.5; }
+        .passage { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 1em; margin: 1em 0; font-size: 0.95em; color: #555; white-space: pre-wrap; line-height: 1.6; }
+        .options label { display: block; margin-bottom: 0.8em; cursor: pointer; padding: 0.5em; border-radius: 5px; transition: background-color 0.2s; }
+        .options label:hover { background-color: #e9ecef; }
+        input[type="radio"], input[type="text"] { margin-right: 0.5em; vertical-align: middle; }
+        input[type="text"] { width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { display: block; width: 100%; padding: 1em; font-size: 1.1em; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; margin-top: 2em; }
+        .submit-btn:hover { background-color: #218838; }
+        .results-area { margin-top: 2em; padding: 1.5em; background-color: #eef8ff; border: 1px solid #b8dcf1; border-radius: 8px; }
+        textarea { width: 100%; height: 200px; margin-top: 1em; font-family: monospace; }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+        .explanation-details { margin-top: 10px; font-size: 0.9em; }
+        .explanation-details summary { cursor: pointer; color: #0056b3; font-weight: normal; display: inline-block; padding: 2px 6px; border-radius: 4px; background-color: #e9ecef; }
+        .explanation-details[open] summary { background-color: #007bff; color: white; }
+        .explanation-content { margin-top: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #444; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>중1 박지율 - 3과 약점 보완 퀴즈</h1>
+        <div class="info-block">
+            <label for="studentName">이름:</label>
+            <input type="text" id="studentName" placeholder="이름을 입력하세요" value="중1_박지율">
+        </div>
+        <div id="quiz-form"></div>
+        <button class="submit-btn" onclick="submitQuiz()">결과 확인 및 복사하기</button>
+        <div id="results" class="results-area" style="display:none;">
+            <h2>📝 채점 결과</h2>
+            <p id="score"></p>
+            <div id="feedback"></div>
+            <h3>📋 결과 복사하기</h3>
+            <p>아래 내용을 복사하여 선생님께 제출하세요.</p>
+            <textarea id="resultText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: `다음 대화의 밑줄 친 <u>(A)</u>에 나타난 화자의 의도로 가장 적절한 것은?`,
+                passage: `G: What’s wrong? You look worried.\nB: I fell and hurt my leg. I have a soccer match next week. I'm worried about it.\nG: That’s too bad. I hope you get well soon.\nB: Thanks.\nG: Do you need any help with anything?\nB: Actually, I do.\nG: What is it?\nB: <u>(A) Can you carry my bag?</u> My mom is waiting for me in front of the school.\nG: No problem. Let’s go.`,
+                options: ["상대방의 가방 운반 능력을 확인하고 있다.", "자신의 가방을 들어줄 수 있는지 정중하게 요청하고 있다.", "상대방에게 가방을 들어주겠다고 친절하게 제안하고 있다.", "가방을 함께 들고 갈지 말지 여부를 상의하고 있다.", "가방이 무거워서 들 수 없다는 자신의 상태를 설명하고 있다."],
+                answer: 1,
+                type: 'mc',
+                explanation: "'Can you~?'는 문맥에 따라 능력을 묻거나 요청을 할 수 있다. 이 대화에서는 다리가 다친 친구가 가방을 들어달라고 부탁하는 상황이므로 '정중한 요청'의 의도로 사용되었다."
+            },
+            {
+                question: "다음 중, 짝지어진 대화의 흐름이 가장 어색한 것은?",
+                passage: null,
+                options: ["A: I'm sorry, I forgot to bring your book.\nB: Never mind. You can give it to me tomorrow.", "A: Excuse me, can you tell me how to get to the city hall?\nB: Of course. Go straight for two blocks and turn left.", "A: Thank you so much for helping me with my homework.\nB: My pleasure. I'm glad I could help.", "A: What’s the problem? You look upset.\nB: I am. I can't believe I failed the exam.", "A: I heard you won the speech contest. Congratulations!\nB: Never mind. I was just lucky."],
+                answer: 4,
+                type: 'mc',
+                explanation: "'Never mind'는 상대방의 사과를 받아주거나 했던 요청을 취소할 때 사용하는 표현이다. 축하(Congratulations)에 대한 응답으로는 어색하다."
+            },
+            {
+                question: `다음 대화의 빈칸에 들어갈 말로 가장 적절한 것은?`,
+                passage: `W: Excuse me, can you help me with this machine?\nB: Sure. What can I do for you?\nW: Can you order a drink for me?\nB: No problem. They have orange juice, watermelon juice, and lemonade. Which one would you like?\nW: Orange juice, please. ________________________\nB: You’re welcome.`,
+                options: ["Never mind.", "Thank you for your help.", "That’s too bad.", "I'd love to, but I can't.", "I'm looking forward to it."],
+                answer: 1,
+                type: 'mc',
+                explanation: "빈칸 뒤에 상대방이 'You're welcome.'이라고 답했으므로, 빈칸에는 도움에 대한 감사의 표현이 들어가는 것이 가장 자연스럽다."
+            },
+            {
+                question: "다음 글의 밑줄 친 <u>(A)</u>의 'can'과 쓰임이 같은 것은?",
+                passage: `“Coach, is the new member a cat?” Max shouted.\n“I can’t believe it,” Rusty said.\n“Let’s be nice to her!” said Coach Biscuit. But the dogs looked nervous.\n“We never had a cat on our team!” they said.\n“Maybe Cathy never had a dog on her team. Now, let’s play a game,” Coach Biscuit said.\n“But <u>(A) can</u> she play fetch? She’s not a dog. Only dogs can play fetch,” Rusty said.\n“Be nice! We can teach her,” another dog said softly.`,
+                options: ["You <b>can</b> use my pen if you need one.", "I <b>can</b> speak three different languages fluently.", "<b>Can</b> you please open the window? It's hot in here.", "It <b>can</b> be very cold in this region during the winter.", "With practice, anyone <b>can</b> become a good player."],
+                answer: 1,
+                type: 'mc',
+                explanation: "밑줄 친 (A)의 'can'은 Cathy가 공 물어오기를 할 '능력'이 있는지 묻고 있다. ②번 선택지의 'can' 역시 3개 국어를 말할 수 있는 '능력'을 나타내므로 쓰임이 같다. ①은 허가, ③은 요청, ④와 ⑤는 가능성을 나타낸다."
+            },
+            {
+                question: "다음 글의 밑줄 친 ①~⑤ 중, 어법상 쓰임이 적절하지 <u>않은</u> 것은?",
+                passage: `The game began. Cathy watched silently.\n“Can somebody get the ball? It’s going over the fence!” Rusty shouted.\n“I’ll get it!” Everyone ①<u>looked</u> at the ball and ran toward it. They bumped into each other and ②<u>fell</u> down.\nThen, Cathy ③<u>jumped</u> into the air and got the ball. She quickly ④<u>passed</u> over it.\n“Wow, Cathy! How did you do that?” The dogs ⑤<u>were surprised</u>.`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 3,
+                type: 'mc',
+                explanation: "`pass over`와 같은 이어동사에서 목적어가 `it`과 같은 대명사일 경우, 대명사는 반드시 동사와 부사 사이에 위치해야 한다. 따라서 'passed it over'로 써야 어법상 올바르다."
+            },
+            {
+                question: "다음 글을 통해 추론할 수 있는 내용으로 가장 적절한 것은?",
+                passage: `“But can she play fetch? She’s not a dog. Only dogs can play fetch,” Rusty said.\n“Be nice! We can teach her,” another dog said softly.\nCoach Biscuit said, “Cathy, this is your first day. So you can watch and join the game anytime.”\nThe game began. Cathy watched silently.\n“Can somebody get the ball? It’s going over the fence!” Rusty shouted.\n“I’ll get it!” Everyone looked at the ball and ran toward it. They bumped into each other and fell down.\nThen, Cathy jumped into the air and got the ball. She quickly passed it over.\n“Wow, Cathy! How did you do that?” The dogs were surprised.`,
+                options: ["개들은 고양이가 공을 잡는 특별한 훈련을 받았을 것이라고 생각했다.", "Rusty는 Cathy가 활약한 후에도 그녀를 팀원으로 인정하지 않았다.", "개들은 Cathy의 예상치 못한 능력에 놀라며 그녀에 대한 편견이 바뀌기 시작했다.", "Coach Biscuit은 처음부터 Cathy가 뛰어난 능력을 보여줄 것을 알고 있었다.", "Cathy는 개들의 실수를 유도하기 위해 일부러 경기를 지켜보고 있었다."],
+                answer: 2,
+                type: 'mc',
+                explanation: "개들은 처음에 고양이가 공 물어오기를 할 수 있는지 의심했지만(편견), Cathy가 공을 잡아내는 것을 보고 놀랐다(“Wow,” “surprised”). 이를 통해 Cathy에 대한 기존의 생각이 바뀌기 시작했음을 추론할 수 있다."
+            },
+            {
+                question: "다음 글의 마지막 부분에 나타난 분위기로 가장 적절한 것은?",
+                passage: `After the game, everyone talked about Cathy.\n“We have a cat on our team now. I’m so glad!” said Max.\n“Great!” Coach Biscuit said, “We have another new member.”\n“A dog or a cat?” Everyone got excited.\n“Cookie! Please come out.” Coach Biscuit called out to the new member.`,
+                options: ["긴장되고 불안한 (tense and anxious)", "슬프고 우울한 (sad and gloomy)", "조용하고 평화로운 (calm and peaceful)", "기대에 차고 활기찬 (hopeful and energetic)", "지루하고 무관심한 (boring and indifferent)"],
+                answer: 3,
+                type: 'mc',
+                explanation: "'glad'(기쁜), 'Great!'(좋아!), 'excited'(신이 난) 등의 긍정적인 단어들이 사용되었고, 또 다른 새 멤버의 등장을 기대하는 상황이므로, 전체적인 분위기는 '기대에 차고 활기찬' 것으로 볼 수 있다."
+            },
+            {
+                question: "다음 글이 독자에게 전달하려는 핵심 교훈으로 가장 적절한 것은?",
+                passage: `“Coach, is the new member a cat?” Max shouted.\n“I can’t believe it,” Rusty said.\n“Let’s be nice to her!” said Coach Biscuit. But the dogs looked nervous.\n“We never had a cat on our team!” they said.\n[...]\nThen, Cathy jumped into the air and got the ball. She quickly passed it over.\n“Wow, Cathy! How did you do that?” The dogs were surprised.\nAfter the game, everyone talked about Cathy.\n“We have a cat on our team now. I’m so glad!” said Max.`,
+                options: ["겉모습이나 선입견으로 상대를 판단해서는 안 된다.", "팀의 성공을 위해서는 뛰어난 개인의 능력이 가장 중요하다.", "새로운 환경에 적응하기 위해서는 많은 시간이 필요하다.", "오랜 연습만이 예상치 못한 실수를 줄일 수 있다.", "팀의 리더는 모든 구성원에게 동등한 기회를 주어야 한다."],
+                answer: 0,
+                type: 'mc',
+                explanation: "개들은 처음에 Cathy가 고양이라는 이유로 능력을 의심하는 선입견을 가졌지만, 그녀의 실제 모습을 보고 생각을 바꾸게 되었다. 이는 겉모습이나 편견으로 상대를 섣불리 판단해서는 안 된다는 교훈을 전달한다."
+            },
+            {
+                question: "다음 대화에서 밑줄 친 <u>(A)</u>에 대한 설명으로 가장 적절하지 <u>않은</u> 것은?",
+                passage: `G: What’s wrong? You look worried.\nB: I fell and hurt my leg. I have a soccer match next week. I'm worried about it.\n[...]\nG: Do you need any help with anything?\nB: Actually, I do.\nG: What is it?\nB: <u>(A) Can you carry my bag?</u> My mom is waiting for me in front of the school.\nG: No problem. Let’s go.`,
+                options: ["화자는 상대방에게 도움을 정중하게 요청하고 있다.", "여기서 'Can'은 상대방의 물리적인 능력을 묻기 위해 사용되었다.", "대답으로 'Of course.'나 'Sure.'를 사용할 수 있다.", "상대방이 거절할 경우, 'I'm sorry, but I can't.'와 같이 말할 수 있다.", "문맥상 'Could you~?'로 바꾸어 사용하면 더 공손한 표현이 된다."],
+                answer: 1,
+                type: 'mc',
+                explanation: "이 문맥에서 'Can you carry my bag?'는 가방을 들 수 있는 물리적인 능력이 있는지 시험하는 것이 아니라, '가방을 들어달라'고 정중하게 도움을 요청하는 표현이다. 따라서 '능력을 묻기 위해 사용되었다'는 ②번 설명이 적절하지 않다."
+            },
+            {
+                question: "다음 중, 대화의 흐름이 가장 어색한 것은?",
+                passage: null,
+                options: ["A: This math problem is too difficult for me. Can you help?\nB: Sure, let's look at it together.", "A: I'm really looking forward to our trip tomorrow!\nB: Me too! It's going to be so much fun.", "A: What’s wrong? You seem down.\nB: Nothing. I just got a perfect score on my English test.", "A: I ate too much for lunch. I feel so full.\nB: You should take a short walk. It might help.", "A: Thank you for inviting me to your party.\nB: My pleasure. I'm glad you could make it."],
+                answer: 2,
+                type: 'mc',
+                explanation: "A가 '기분이 안 좋아 보인다(seem down)'고 말했는데, B가 '영어 시험에서 만점을 받았다(got a perfect score)'고 답하는 것은 상황에 맞지 않아 어색하다."
+            }
+        ];
+
+        const quizForm = document.getElementById('quiz-form');
+        const circledNumbers = ['①', '②', '③', '④', '⑤'];
+
+        quizData.forEach((q, index) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+            
+            let content = `<div class="q-title">${index + 1}. ${q.question}</div>`;
+            
+            if (q.passage) {
+                // To render bolds inside options for question 4
+                const passageHTML = q.passage.replace(/<b>/g, '<strong>').replace(/<\/b>/g, '</strong>');
+                content += `<div class="passage">${passageHTML.replace(/\n\n/g, '<br><br>')}</div>`;
+            }
+
+            if (q.type === 'mc') {
+                content += '<div class="options">';
+                q.options.forEach((opt, i) => {
+                    content += `<label><input type="radio" name="q${index}" value="${i}"> ${circledNumbers[i]} ${opt}</label>`;
+                });
+                content += '</div>';
+            } else if (q.type === 'text') {
+                content += `<input type="text" name="q${index}" placeholder="정답을 입력하세요.">`;
+            }
+            questionBlock.innerHTML = content;
+            quizForm.appendChild(questionBlock);
+        });
+
+        function submitQuiz() {
+            const studentName = document.getElementById('studentName').value || '익명';
+            let score = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '';
+            let resultString = `학생 ID: ${studentName}\n날짜: ${new Date().toLocaleDateString()}\n\n[채점 결과]\n\n`;
+
+            quizData.forEach((q, index) => {
+                const inputs = document.getElementsByName(`q${index}`);
+                let userAnswerRaw;
+                let userAnswerText = "답변 안 함";
+                let isCorrect = false;
+
+                if (q.type === 'mc') {
+                    for (const input of inputs) {
+                        if (input.checked) {
+                            userAnswerRaw = parseInt(input.value);
+                            userAnswerText = `${circledNumbers[userAnswerRaw]} ${q.options[userAnswerRaw].replace(/<[^>]*>?/gm, '')}`;
+                            break;
+                        }
+                    }
+                    isCorrect = (userAnswerRaw === q.answer);
+                } else if (q.type === 'text') {
+                    userAnswerRaw = inputs[0].value.trim();
+                    userAnswerText = userAnswerRaw;
+                    const correctAnswer = q.answer.toLowerCase().replace(/\.$/, '');
+                    isCorrect = (userAnswerRaw.toLowerCase().replace(/\.$/, '') === correctAnswer);
+                }
+                
+                const feedbackP = document.createElement('p');
+                let resultLine;
+                const correctAnswerText = q.type === 'mc' ? `${circledNumbers[q.answer]} ${q.options[q.answer].replace(/<[^>]*>?/gm, '')}` : q.answer;
+
+                const detailsBlock = `
+                    <details class="explanation-details">
+                        <summary>해설 보기</summary>
+                        <div class="explanation-content">${q.explanation}</div>
+                    </details>`;
+                
+                if (isCorrect) {
+                    score++;
+                    feedbackP.innerHTML = `${index + 1}번: <span class="correct">정답 (1)</span> ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 1\n`;
+                } else {
+                    feedbackP.innerHTML = `${index + 1}번: <span class="incorrect">오답 (0)</span> (정답: ${correctAnswerText}) ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 0\t학생이 고른 오답: ${userAnswerText}\n`;
+                }
+                feedbackDiv.appendChild(feedbackP);
+                resultString += resultLine;
+            });
+
+            const finalScore = (score / quizData.length) * 100;
+            document.getElementById('score').innerText = `총점: ${score} / ${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('results').style.display = 'block';
+            
+            resultString += `\n총점: ${score}/${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('resultText').value = resultString;
+        }
+
+        // Make submitQuiz globally accessible
+        window.submitQuiz = submitQuiz;
+    </script>
+</body>
+</html>
