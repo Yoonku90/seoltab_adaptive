@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중3 최서윤 - 약점 보완 맞춤형 문제</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 2em; background-color: #f4f7f9; color: #333; }
+        .quiz-container { max-width: 800px; margin: auto; background: white; padding: 2em; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        h1, h2 { text-align: center; color: #2c3e50; }
+        .info-block { margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #e0e0e0; }
+        .question-block { margin-bottom: 2.5em; border-top: 1px solid #e0e0e0; padding-top: 1.5em; }
+        .question-block .q-title { font-weight: bold; margin-bottom: 1em; line-height: 1.5; }
+        .passage { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 1em; margin: 1em 0; font-size: 0.95em; color: #555; white-space: pre-wrap; line-height: 1.6; }
+        .options label { display: block; margin-bottom: 0.8em; cursor: pointer; padding: 0.5em; border-radius: 5px; transition: background-color 0.2s; }
+        .options label:hover { background-color: #e9ecef; }
+        input[type="radio"], input[type="text"] { margin-right: 0.5em; vertical-align: middle; }
+        input[type="text"] { width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { display: block; width: 100%; padding: 1em; font-size: 1.1em; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; margin-top: 2em; }
+        .submit-btn:hover { background-color: #218838; }
+        .results-area { margin-top: 2em; padding: 1.5em; background-color: #eef8ff; border: 1px solid #b8dcf1; border-radius: 8px; }
+        textarea { width: 100%; height: 200px; margin-top: 1em; font-family: monospace; }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+        .explanation-details { margin-top: 10px; font-size: 0.9em; }
+        .explanation-details summary { cursor: pointer; color: #0056b3; font-weight: normal; display: inline-block; padding: 2px 6px; border-radius: 4px; background-color: #e9ecef; }
+        .explanation-details[open] summary { background-color: #007bff; color: white; }
+        .explanation-content { margin-top: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #444; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>중3 영어 5과 약점 보완 퀴즈</h1>
+        <div class="info-block">
+            <label for="studentName">이름:</label>
+            <input type="text" id="studentName" placeholder="이름을 입력하세요" value="중3_최서윤">
+        </div>
+        <div id="quiz-form"></div>
+        <button class="submit-btn" onclick="submitQuiz()">결과 확인 및 복사하기</button>
+        <div id="results" class="results-area" style="display:none;">
+            <h2>📝 채점 결과</h2>
+            <p id="score"></p>
+            <div id="feedback"></div>
+            <h3>📋 결과 복사하기</h3>
+            <p>아래 내용을 복사하여 선생님께 제출하세요.</p>
+            <textarea id="resultText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: `다음 대화의 흐름으로 보아, 빈칸에 들어갈 응답과 이어지는 괄호 안의 질문으로 가장 적절한 것은?`,
+                passage: `G: Jiho, what are you reading?
+B: I'm reading a book about a baseball player named Jim Abbott.
+G: Oh, the man who was born without a right hand?
+B: That's right. He tried really hard and even won the MVP award.
+G: Yeah. His story was made into a movie. I'm going to watch it this Saturday.
+B: Really? What's the title?
+G: Our Hero. I'm really looking forward to watching it.
+B: _____________________ (_____________________)
+G: Sure. See you on Saturday.`,
+                options: ["I'd love to, but I can't. (Do you mind if I join you?)", "Sounds great. I can't wait. (Can I join you?)", "I already watched it. (How about another movie?)", "No, thank you. I'm not interested. (When should we meet?)", "It's my pleasure. (What is the movie about?)"],
+                answer: 1,
+                type: 'mc',
+                explanation: "B가 영화에 대한 기대감을 표현했고, G의 마지막 대답이 'Sure.'이므로 빈칸에는 제안을 요청하는 'Can I join you?'가 들어가는 것이 자연스럽다. 따라서 긍정적인 반응과 함께 제안을 요청하는 ②번이 가장 적절하다."
+            },
+            {
+                question: "다음은 콘서트 티켓을 예매하는 상황의 대화이다. 밑줄 친 ⓐ~ⓔ 중, 문맥의 흐름상 가장 <u>어색한</u> 것은?",
+                passage: `Boy: The tickets for the World Music Concert are on sale now and ⓐ<u>I can't wait to see the concert!</u>
+Girl: Really? Let's book the tickets online right away.
+Boy: Okay. Let's see... There are still tickets left for November 5th.
+Girl: Sounds good. Let's get two student tickets.
+Boy: Oh, do you mind if I bring my little brother?
+Girl: ⓑ<u>Not at all.</u> But it says that you are not allowed to bring children under 8.
+Boy: Oh, I didn't know that. My brother is 7.
+Girl: ⓒ<u>It's okay.</u> The total price is 25 dollars.
+Boy: Great. ⓓ<u>I'm thankful to you for buying the tickets.</u>
+Girl: ⓔ<u>It's my pleasure.</u> I'm looking forward to seeing the concert!`,
+                options: ["ⓐ", "ⓑ", "ⓒ", "ⓓ", "ⓔ"],
+                answer: 2,
+                type: 'mc',
+                explanation: "대화에서 8세 미만의 어린이는 입장이 불가능하다고 명시되어 있다. 남동생이 7살이라고 밝혔음에도 소녀가 'It's okay'라고 답하는 것은 앞선 정보와 모순되므로 문맥상 어색하다. 따라서 정답은 ③이다."
+            },
+            {
+                question: "다음 글의 밑줄 친 ⓐ~ⓔ 중, 어법상 쓰임이 적절하지 <u>않은</u> 것은?",
+                passage: `Tears of joy are rolling down my cheeks. I'm so happy and thrilled. ⓐ<u>If I were a bird, I would fly.</u> I look around. The other members in my orchestra are hugging one another. Our concert has just finished and everyone is standing and giving us a big hand. ⓑ<u>None of us ever expected that this day would come.</u> It has been a long journey.
+My name is Andrea and I'm a violinist in the Recycled Orchestra. ⓒ<u>Why is it called the Recycled Orchestra?</u> It's because our musical instruments are made of objects from a landfill. That's why it's also known as the Landfill Harmonic Orchestra. Most of us in the orchestra ⓓ<u>is from Cateura</u>, a small town in Paraguay. There is a huge landfill in our town. Some people even say that Cateura itself is a giant landfill. Many of us are poor. There ⓔ<u>weren't many hopes and dreams in our town.</u> Everything began to change, however, when we met Favio Chávez.`,
+                options: ["ⓐ", "ⓑ", "ⓒ", "ⓓ", "ⓔ"],
+                answer: 3,
+                type: 'mc',
+                explanation: "ⓓ: 주어는 `Most of us in the orchestra`이다. `most of` 다음의 명사 `us`가 복수이므로 동사도 복수형인 `are`를 써야 한다. `is`는 단수 동사이므로 어법상 틀리다."
+            },
+            {
+                question: "다음 글의 (A), (B), (C)의 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?",
+                passage: `We had another problem. No one knew (A)<u>how to play / what to play</u> musical instruments. We didn't even know how to read music. Favio taught us with great patience. Step by step, we began to make some sounds on our instruments. I still remember the first piece of music (B)<u>that / what</u> we played. It was very short and mostly out of tune. But it was the most beautiful music to us. We felt a new hope in our hearts. From then on, we (C)<u>gathered / were gathered</u> to practice every day. One day, Favio told us some great news. We were going to have a concert, a real concert!`,
+                options: ["(A) how to play ----- (B) that ----- (C) gathered", "(A) how to play ----- (B) what ----- (C) were gathered", "(A) what to play ---- (B) that ----- (C) gathered", "(A) what to play ---- (B) what ----- (C) were gathered", "(A) how to play ----- (B) that ----- (C) were gathered"],
+                answer: 0,
+                type: 'mc',
+                explanation: "(A) '악기를 연주하는 방법'이라는 의미가 되어야 하므로 '의문사+to부정사' 구문인 `how to play`가 적절하다. (B) 선행사 `the first piece of music`을 수식하는 목적격 관계대명사 `that`이 와야 한다. `what`은 선행사를 포함하므로 올 수 없다. (C) 주어인 `we`가 연습을 위해 모이는 것이므로 능동태 동사 `gathered`가 적절하다."
+            },
+            {
+                question: "<보기>의 문장 중, 어법상 옳은 문장을 <u>모두</u> 고른 것은?",
+                passage: `<보기>
+ⓐ If I have enough time, I would visit my grandparents.
+ⓑ She asked me what to do for the science project.
+ⓒ The problem was how solving the difficult math question.
+ⓓ He felt so thrilled that he couldn't say anything.
+ⓔ If it was not for your help, I couldn't finish my homework.`,
+                options: ["ⓐ, ⓒ", "ⓑ, ⓓ", "ⓒ, ⓔ", "ⓐ, ⓑ, ⓓ", "ⓑ, ⓓ, ⓔ"],
+                answer: 1,
+                type: 'mc',
+                explanation: "ⓐ 가정법 과거 문장이므로 `If I had...`가 되어야 한다. ⓒ `how` 뒤에는 완전한 절(주어+동사)이나 `to부정사`가 와야 하므로 `how to solve`가 되어야 한다. ⓔ 가정법 과거의 be동사는 인칭에 상관없이 `were`를 쓰는 것이 원칙이므로 `If it were not for...`가 더 적절하다. 따라서 어법상 올바른 문장은 ⓑ와 ⓓ이다."
+            },
+            {
+                question: "다음 글의 빈칸에 들어갈 전치사가 순서대로 바르게 짝지어진 것은?",
+                passage: `Favio was an environmental educator and a musician. He wanted to teach us music, but there was a big problem. There were only a few musical instruments in the whole town. We couldn't afford to buy new ones. But Favio didn't give up. He said that we could make musical instruments with objects from the landfill. A talented man named Nicholas was able to put this idea ______ practice. He made violins from oil drums. He turned water pipes ______ flutes.`,
+                options: ["into – into", "into – from", "from – into", "for – from", "for – into"],
+                answer: 0,
+                type: 'mc',
+                explanation: "`put something into practice`는 '~을 실행에 옮기다'라는 숙어 표현이다. `turn A into B`는 'A를 B로 바꾸다'라는 의미의 구문이다. 따라서 두 빈칸에는 모두 `into`가 들어가는 것이 올바르다."
+            },
+            {
+                question: "다음 글을 읽고 추론할 수 있는 내용으로 가장 적절하지 <u>않은</u> 것은?",
+                passage: `Favio was an environmental educator and a musician. He wanted to teach us music, but there was a big problem. There were only a few musical instruments in the whole town. We couldn't afford to buy new ones. But Favio didn't give up. He said that we could make musical instruments with objects from the landfill. A talented man named Nicholas was able to put this idea into practice. He made violins from oil drums. He turned water pipes into flutes.`,
+                options: ["The town likely faced economic challenges that limited access to new goods.", "Nicholas possessed creative skills in craftsmanship and recycling.", "Favio demonstrated resilience and a problem-solving mindset.", "The children were initially hesitant to use instruments made from trash.", "The landfill, a source of waste, became a source of opportunity."],
+                answer: 3,
+                type: 'mc',
+                explanation: "본문에서는 아이들이 악기를 살 형편이 안 되었다는 사실만 언급할 뿐, 쓰레기로 만든 악기를 사용하는 것에 대해 처음부터 주저했는지 여부는 나와있지 않다. 따라서 ④는 본문을 통해 추론할 수 없는 내용이다."
+            },
+            {
+                question: "다음 글의 밑줄 친 ⓐ~ⓔ 중, 문맥상 낱말의 쓰임이 적절하지 <u>않은</u> 것은?",
+                passage: `We had another problem. No one knew how to play musical instruments. We didn't even know how to read music. Favio taught us with great ⓐ<u>patience</u>. Step by step, we began to make some sounds on our instruments. I still remember the first piece of music that we played. It was very short and mostly ⓑ<u>out of tune</u>. But it was the most beautiful music to us. We felt a new hope in our hearts. From then on, we gathered to ⓒ<u>practice</u> every day. One day, Favio told us some great news. We were going to have a concert, a real concert! And here we are now in front of hundreds of people. They ⓓ<u>love</u> our music. The world sends us trash, but we send back ⓔ<u>disappointment</u>!`,
+                options: ["ⓐ", "ⓑ", "ⓒ", "ⓓ", "ⓔ"],
+                answer: 4,
+                type: 'mc',
+                explanation: "글의 마지막 문장은 '세상은 우리에게 쓰레기를 보내지만, 우리는 음악을 돌려보낸다!'는 긍정적이고 희망적인 메시지를 전달한다. 따라서 '실망(disappointment)'은 문맥에 맞지 않으며, '음악(music)'과 같은 긍정적인 단어가 와야 한다."
+            },
+            {
+                question: "다음 글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?",
+                passage: `But it was the most beautiful music to us.
+
+We had another problem. No one knew how to play musical instruments. We didn't even know how to read music. ( ① ) Favio taught us with great patience. Step by step, we began to make some sounds on our instruments. ( ② ) I still remember the first piece of music that we played. ( ③ ) It was very short and mostly out of tune. ( ④ ) We felt a new hope in our hearts. From then on, we gathered to practice every day. ( ⑤ ) One day, Favio told us some great news. We were going to have a concert, a real concert!`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 3,
+                type: 'mc',
+                explanation: "주어진 문장은 '그러나 그것은 우리에게 가장 아름다운 음악이었다'는 내용이다. 이는 앞서 연주가 '짧고 대부분 음이 맞지 않았다(short and mostly out of tune)'는 부정적인 평가에 대한 반전이므로, 해당 문장 바로 뒤인 ④에 들어가는 것이 가장 자연스럽다."
+            },
+            {
+                question: "다음 대화의 내용과 일치하지 <u>않는</u> 것은?",
+                passage: `Linda: Hi, Tony! What are you going to do this weekend?
+Tony: I'm going to watch the musical, Billy Elliot.
+Linda: Billy Elliot? What is it about?
+Tony: It's about a boy who became a famous dancer. I'm looking forward to watching it.
+Linda: Sounds interesting. Who is the main actor?
+Tony: Jason Kim. He's a great dancer.
+Linda: He's my favorite actor. I watched his musical last year.
+Tony: Oh, really? Do you want to join me?
+Linda: I'd love to, but I can't. I have volunteer work this weekend.
+Tony: Okay. Maybe next time!`,
+                options: ["Tony is excited about his plan to watch a musical on the weekend.", "Linda is already familiar with the story of the musical, Billy Elliot.", "The lead actor in the musical is an accomplished dancer.", "Linda has previous experience watching a musical starring Jason Kim.", "Linda politely declines Tony's offer due to a prior commitment."],
+                answer: 1,
+                type: 'mc',
+                explanation: "Linda는 Tony에게 'Billy Elliot? What is it about?'이라고 물으며 뮤지컬의 내용에 대해 전혀 모르고 있었다. 그녀가 아는 것은 주연 배우인 Jason Kim뿐이다. 따라서 Linda가 뮤지컬 스토리에 익숙하다는 ②번 설명은 내용과 일치하지 않는다."
+            }
+        ];
+
+        const quizForm = document.getElementById('quiz-form');
+        const circledNumbers = ['①', '②', '③', '④', '⑤'];
+
+        quizData.forEach((q, index) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+            
+            let content = `<div class="q-title"><strong>${index + 1}.</strong> ${q.question}</div>`;
+            
+            if (q.passage) {
+                content += `<div class="passage">${q.passage.replace(/\n\n/g, '<br><br>')}</div>`;
+            }
+
+            if (q.type === 'mc') {
+                content += '<div class="options">';
+                q.options.forEach((opt, i) => {
+                    content += `<label><input type="radio" name="q${index}" value="${i}"> ${circledNumbers[i]} ${opt}</label>`;
+                });
+                content += '</div>';
+            } else if (q.type === 'text') {
+                content += `<input type="text" name="q${index}" placeholder="정답을 입력하세요.">`;
+            }
+            questionBlock.innerHTML = content;
+            quizForm.appendChild(questionBlock);
+        });
+
+        function submitQuiz() {
+            const studentName = document.getElementById('studentName').value || '익명';
+            let score = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '';
+            let resultString = `학생 ID: ${studentName}\n날짜: ${new Date().toLocaleDateString()}\n\n[채점 결과]\n\n`;
+
+            quizData.forEach((q, index) => {
+                const inputs = document.getElementsByName(`q${index}`);
+                let userAnswerRaw;
+                let userAnswerText = "답변 안 함";
+                let isCorrect = false;
+
+                if (q.type === 'mc') {
+                    for (const input of inputs) {
+                        if (input.checked) {
+                            userAnswerRaw = parseInt(input.value);
+                            userAnswerText = `${circledNumbers[userAnswerRaw]} ${q.options[userAnswerRaw]}`;
+                            break;
+                        }
+                    }
+                    isCorrect = (userAnswerRaw === q.answer);
+                } else if (q.type === 'text') {
+                    userAnswerRaw = inputs[0].value.trim();
+                    userAnswerText = userAnswerRaw;
+                    const correctAnswer = q.answer.toLowerCase().replace(/\.$/, '');
+                    isCorrect = (userAnswerRaw.toLowerCase().replace(/\.$/, '') === correctAnswer);
+                }
+                
+                const feedbackP = document.createElement('p');
+                let resultLine;
+                const correctAnswerText = q.type === 'mc' ? `${circledNumbers[q.answer]} ${q.options[q.answer]}` : q.answer;
+
+                const detailsBlock = `
+                    <details class="explanation-details">
+                        <summary>해설 보기</summary>
+                        <div class="explanation-content">${q.explanation}</div>
+                    </details>`;
+                
+                if (isCorrect) {
+                    score++;
+                    feedbackP.innerHTML = `<strong>${index + 1}번:</strong> <span class="correct">정답 (1)</span> ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 1\n`;
+                } else {
+                    feedbackP.innerHTML = `<strong>${index + 1}번:</strong> <span class="incorrect">오답 (0)</span> (정답: ${correctAnswerText}) ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 0\t학생이 고른 오답: ${userAnswerText}\n`;
+                }
+                feedbackDiv.appendChild(feedbackP);
+                resultString += resultLine;
+            });
+
+            const finalScore = (score / quizData.length) * 100;
+            document.getElementById('score').innerText = `총점: ${score} / ${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('results').style.display = 'block';
+            
+            resultString += `\n총점: ${score}/${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('resultText').value = resultString;
+        }
+    </script>
+</body>
+</html>
+
