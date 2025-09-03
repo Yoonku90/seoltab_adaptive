@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>고2 지서인 - 약점 보완 맞춤형 문제</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 2em; background-color: #f4f7f9; color: #333; }
+    .quiz-container { max-width: 900px; margin: auto; background: white; padding: 2em; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+    h1, h2 { text-align: center; color: #2c3e50; }
+    .info-block { margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #e0e0e0; }
+    .question-block { margin-bottom: 2.5em; border-top: 1px solid #e0e0e0; padding-top: 1.5em; }
+    .question-block .q-title { font-weight: bold; margin-bottom: 1em; line-height: 1.5; }
+    .passage { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 1em; margin: 1em 0; font-size: 0.95em; color: #555; white-space: pre-wrap; line-height: 1.6; }
+    .options label { display: block; margin-bottom: 0.8em; cursor: pointer; padding: 0.5em; border-radius: 5px; transition: background-color 0.2s; }
+    .options label:hover { background-color: #e9ecef; }
+    input[type="radio"], input[type="text"] { margin-right: 0.5em; vertical-align: middle; }
+    input[type="text"] { width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+    .submit-btn { display: block; width: 100%; padding: 1em; font-size: 1.1em; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; margin-top: 2em; }
+    .submit-btn:hover { background-color: #218838; }
+    .results-area { margin-top: 2em; padding: 1.5em; background-color: #eef8ff; border: 1px solid #b8dcf1; border-radius: 8px; }
+    textarea { width: 100%; height: 220px; margin-top: 1em; font-family: monospace; }
+    .correct { color: green; font-weight: bold; }
+    .incorrect { color: red; font-weight: bold; }
+    .explanation-details { margin-top: 10px; font-size: 0.9em; }
+    .explanation-details summary { cursor: pointer; color: #0056b3; font-weight: normal; display: inline-block; padding: 2px 6px; border-radius: 4px; background-color: #e9ecef; }
+    .explanation-details[open] summary { background-color: #007bff; color: white; }
+    .explanation-content { margin-top: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #444; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>고2 지서인 - 약점 보완 퀴즈</h1>
+    <div class="info-block">
+      <label for="studentName">이름:</label>
+      <input type="text" id="studentName" placeholder="이름을 입력하세요" value="고2_지서인">
+    </div>
+
+    <div id="quiz-form"></div>
+    <button class="submit-btn" onclick="submitQuiz()">결과 확인 및 복사하기</button>
+
+    <div id="results" class="results-area" style="display:none;">
+      <h2>📝 채점 결과</h2>
+      <p id="score"></p>
+      <div id="feedback"></div>
+      <h3>📋 결과 복사하기</h3>
+      <p>아래 내용을 복사하여 선생님께 제출하세요.</p>
+      <textarea id="resultText" readonly></textarea>
+    </div>
+  </div>
+
+  <script>
+    /* ===== 문제 데이터 (원문 보존, 임의 축약/수정/생략 금지) ===== */
+    const quizData = [
+      {
+        question: "다음 글의 (A), (B), (C)의 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?",
+        passage: `<table><tbody><tr><td>The two graphs shown here illustrate how data can be (A) [misrepresenting / misrepresented]. In the first graph, the vertical axis goes all the way up to 100 and all the way down to 0, which makes the decrease in the percentage look modest. In the other graph, only 10 percentage points are shown, from 65 to 75, which makes the change seem much more extreme. Notable (B) [is the fact / the fact is] that the two graphs are based on exactly the same data. So, if you want to point out the seriousness of skipping breakfast, you can use the second graph. Hence, whenever you see a graph, you should check the units on the axes to see what the highest and lowest values are. Check (C) [that / whether] the graph is presented in a specific way to emphasize a point.</td></tr></tbody></table>`,
+        options: [
+          "misrepresenting / the fact is / that",
+          "misrepresenting / is the fact / whether",
+          "misrepresented / is the fact / whether",
+          "misrepresented / the fact is / whether",
+          "misrepresented / is the fact / that"
+        ],
+        answer: 2, // ③
+        type: "mc",
+        explanation: "(A) 수동 의미이므로 misrepresented가 맞다. (B) 강조 도치 구조에서 ‘Notable is the fact …’가 자연스럽다. (C) ‘…인지 여부’의 의미로 whether가 적절하다."
+      },
+      {
+        question: "다음 글의 밑줄 친 ①~⑤ 중, 어법상 <u>틀린</u> 것은?",
+        passage: `<table><tbody><tr><td>People can also get the wrong idea from statistics when a sample is not random. For example, a restaurant may put survey cards on the tables, ①<u>hoping</u> to know what most customers think about its food, service, or atmosphere. However, few cards will be filled out by normal customers, because they don't have any reason to do so. Only those with strongly positive or negative reactions are likely ②<u>to respond</u> to the survey. This method of choosing a sample is called “voluntary response sampling.” Such samples are biased in favor of strong opinions and ③<u>underrepresent</u> the moderate ones. Therefore, when you see a statistic, remember that the sample is just as important as the statistic ④<u>itself</u>. How many people were in the sample? Who were they? If you don't know, be careful not ⑤<u>to leap them</u> to conclusions.</td></tr></tbody></table>`,
+        options: ["", "", "", "", ""], // 번호만 보이도록
+        answer: 4, // ⑤
+        type: "mc",
+        explanation: "관용표현은 ‘leap to conclusions’이다. 목적어 them을 쓰는 것은 어색하다."
+      },
+      {
+        question: "다음 글의 밑줄 친 부분 중 어법상 옳은 것만을 <u>있는 대로</u> 고른 것은?",
+        passage: `<table><tbody><tr><td>In mass media, graphs are often used because they display data more efficiently than tables of raw data ⓐ<u>are</u>. However, graphs can be misleading, too. The two graphs shown here illustrate how data can be ⓑ<u>misrepresented</u>. In the first graph, the vertical axis goes all the way up to 100, which makes the decrease look modest. In the other graph, only 10 percentage points are shown, from 65 to 75, ⓒ<u>which</u> makes the change seem much more extreme. Notable is the fact that the two graphs are based on exactly the same data. Hence, ⓓ<u>whenever</u> you see a graph, you should check the units on the axes to see what the highest and lowest values are. Check ⓔ<u>that</u> the graph is presented in a specific way to emphasize a point.</td></tr></tbody></table>`,
+        options: ["ⓐ, ⓒ", "ⓑ, ⓓ", "ⓐ, ⓑ, ⓔ", "ⓑ, ⓒ, ⓓ", "ⓐ, ⓑ, ⓒ, ⓓ"],
+        answer: 3, // ④ = ⓑ, ⓒ, ⓓ
+        type: "mc",
+        explanation: "ⓑ misrepresented, ⓒ which, ⓓ whenever가 옳다. ⓐ는 ‘display … do’에 대응하여 do가 와야 하고, ⓔ는 ‘…인지 여부’ 의미에는 whether가 자연하다."
+      },
+      {
+        question: "다음 중 어법상 쓰임이 적절하지 <u>않은</u> 문장은?",
+        passage: "",
+        options: [
+          "He asked me whether I could finish the report by tomorrow.",
+          "The problem is whether we have enough time to catch the train.",
+          "The boy looked at himself in the mirror and smiled.",
+          "She baked the cake herself to surprise her mother.",
+          "I am not sure that he will agree with our new marketing strategy."
+        ],
+        answer: 4, // ⑤
+        type: "mc",
+        explanation: "‘be not sure’ 뒤에는 보통 whether가 온다. ⑤는 that 대신 whether가 자연하다."
+      },
+      {
+        question: "다음 단어의 영영풀이로 적절하지 <u>않은</u> 것은?",
+        passage: "",
+        options: [
+          "random: chosen or done without any particular plan or system",
+          "misleading: giving the wrong idea or impression and making you believe something that is not true",
+          "convincing: able to make you believe that something is true or right",
+          "biased: unfairly preferring one person or group over another",
+          "statistics: a collection of information shown in numbers, which is always objective and cannot be misused"
+        ],
+        answer: 4, // ⑤
+        type: "mc",
+        explanation: "통계(statistics)는 항상 객관적이거나 오용 불가능하지 않다. 오해·오용될 수 있다."
+      },
+      {
+        question: "다음 글의 밑줄 친 ①~⑤ 중, 문맥상 낱말의 쓰임이 적절하지 <u>않은</u> 것은?",
+        passage: `<table><tbody><tr><td>On the Internet, Minjeong sees an advertisement that reads, "100% of users report brighter and softer skin with Blossom Company's liquid facial soap." It claims that these results are from an ①<u>independent</u> laboratory and are guaranteed by a public agency. Minjeong does not question the statistics and buys some bottles, despite the high price. However, although Minjeong uses the soap for a few months, she does not experience any ②<u>noticeable</u> changes. Did Minjeong just happen to buy a ③<u>defective</u> product? Or was the advertisement completely fake? When Minjeong read “100% of users,” she should have asked herself, “Where did the company get this figure?” If Minjeong had read the tiny letters at the bottom of the ad, she would have found that the sample included only five people. As in this case, when a sample is not large enough to show a wide range of results, it can be ④<u>convincing</u>. By using small samples, companies can come up with any results they want and use them for their own ⑤<u>purposes</u>.</td></tr></tbody></table>`,
+        options: ["", "", "", "", ""], // 번호만 보이도록
+        answer: 3, // ④
+        type: "mc",
+        explanation: "표본이 너무 작으면 ‘설득력 있는(convincing)’이 아니라 ‘misleading’이 되기 쉽다. 따라서 ④가 부적절하다."
+      },
+      {
+        question: "다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?",
+        passage: `<table><tbody><tr><td>People can also get the wrong idea from statistics when a sample is not random. For example, a restaurant may put survey cards on the tables, hoping to know what most customers think about its food, service, or atmosphere. However, few cards will be filled out by normal customers, because they don't have any reason to do so. Only those with strongly positive or negative reactions are likely to respond to the survey. This method of choosing a sample is called “voluntary response sampling.” Such samples are ________ in favor of strong opinions and underrepresent the moderate ones.</td></tr></tbody></table>`,
+        options: ["calculated", "guaranteed", "distributed", "competent", "biased"],
+        answer: 4, // ⑤
+        type: "mc",
+        explanation: "자발적 응답 표본은 강한 의견 쪽으로 ‘편향된(biased)’ 성향을 보인다."
+      },
+      {
+        question: "다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?",
+        passage: `<table><tbody><tr><td>ABC Corporation wants to hire some employees. In order to look like a well-paying company and to recruit competent candidates, the company decides to distribute a press release that says the average yearly salary of its employees is $57,000, which is quite high. However, the fact is that more than half of its employees earn no more than $30,000 or less a year, and the most common salary for employees is only $20,000. It's because the company used the trap of averages. There's only a handful of people that are earning an average salary of $57,000 or higher. However, because the company wanted to be perceived as a well-paying one, it used the mean, which results in __________.</td></tr></tbody></table>`,
+        options: [
+          "a fairly calculated average salary",
+          "a deceptively high average salary",
+          "the most common and frequent salary",
+          "an accurate idea of the real data",
+          "a wide range of employee salaries"
+        ],
+        answer: 1, // ②
+        type: "mc",
+        explanation: "소수의 고연봉자가 평균값을 끌어올려 ‘속이는 듯 높게 보이는 평균’이 된다."
+      },
+      {
+        question: "다음 글의 내용과 일치하지 <u>않는</u> 것을 <u>모두</u> 고른 것은?",
+        passage: `<table><tbody><tr><td>ABC Corporation wants to hire some employees. In order to look like a well-paying company and to recruit competent candidates, the company decides to distribute a press release that says the average yearly salary of its employees is $57,000, which is quite high. However, the fact is that more than half of its employees earn no more than $30,000 or less a year, and the most common salary for employees is only $20,000. The term “average” can indicate the “mean,” the “median,” or the “mode.” The median is the number that is exactly in the middle. In this case it is $30,000. The mode is the number that appears most frequently—$20,000 in this case. The company used the mean because it wanted to be perceived as a well-paying one.</td></tr></tbody></table>`,
+        options: [
+          "a, c",
+          "b, d",
+          "b, e",
+          "b, d, e",
+          "c, d, e"
+        ],
+        answer: 3, // ④
+        type: "mc",
+        explanation: "b(최빈값이 중앙값보다 높다), d(보도자료가 대다수 임금을 반영), e(세 평균 모두 사용)는 본문과 불일치한다."
+      },
+      {
+        question: "다음 글을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
+        passage: `<table><tbody><tr><td>In mass media, graphs are often used because they display data more efficiently than tables of raw data do. However, graphs can be misleading, too. The two graphs shown here illustrate how data can be misrepresented. In the first graph, the vertical axis goes all the way up to 100 and all the way down to 0, which makes the decrease in the percentage look modest. In the other graph, only 10 percentage points are shown, from 65 to 75, which makes the change seem much more extreme. Notable is the fact that the two graphs are based on exactly the same data. So, if you want to point out the seriousness of skipping breakfast, you can use the second graph.</td></tr></tbody></table><br><div style="text-align:center;">↓</div><table><tbody><tr><td>By <b>(A)</b> the units on the axes, a graph can change the visual <b>(B)</b> of the same set of data to support a certain argument.</td></tr></tbody></table>`,
+        options: [
+          "checking / distribution",
+          "illustrating / seriousness",
+          "manipulating / impact",
+          "presenting / accuracy",
+          "standardizing / source"
+        ],
+        answer: 2, // ③
+        type: "mc",
+        explanation: "축 단위를 ‘manipulating(조작)’하여 같은 자료라도 시각적 ‘impact(영향)’을 바꿔 보이게 할 수 있다는 요지다."
+      }
+    ];
+
+    /* ===== 렌더링 (문항 번호 자동 부여 + 앞번호 제거) ===== */
+    const quizForm = document.getElementById('quiz-form');
+    const circledNumbers = ['①','②','③','④','⑤'];
+
+    function stripLeadingNumber(text) {
+      return (text || '').replace(/^\s*(?:Q?\s*\(?\d+\)?[.)]?\s*)/, '');
+    }
+
+    quizData.forEach((q, index) => {
+      const questionBlock = document.createElement('div');
+      questionBlock.className = 'question-block';
+
+      const title = `${index + 1}. ${stripLeadingNumber(q.question)}`;
+      let content = `<div class="q-title">${title}</div>`;
+
+      if (q.passage) {
+        content += `<div class="passage">${q.passage.replace(/\n\n/g, '<br><br>')}</div>`;
+      }
+
+      if (q.type === 'mc') {
+        content += '<div class="options">';
+        q.options.forEach((opt, i) => {
+          const safeText = (opt || "").trim();
+          content += `<label><input type="radio" name="q${index}" value="${i}"> ${circledNumbers[i]} ${safeText}</label>`;
+        });
+        content += '</div>';
+      } else if (q.type === 'text') {
+        content += `<input type="text" name="q${index}" placeholder="정답을 입력하세요.">`;
+      }
+
+      questionBlock.innerHTML = content;
+      quizForm.appendChild(questionBlock);
+    });
+
+    /* ===== 채점 ===== */
+    function submitQuiz(){
+      const studentName = document.getElementById('studentName').value || '익명';
+      let score = 0;
+      const feedbackDiv = document.getElementById('feedback');
+      feedbackDiv.innerHTML = '';
+      let resultString = `학생 ID: ${studentName}\n날짜: ${new Date().toLocaleDateString()}\n\n[채점 결과]\n\n`;
+
+      quizData.forEach((q, index) => {
+        const inputs = document.getElementsByName(`q${index}`);
+        let userAnswerRaw;
+        let userAnswerText = "답변 안 함";
+        let isCorrect = false;
+
+        if (q.type === 'mc') {
+          for (const input of inputs) {
+            if (input.checked) {
+              userAnswerRaw = parseInt(input.value);
+              userAnswerText = `${circledNumbers[userAnswerRaw]} ${q.options[userAnswerRaw] || ""}`.trim();
+              break;
+            }
+          }
+          isCorrect = (userAnswerRaw === q.answer);
+        } else if (q.type === 'text') {
+          userAnswerRaw = inputs[0].value.trim();
+          userAnswerText = userAnswerRaw;
+          const correctAnswer = (q.answer + '').toLowerCase().replace(/\.$/, '');
+          isCorrect = (userAnswerRaw.toLowerCase().replace(/\.$/, '') === correctAnswer);
+        }
+
+        const feedbackP = document.createElement('p');
+        const correctAnswerText = q.type === 'mc'
+          ? `${circledNumbers[q.answer]} ${q.options[q.answer] || ""}`.trim()
+          : q.answer;
+
+        const detailsBlock = `
+          <details class="explanation-details">
+            <summary>해설 보기</summary>
+            <div class="explanation-content">${q.explanation || "해설 준비 중"}</div>
+          </details>`;
+
+        if (isCorrect) {
+          score++;
+          feedbackP.innerHTML = `${index + 1}번: <span class="correct">정답 (1)</span> ${detailsBlock}`;
+          resultString += `문제 번호: ${index + 1}\t정오 여부: 1\n`;
+        } else {
+          feedbackP.innerHTML = `${index + 1}번: <span class="incorrect">오답 (0)</span> (정답: ${correctAnswerText}) ${detailsBlock}`;
+          resultString += `문제 번호: ${index + 1}\t정오 여부: 0\t학생이 고른 오답: ${userAnswerText}\n`;
+        }
+        feedbackDiv.appendChild(feedbackP);
+      });
+
+      const finalScore = (score / quizData.length) * 100;
+      document.getElementById('score').innerText = `총점: ${score} / ${quizData.length} (${finalScore.toFixed(1)}점)`;
+      document.getElementById('results').style.display = 'block';
+
+      resultString += `\n총점: ${score}/${quizData.length} (${finalScore.toFixed(1)}점)`;
+      document.getElementById('resultText').value = resultString;
+    }
+  </script>
+</body>
+</html>

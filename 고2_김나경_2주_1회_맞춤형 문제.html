@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고2 김나경 - 3과 약점 보완 퀴즈</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 2em; background-color: #f4f7f9; color: #333; }
+        .quiz-container { max-width: 800px; margin: auto; background: white; padding: 2em; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        h1, h2 { text-align: center; color: #2c3e50; }
+        .info-block { margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #e0e0e0; }
+        .question-block { margin-bottom: 2.5em; border-top: 1px solid #e0e0e0; padding-top: 1.5em; }
+        .question-block .q-title { font-weight: bold; margin-bottom: 1em; line-height: 1.5; }
+        .passage { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 1em; margin: 1em 0; font-size: 0.95em; color: #555; white-space: pre-wrap; line-height: 1.6; }
+        .options label { display: block; margin-bottom: 0.8em; cursor: pointer; padding: 0.5em; border-radius: 5px; transition: background-color 0.2s; }
+        .options label:hover { background-color: #e9ecef; }
+        input[type="radio"], input[type="text"] { margin-right: 0.5em; vertical-align: middle; }
+        input[type="text"] { width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { display: block; width: 100%; padding: 1em; font-size: 1.1em; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; margin-top: 2em; }
+        .submit-btn:hover { background-color: #218838; }
+        .results-area { margin-top: 2em; padding: 1.5em; background-color: #eef8ff; border: 1px solid #b8dcf1; border-radius: 8px; }
+        textarea { width: 100%; height: 200px; margin-top: 1em; font-family: monospace; }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+        .explanation-details { margin-top: 10px; font-size: 0.9em; }
+        .explanation-details summary { cursor: pointer; color: #0056b3; font-weight: normal; display: inline-block; padding: 2px 6px; border-radius: 4px; background-color: #e9ecef; }
+        .explanation-details[open] summary { background-color: #007bff; color: white; }
+        .explanation-content { margin-top: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #444; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>고2 김나경 - 3과 약점 보완 퀴즈</h1>
+        <div class="info-block">
+            <label for="studentName">이름:</label>
+            <input type="text" id="studentName" placeholder="이름을 입력하세요" value="고2_김나경">
+        </div>
+        <div id="quiz-form"></div>
+        <button class="submit-btn" onclick="submitQuiz()">결과 확인 및 복사하기</button>
+        <div id="results" class="results-area" style="display:none;">
+            <h2>📝 채점 결과</h2>
+            <p id="score"></p>
+            <div id="feedback"></div>
+            <h3>📋 결과 복사하기</h3>
+            <p>아래 내용을 복사하여 선생님께 제출하세요.</p>
+            <textarea id="resultText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "다음 글의 밑줄 친 ①~⑤ 중, 어법상 쓰임이 적절하지 <u>않은</u> 것은?",
+                passage: `Most often, the term “average” indicates the “mean.” It is calculated by adding all the values in a group and ①<u>dividing</u> the result by the number of group members. However, the mean is not the only kind of average. There are two more kinds: the “median” and the “mode.” The median is the number that is exactly in the middle of all the other figures. In this case it is $30,000, because 12 employees are making more than $30,000 and 12 are making less. The mode is the number that ②<u>appears</u> most frequently—$20,000 in this case. As you can see in the illustration, there's only a handful of people that are ③<u>earning</u> an average salary of $57,000 or higher. However, because the company wanted to ④<u>be perceived</u> as a well-paying one, it used the mean, which results in a deceptively high average salary. An average is convincing because it is so simple. To avoid ⑤<u>to be tricked</u>, however, you have to know what sort of average is being reported.`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 4,
+                type: 'mc',
+                explanation: "동사 `avoid`는 목적어로 동명사를 취하므로 `being tricked`가 되어야 한다. `to be tricked`는 to부정사이므로 어법상 틀리다."
+            },
+            {
+                question: "다음 글의 (A), (B), (C)의 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?",
+                passage: `When people state opinions in articles, speeches, debates, or advertisements, they often give some statistics to support or reinforce their point. If these statistics are found through proper research methods, then they are (A)<u>objective / objectively</u> facts. However, many statistics that you see and hear could just be numbers that are (B)<u>meant / meaning</u> to convince you of a certain view. Therefore, the next time you come across some statistics, don't blindly accept any data that is presented. Look at the statistics in detail with a critical eye, and then judge (C)<u>whether / what</u> or not they are convincing.`,
+                options: ["(A) objective — (B) meant — (C) whether", "(A) objectively — (B) meaning — (C) what", "(A) objective — (B) meaning — (C) whether", "(A) objectively — (B) meant — (C) what", "(A) objective — (B) meant — (C) what"],
+                answer: 0,
+                type: 'mc',
+                explanation: "(A) be동사 뒤에서 명사 `facts`를 수식하는 형용사 `objective`가 적절하다. (B) '의도된'이라는 수동의 의미이므로 과거분사 `meant`가 와야 한다. (C) '~인지 아닌지'라는 의미로 `judge`의 목적어절을 이끄는 접속사 `whether`가 적절하다."
+            },
+            {
+                question: "다음 글의 내용과 일치하지 <u>않는</u> 것은?",
+                passage: `ABC Corporation wants to hire some employees. In order to look like a well-paying company and to recruit competent candidates, the company decides to distribute a press release that says the average yearly salary of its employees is $57,000, which is quite high. However, the fact is that more than half of its employees earn no more than $30,000 or less a year, and the most common salary for employees is only $20,000. Did the company spread false information? How is this possible? It's because the company used the trap of averages. Averages can show different pictures depending on which type is chosen. To understand the meaning of different types of averages, let's look at the illustration on the next page.`,
+                options: ["ABC Corporation aimed to attract skilled applicants with a high salary figure.", "The most frequent salary at the company is significantly lower than the reported average.", "The company intentionally used a specific type of average to create a positive image.", "More than half of the employees at the company earn an average salary of $57,000.", "The press release about the average salary did not reflect the typical employee's earnings."],
+                answer: 3,
+                type: 'mc',
+                explanation: "본문에 따르면 'more than half of its employees earn no more than $30,000 or less a year'(직원의 절반 이상이 연봉 3만 달러 이하를 받는다)라고 명시되어 있다. 따라서 '절반 이상이 평균 연봉 57,000달러를 받는다'는 ④번 선택지는 글의 내용과 일치하지 않는다."
+            },
+            {
+                question: "다음 글의 내용과 일치하지 <u>않는</u> 것은?",
+                passage: `People can also get the wrong idea from statistics when a sample is not random. For example, a restaurant may put survey cards on the tables, hoping to know what most customers think about its food, service, or atmosphere. However, few cards will be filled out by normal customers, because they don't have any reason to do so. Only those with strongly positive or negative reactions are likely to respond to the survey. This method of choosing a sample is called “voluntary response sampling.” Such samples are biased in favor of strong opinions and underrepresent the moderate ones. Therefore, when you see a statistic, remember that the sample is just as important as the statistic itself.`,
+                options: ["Voluntary response sampling can lead to biased statistics.", "The sample is as crucial as the statistic itself when evaluating data.", "People with strong opinions are more likely to participate in voluntary surveys.", "The restaurant successfully gathered opinions from a wide range of its customers.", "Most normal customers at the restaurant did not fill out the survey cards."],
+                answer: 3,
+                type: 'mc',
+                explanation: "본문에서는 'few cards will be filled out by normal customers'(일반 고객들이 작성한 카드는 거의 없을 것이다)라고 언급하며, 레스토랑이 다양한 고객층의 의견을 수집하는 데 성공하지 못했음을 암시한다. 따라서 ④번은 글의 내용과 일치하지 않는다."
+            },
+            {
+                question: "다음 글의 주제로 가장 적절한 것은?",
+                passage: `The two graphs shown here illustrate how data can be misrepresented. In the first graph, the vertical axis goes all the way up to 100 and all the way down to 0, which makes the decrease in the percentage look modest. In the other graph, only 10 percentage points are shown, from 65 to 75, which makes the change seem much more extreme. Notable is the fact that the two graphs are based on exactly the same data. So, if you want to point out the seriousness of skipping breakfast, you can use the second graph. In fact, you can make nearly any graph more convincing in favor of your argument by cutting off the graph at a certain point.`,
+                options: ["The importance of eating breakfast for health", "Various ways to collect accurate statistical data", "The visual manipulation of data through graph presentation", "The difficulty of representing large data sets in a single graph", "How to create a convincing argument using different sets of data"],
+                answer: 2,
+                type: 'mc',
+                explanation: "본문은 똑같은 데이터를 사용하더라도 그래프의 세로축 단위를 조작하여 시각적으로 다른 인상을 줄 수 있다는 점을 두 개의 그래프를 예시로 들어 설명하고 있다. 이는 데이터가 그래프 표현 방식에 따라 어떻게 왜곡될 수 있는지를 보여주므로, ③번이 글의 주제로 가장 적절하다."
+            },
+            {
+                question: "다음 글에서 필자가 주장하는 바로 가장 적절한 것은?",
+                passage: `When people state opinions in articles, speeches, debates, or advertisements, they often give some statistics to support or reinforce their point. If these statistics are found through proper research methods, then they are objective facts. However, many statistics that you see and hear could just be numbers that are meant to convince you of a certain view. Therefore, the next time you come across some statistics, don't blindly accept any data that is presented. Look at the statistics in detail with a critical eye, and then judge whether or not they are convincing.`,
+                options: ["To make a strong argument, one must always present objective statistical facts.", "We should be cautious and critically evaluate statistics before accepting them.", "Proper research methods are the only way to create reliable statistics.", "It is more important to convince people than to present objective numbers.", "Understanding statistics requires detailed knowledge of research methodologies."],
+                answer: 1,
+                type: 'mc',
+                explanation: "필자는 통계가 특정 견해를 설득하려는 의도를 가질 수 있으므로, 'don't blindly accept any data'(어떤 자료도 맹목적으로 받아들이지 마라)고 말하며 'Look at the statistics in detail with a critical eye'(비판적인 시각으로 통계를 자세히 살펴보라)고 주장하고 있다. 따라서 ②번이 필자의 주장으로 가장 적절하다."
+            },
+            {
+                question: "다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?",
+                passage: `As in this case, when a sample is not large enough to show a wide range of results, it can be ____________________. By using small samples, companies can come up with any results they want and use them for their own purposes.\n\nPeople can also get the wrong idea from statistics when a sample is not random. For example, a restaurant may put survey cards on the tables, hoping to know what most customers think about its food, service, or atmosphere. However, few cards will be filled out by normal customers, because they don't have any reason to do so. Only those with strongly positive or negative reactions are likely to respond to the survey.`,
+                options: ["guaranteed", "misleading", "random", "noticeable", "defective"],
+                answer: 1,
+                type: 'mc',
+                explanation: "빈칸 앞 문장은 표본이 충분히 크지 않을 때의 결과를 설명하고, 뒷 문장은 작은 표본을 의도적으로 사용하는 회사의 사례를 보여준다. 이러한 맥락에서 표본이 작으면 결과가 '오해를 불러일으킬 수 있다(misleading)'고 하는 것이 가장 자연스럽다. 나머지 선택지들은 문맥상 적절하지 않다."
+            },
+            {
+                question: "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?",
+                passage: `> Similarly, when people see statistics that show fastening a seat belt greatly increases the chances of surviving a car accident, they may choose to wear one themselves.\n\nIn today's world, there is a lot of statistical information around us all the time. ( ① ) Every time we read an article on the Internet or see a commercial on TV, we are likely to come into contact with numbers and figures. ( ② ) Generally, these numbers help us make better decisions in our daily lives. ( ③ ) For example, when we choose which movie to see, we can check the ratings and see the reviews of thousands of viewers. ( ④ ) These are just a few examples of how statistical information plays an important role in our lives. ( ⑤ ) However, is it safe to believe statistics exactly the way they are presented to us?`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 3,
+                type: 'mc',
+                explanation: "주어진 문장은 'Similarly(마찬가지로)'로 시작하며 통계의 긍정적 역할에 대한 또 다른 예시를 제시한다. ( ④ ) 앞 문장이 영화 평점을 확인하는 첫 번째 예시이므로, 그 뒤에 두 번째 예시인 안전벨트 사례가 이어지는 것이 가장 논리적이다."
+            },
+            {
+                question: "다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?<br><br>-> To avoid being deceived by the simple term \"average,\" one must understand which (A)_______________ of average is used and consider the (B)_______________ of the data values.",
+                passage: `Most often, the term “average” indicates the “mean.” It is calculated by adding all the values in a group and dividing the result by the number of group members. However, the mean is not the only kind of average. There are two more kinds: the “median” and the “mode.” The median is the number that is exactly in the middle of all the other figures. The mode is the number that appears most frequently. An average is convincing because it is so simple. To avoid being tricked, however, you have to know what sort of average is being reported. You also need to find out the distribution of the values in order to get a more accurate idea of the real data.`,
+                options: ["(A) method — (B) source", "(A) result — (B) simplicity", "(A) type — (B) distribution", "(A) problem — (B) accuracy", "(A) purpose — (B) calculation"],
+                answer: 2,
+                type: 'mc',
+                explanation: "본문은 '평균'이라는 용어에 속지 않으려면 'what sort of average is being reported'(어떤 종류의 평균이 보고되는지) 알아야 한다고 말하고 있다. 이는 (A) type에 해당한다. 또한 'find out the distribution of the values'(값의 분포를 알아낼 필요가 있다)고 했으므로, 이는 (B) distribution에 해당한다. 따라서 정답은 ③번이다."
+            },
+            {
+                question: "다음 글의 밑줄 친 ①~⑤ 중, 문맥상 낱말의 쓰임이 적절하지 <u>않은</u> 것은?",
+                passage: `Notable is the fact that the two graphs are based on exactly the same data. So, if you want to point out the ①<u>seriousness</u> of skipping breakfast, you can use the second graph. In fact, you can make nearly any graph more ②<u>convincing</u> in favor of your argument by cutting off the graph at a certain point. Hence, whenever you see a graph, you should check the units on the vertical and horizontal axes to see what the highest and lowest values are. Don't simply ③<u>assume</u> the visual impact is the same as the real story. Check whether the graph is presented in a specific way to ④<u>understate</u> a point. The two graphs shown here illustrate how data can be ⑤<u>misrepresented</u>.`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 3,
+                type: 'mc',
+                explanation: "본문은 특정 주장을 강조하기 위해 그래프를 특정 방식으로 제시할 수 있다고 설명한다. 따라서 그래프가 어떤 주장을 '강조하기(emphasize)' 위해 특정 방식으로 제시되었는지 확인하라는 내용이 되어야 한다. `understate`는 '축소하여 말하다'라는 반대의 의미이므로 문맥상 어색하다."
+            }
+        ];
+
+        const quizForm = document.getElementById('quiz-form');
+        const circledNumbers = ['①', '②', '③', '④', '⑤'];
+
+        quizData.forEach((q, index) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+            
+            let content = `<div class="q-title">${index + 1}. ${q.question.replace(/(\d+\.)/g, '')}</div>`;
+            
+            if (q.passage) {
+                content += `<div class="passage">${q.passage.replace(/\n\n/g, '<br><br>')}</div>`;
+            }
+
+            if (q.type === 'mc') {
+                content += '<div class="options">';
+                q.options.forEach((opt, i) => {
+                    content += `<label><input type="radio" name="q${index}" value="${i}"> ${circledNumbers[i]} ${opt}</label>`;
+                });
+                content += '</div>';
+            } else if (q.type === 'text') {
+                content += `<input type="text" name="q${index}" placeholder="정답을 입력하세요.">`;
+            }
+            questionBlock.innerHTML = content;
+            quizForm.appendChild(questionBlock);
+        });
+
+        function submitQuiz() {
+            const studentName = document.getElementById('studentName').value || '익명';
+            let score = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '';
+            let resultString = `학생 ID: ${studentName}\n날짜: ${new Date().toLocaleDateString()}\n\n[채점 결과]\n\n`;
+
+            quizData.forEach((q, index) => {
+                const inputs = document.getElementsByName(`q${index}`);
+                let userAnswerRaw;
+                let userAnswerText = "답변 안 함";
+                let isCorrect = false;
+
+                if (q.type === 'mc') {
+                    for (const input of inputs) {
+                        if (input.checked) {
+                            userAnswerRaw = parseInt(input.value);
+                            userAnswerText = `${circledNumbers[userAnswerRaw]} ${q.options[userAnswerRaw]}`;
+                            break;
+                        }
+                    }
+                    isCorrect = (userAnswerRaw === q.answer);
+                } else if (q.type === 'text') {
+                    userAnswerRaw = inputs[0].value.trim();
+                    userAnswerText = userAnswerRaw;
+                    const correctAnswer = q.answer.toLowerCase().replace(/\.$/, '');
+                    isCorrect = (userAnswerRaw.toLowerCase().replace(/\.$/, '') === correctAnswer);
+                }
+                
+                const feedbackP = document.createElement('p');
+                let resultLine;
+                const correctAnswerText = q.type === 'mc' ? `${circledNumbers[q.answer]} ${q.options[q.answer]}` : q.answer;
+
+                const detailsBlock = `
+                    <details class="explanation-details">
+                        <summary>해설 보기</summary>
+                        <div class="explanation-content">${q.explanation}</div>
+                    </details>`;
+                
+                if (isCorrect) {
+                    score++;
+                    feedbackP.innerHTML = `${index + 1}번: <span class="correct">정답 (1)</span> ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 1\n`;
+                } else {
+                    feedbackP.innerHTML = `${index + 1}번: <span class="incorrect">오답 (0)</span> (정답: ${correctAnswerText}) ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 0\t학생이 고른 오답: ${userAnswerText}\n`;
+                }
+                feedbackDiv.appendChild(feedbackP);
+                resultString += resultLine;
+            });
+
+            const finalScore = (score / quizData.length) * 100;
+            document.getElementById('score').innerText = `총점: ${score} / ${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('results').style.display = 'block';
+            
+            resultString += `\n총점: ${score}/${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('resultText').value = resultString;
+        }
+
+        // Make submitQuiz globally accessible
+        window.submitQuiz = submitQuiz;
+
+    </script>
+</body>
+</html>
+
