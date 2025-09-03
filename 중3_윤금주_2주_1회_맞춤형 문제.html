@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중3 윤금주 - 약점 보완 맞춤형 문제</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 2em; background-color: #f4f7f9; color: #333; }
+        .quiz-container { max-width: 800px; margin: auto; background: white; padding: 2em; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        h1, h2 { text-align: center; color: #2c3e50; }
+        .info-block { margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #e0e0e0; }
+        .question-block { margin-bottom: 2.5em; border-top: 1px solid #e0e0e0; padding-top: 1.5em; }
+        .question-block .q-title { font-weight: bold; margin-bottom: 1em; line-height: 1.5; }
+        .passage { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 1em; margin: 1em 0; font-size: 0.95em; color: #555; white-space: pre-wrap; line-height: 1.6; }
+        .options label { display: block; margin-bottom: 0.8em; cursor: pointer; padding: 0.5em; border-radius: 5px; transition: background-color 0.2s; }
+        .options label:hover { background-color: #e9ecef; }
+        input[type="radio"], input[type="text"] { margin-right: 0.5em; vertical-align: middle; }
+        input[type="text"] { width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { display: block; width: 100%; padding: 1em; font-size: 1.1em; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; margin-top: 2em; }
+        .submit-btn:hover { background-color: #218838; }
+        .results-area { margin-top: 2em; padding: 1.5em; background-color: #eef8ff; border: 1px solid #b8dcf1; border-radius: 8px; }
+        textarea { width: 100%; height: 200px; margin-top: 1em; font-family: monospace; }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+        .explanation-details { margin-top: 10px; font-size: 0.9em; }
+        .explanation-details summary { cursor: pointer; color: #0056b3; font-weight: normal; display: inline-block; padding: 2px 6px; border-radius: 4px; background-color: #e9ecef; }
+        .explanation-details[open] summary { background-color: #007bff; color: white; }
+        .explanation-content { margin-top: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #444; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>중3 영어 6과 약점 보완 퀴즈</h1>
+        <div class="info-block">
+            <label for="studentName">이름:</label>
+            <input type="text" id="studentName" placeholder="이름을 입력하세요" value="중3_윤금주">
+        </div>
+        <div id="quiz-form"></div>
+        <button class="submit-btn" onclick="submitQuiz()">결과 확인 및 복사하기</button>
+        <div id="results" class="results-area" style="display:none;">
+            <h2>📝 채점 결과</h2>
+            <p id="score"></p>
+            <div id="feedback"></div>
+            <h3>📋 결과 복사하기</h3>
+            <p>아래 내용을 복사하여 선생님께 제출하세요.</p>
+            <textarea id="resultText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "다음 글의 (A), (B), (C)의 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?",
+                passage: `Pet Sitter Finder is the perfect app for pet lovers and pet owners. It helps pet owners (A) [finding / find] reliable people to look after their pets. When a pet owner is looking for pet sitters, he or she uploads a post. Pet sitters or dog walkers can then send messages to the owner. The owner checks their reviews and (B) [chooses / choose] the best person. We're now developing a system that allows users to communicate freely without (C) [showing / show] their personal information.`,
+                options: ["(A) finding (B) chooses (C) showing", "(A) finding (B) choose (C) show", "(A) find (B) chooses (C) showing", "(A) find (B) choose (C) show", "(A) find (B) chooses (C) show"],
+                answer: 2,
+                type: 'mc',
+                explanation: "(A) 준사역동사 helps의 목적격 보어는 동사원형 find가 적절하다. (B) 주어 The owner가 3인칭 단수이므로 동사 chooses가 맞다. (C) 전치사 without 뒤에는 동명사 showing이 와야 한다."
+            },
+            {
+                question: "다음 글의 밑줄 친 부분 중, 문맥상 낱말의 쓰임이 적절하지 <u>않은</u> 것은?",
+                passage: `Ask Your Neighbors helps people easily find items that they can borrow from others. First, users download the app and search for another user that has the item they need. Then they pick up the item and return it ①<u>later</u>. I love saving money by borrowing things that I don't often need. Also, I think it's environmentally ②<u>friendly</u>. The fewer products we buy, the more resources we save. Seeing a lot of ③<u>positive</u> reviews, I decided to borrow a bike helmet. When I got it, however, it was broken. I was so upset! We're sorry that you had such a ④<u>negative</u> experience. To fix this issue, we are asking lenders to update the pictures of their items regularly. This will let other users know the ⑤<u>vague</u> condition of the product.`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 4,
+                type: 'mc',
+                explanation: "문맥상 다른 사용자들이 제품의 '정확한(exact)' 상태를 알도록 해야 하므로, '모호한(vague)'이라는 의미의 ⑤번은 적절하지 않다."
+            },
+            {
+                question: "다음 대화를 읽고, 내용과 일치하지 <u>않는</u> 것은?",
+                passage: `G: I tried Spring Chips recently, and now I want to review them.\nB: That sounds fun. How will you do your review?\nG: I'll make a video. I want to focus on their delicious taste!\nB: Okay, but don't forget to talk about their bad points too.\nG: I won't. I want to give a balanced review.\nB: Good. Your video will make it easier for people to choose better products.\nG: That's exactly what I want. I'd like to give people more useful information about the product.`,
+                options: ["The girl recently ate a snack called Spring Chips.", "The girl plans to create a video to share her opinion.", "The boy advises the girl to mention only the good things about the product.", "A balanced review should include both good and bad points.", "The boy believes the girl's review can help other consumers."],
+                answer: 2,
+                type: 'mc',
+                explanation: "소년은 소녀에게 장점뿐만 아니라 단점도 이야기해야 한다고 조언했으므로('don't forget to talk about their bad points too'), ③번은 대화의 내용과 일치하지 않는다."
+            },
+            {
+                question: "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?",
+                passage: `Pet Sitter Finder is the perfect app for pet lovers and pet owners. It helps pet owners find reliable people to look after their pets.\n\n(A) The owner checks their reviews and chooses the best person. George, a user, says he uses this app whenever he's out of town but has concerns about his personal information.\n(B) To address this, Pet Sitter Finder is developing a system that allows users to communicate freely without showing their personal information.\n(C) When a pet owner is looking for pet sitters, he or she uploads a post. Pet sitters or dog walkers can then send messages to the owner.`,
+                options: ["(A) - (C) - (B)", "(B) - (A) - (C)", "(B) - (C) - (A)", "(C) - (A) - (B)", "(C) - (B) - (A)"],
+                answer: 3,
+                type: 'mc',
+                explanation: "앱을 통해 펫시터를 구하는 절차(C), 사용자의 후기와 우려 제기(A), 그에 대한 회사의 해결책 제시(B) 순서로 이어지는 것이 가장 자연스럽다. 따라서 정답은 (C)-(A)-(B)이다."
+            },
+            {
+                question: "다음 중 어법상 옳은 문장은?",
+                passage: null,
+                options: ["The more fast you run, the earlier you will arrive.", "More you practice, more confident you will become.", "The older he gets, the more wiser he becomes.", "The fewer mistakes you make, the higher your score will be.", "The more I thought about it, I got the more confused."],
+                answer: 3,
+                type: 'mc',
+                explanation: "'The 비교급, the 비교급' 구문을 올바르게 사용한 문장은 ④번이다. ①번은 'faster', ②번은 'The more', ③번은 'wiser', ⑤번은 'the more confused I got'으로 고쳐야 한다."
+            },
+            {
+                question: "다음 빈칸에 들어갈 말로 가장 적절한 것은?",
+                passage: `G1: I think my hair is too curly. I want to straighten my hair. Can you recommend a good place?\nG2: Sure. I know two places, Styles Studio and Hair Castle. Styles Studio provides free treatment to keep your hair healthy. Hair Castle doesn't provide treatment for free, but they give student discounts.\nG1: Okay. Which do you prefer?\nG2: I prefer Styles Studio to Hair Castle. It's important for me to __________________________.`,
+                options: ["get a student discount whenever possible", "find a place that offers various hair styles", "receive regular hair treatment for my hair's health", "save money even if it means giving up free services", "choose a popular place that many students go to"],
+                answer: 2,
+                type: 'mc',
+                explanation: "G2는 Styles Studio가 무료 트리트먼트를 제공한다고 언급하며 그곳을 선호했으므로, 머릿결 건강을 위해 정기적인 트리트먼트를 받는 것이 중요하다는 ③번이 선호의 이유로 가장 적절하다."
+            },
+            {
+                question: "다음 글의 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
+                passage: `I asked for a board game and got one in less than 30 minutes. I love saving money by borrowing things that I don't often need. (A)____________, I think it's environmentally friendly. The fewer products we buy, the more resources we save. Seeing a lot of positive reviews, I decided to borrow a bike helmet. When I got it, (B)____________, it was broken. I was so upset!`,
+                options: ["In contrast / Therefore", "In contrast / However", "For example / In short", "Also / Therefore", "Also / However"],
+                answer: 4,
+                type: 'mc',
+                explanation: "(A) 앞뒤 문장은 장점을 나열하는 순접 관계이므로 Also가 적절하다. (B) 앞 내용은 긍정적 후기, 뒷 내용은 부정적 경험이므로 역접 관계인 However가 적절하다."
+            },
+            {
+                question: "다음 글의 밑줄 친 부분 중, 어법상 <u>틀린</u> 것은?",
+                passage: `①<u>Seeing</u> a lot of positive reviews, I decided to ②<u>borrow</u> a bike helmet. When I got it, however, it was ③<u>broken</u>. I was so upset! We're sorry ④<u>that</u> you had such a negative experience. To fix this issue, we are asking lenders to update the pictures of their items regularly. This will let other users ⑤<u>to know</u> the exact condition of the product.`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 4,
+                type: 'mc',
+                explanation: "사역동사 let의 목적격 보어로는 동사원형이 와야 하므로, ⑤번의 to know는 know로 고쳐야 한다."
+            },
+            {
+                question: "다음 글을 읽고 알 수 있는 내용으로 적절하지 <u>않은</u> 것은?",
+                passage: `Son: What great apps! We can borrow a tent and find someone to take care of our dog.\nDad: That's right. These kinds of services are part of the “sharing economy.” People can share their items with others and provide services to them at a small fee or for free.\nSon: But these services do have some weaknesses. Some people left negative reviews about the services.\nDad: Well, I think the more people use the services, the more they will improve.`,
+                options: ["The \"sharing economy\" allows people to share goods and services.", "Sharing services can be offered for free or for a small charge.", "The son points out that all users are satisfied with the sharing services.", "The father believes that the services will get better with more users.", "Negative reviews suggest that the sharing services have some problems."],
+                answer: 2,
+                type: 'mc',
+                explanation: "아들이 \"몇몇 사람들이 부정적인 후기를 남겼어요(Some people left negative reviews)\"라고 말했으므로, 모든 사용자가 만족했다는 ③번은 글의 내용과 일치하지 않는다."
+            },
+            {
+                question: "다음 중 어법상 <u>어색한</u> 문장은?",
+                passage: null,
+                options: ["Walking down the street, I ran into an old friend.", "Known for his kindness, he was loved by everyone.", "Not having enough money, I decided to stay home.", "The book written in simple English, it is easy to read.", "Shocked by the news, she couldn't say anything."],
+                answer: 3,
+                type: 'mc',
+                explanation: "분사구문의 의미상 주어는 주절의 주어와 일치해야 한다. ④번 문장에서 'written in simple English'의 주체는 The book인데, 주절의 주어는 it이므로 주어가 중복되고 문법적으로 어색하다. 'Written in simple English, the book is easy to read.'로 고쳐야 한다."
+            }
+        ];
+
+        const quizForm = document.getElementById('quiz-form');
+        const circledNumbers = ['①', '②', '③', '④', '⑤'];
+
+        quizData.forEach((q, index) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+            
+            let content = `<div class="q-title">${index + 1}. ${q.question}</div>`;
+            
+            if (q.passage) {
+                content += `<div class="passage">${q.passage.replace(/\n\n/g, '<br><br>')}</div>`;
+            }
+
+            if (q.type === 'mc') {
+                content += '<div class="options">';
+                q.options.forEach((opt, i) => {
+                    content += `<label><input type="radio" name="q${index}" value="${i}"> ${circledNumbers[i]} ${opt}</label>`;
+                });
+                content += '</div>';
+            } else if (q.type === 'text') {
+                content += `<input type="text" name="q${index}" placeholder="정답을 입력하세요.">`;
+            }
+            questionBlock.innerHTML = content;
+            quizForm.appendChild(questionBlock);
+        });
+
+        function submitQuiz() {
+            const studentName = document.getElementById('studentName').value || '익명';
+            let score = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '';
+            let resultString = `학생 ID: ${studentName}\n날짜: ${new Date().toLocaleDateString()}\n\n[채점 결과]\n\n`;
+
+            quizData.forEach((q, index) => {
+                const inputs = document.getElementsByName(`q${index}`);
+                let userAnswerRaw;
+                let userAnswerText = "답변 안 함";
+                let isCorrect = false;
+
+                if (q.type === 'mc') {
+                    for (const input of inputs) {
+                        if (input.checked) {
+                            userAnswerRaw = parseInt(input.value);
+                            userAnswerText = `${circledNumbers[userAnswerRaw]} ${q.options[userAnswerRaw]}`;
+                            break;
+                        }
+                    }
+                    isCorrect = (userAnswerRaw === q.answer);
+                } else if (q.type === 'text') {
+                    userAnswerRaw = inputs[0].value.trim();
+                    userAnswerText = userAnswerRaw;
+                    const correctAnswer = q.answer.toLowerCase().replace(/\.$/, '');
+                    isCorrect = (userAnswerRaw.toLowerCase().replace(/\.$/, '') === correctAnswer);
+                }
+                
+                const feedbackP = document.createElement('p');
+                let resultLine;
+                const correctAnswerText = q.type === 'mc' ? `${circledNumbers[q.answer]} ${q.options[q.answer]}` : q.answer;
+
+                const detailsBlock = `
+                    <details class="explanation-details">
+                        <summary>해설 보기</summary>
+                        <div class="explanation-content">${q.explanation}</div>
+                    </details>`;
+                
+                if (isCorrect) {
+                    score++;
+                    feedbackP.innerHTML = `${index + 1}번: <span class="correct">정답 (1)</span> ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 1\n`;
+                } else {
+                    feedbackP.innerHTML = `${index + 1}번: <span class="incorrect">오답 (0)</span> (정답: ${correctAnswerText}) ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 0\t학생이 고른 오답: ${userAnswerText}\n`;
+                }
+                feedbackDiv.appendChild(feedbackP);
+                resultString += resultLine;
+            });
+
+            const finalScore = (score / quizData.length) * 100;
+            document.getElementById('score').innerText = `총점: ${score} / ${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('results').style.display = 'block';
+            
+            resultString += `\n총점: ${score}/${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('resultText').value = resultString;
+        }
+    </script>
+</body>
+</html>
