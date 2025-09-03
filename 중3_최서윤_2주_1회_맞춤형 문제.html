@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중3 최서윤 - 약점 보완 맞춤형 문제</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 2em; background-color: #f4f7f9; color: #333; }
+        .quiz-container { max-width: 800px; margin: auto; background: white; padding: 2em; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        h1, h2 { text-align: center; color: #2c3e50; }
+        .info-block { margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #e0e0e0; }
+        .question-block { margin-bottom: 2.5em; border-top: 1px solid #e0e0e0; padding-top: 1.5em; }
+        .question-block .q-title { font-weight: bold; margin-bottom: 1em; line-height: 1.5; }
+        .passage { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 1em; margin: 1em 0; font-size: 0.95em; color: #555; white-space: pre-wrap; line-height: 1.6; }
+        .options label { display: block; margin-bottom: 0.8em; cursor: pointer; padding: 0.5em; border-radius: 5px; transition: background-color 0.2s; }
+        .options label:hover { background-color: #e9ecef; }
+        input[type="radio"], input[type="text"] { margin-right: 0.5em; vertical-align: middle; }
+        input[type="text"] { width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { display: block; width: 100%; padding: 1em; font-size: 1.1em; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; margin-top: 2em; }
+        .submit-btn:hover { background-color: #218838; }
+        .results-area { margin-top: 2em; padding: 1.5em; background-color: #eef8ff; border: 1px solid #b8dcf1; border-radius: 8px; }
+        textarea { width: 100%; height: 200px; margin-top: 1em; font-family: monospace; }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+        .explanation-details { margin-top: 10px; font-size: 0.9em; }
+        .explanation-details summary { cursor: pointer; color: #0056b3; font-weight: normal; display: inline-block; padding: 2px 6px; border-radius: 4px; background-color: #e9ecef; }
+        .explanation-details[open] summary { background-color: #007bff; color: white; }
+        .explanation-content { margin-top: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #444; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>중3 영어 6과 약점 보완 퀴즈</h1>
+        <div class="info-block">
+            <label for="studentName">이름:</label>
+            <input type="text" id="studentName" placeholder="이름을 입력하세요" value="중3_최서윤">
+        </div>
+        <div id="quiz-form"></div>
+        <button class="submit-btn" onclick="submitQuiz()">결과 확인 및 복사하기</button>
+        <div id="results" class="results-area" style="display:none;">
+            <h2>📝 채점 결과</h2>
+            <p id="score"></p>
+            <div id="feedback"></div>
+            <h3>📋 결과 복사하기</h3>
+            <p>아래 내용을 복사하여 선생님께 제출하세요.</p>
+            <textarea id="resultText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: `다음 글의 밑줄 친 부분 중, 어법상 <u>틀린</u> 것은?`,
+                passage: `Nature has inspired many architects around the world. This is the Sagrada Familia in Spain. ①<u>It is one of the most famous churches in the world.</u> Look at the beautiful tall columns inside the church. ②<u>They look like trees, don’t they?</u> The famous architect, Antoni Gaudi, used the shape of trees in the Sagrada Familia. ③<u>That’s how he brought the beauty of nature indoors.</u> In the first two examples, we can easily see ④<u>what inspired the architect.</u> But in the next example from Australia, this is not so obvious. Jørn Utzon, the architect of the Sydney Opera House, took a shape from nature and added his imagination ⑤<u>so that his design is unique</u>.`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 4,
+                type: 'mc',
+                explanation: "‘~하기 위해서’라는 목적을 나타내는 so that 절 뒤에는 주로 조동사(can, could, will, would 등)가 함께 쓰인다. 문맥상 ‘그의 디자인이 독특해질 수 있도록’이라는 목적을 나타내므로 `so that his design could be unique` 와 같이 조동사를 사용하는 것이 자연스럽다. 나머지 선택지들은 어법상 모두 올바르며, 특히 ①번은 ‘one of the + 최상급 + 복수명사’ 규칙이 바르게 적용된 문장이다."
+            },
+            {
+                question: `다음 <보기>의 문장 중 어법상 옳은 것을 <u>있는 대로</u> 고른 것은?`,
+                passage: `<보기>\nⓐ The shapes in nature is very pleasing to the eye.\nⓑ The egg is delicate, yet strong enough to protect its contents.\nⓒ Zaha Hadid took curved lines from nature so that city people enjoy them.\nⓓ It is one of the most famous church in the world.\nⓔ Can you guess what inspired him?`,
+                options: ["ⓐ, ⓒ", "ⓑ, ⓔ", "ⓒ, ⓓ", "ⓐ, ⓑ, ⓔ", "ⓑ, ⓓ, ⓔ"],
+                answer: 1,
+                type: 'mc',
+                explanation: "이 문제는 주어-동사 수일치, so that 구문, 'one of the' 용법 등 여러 문법 규칙을 동시에 점검해야 하는 복합 유형이다.\n- ⓐ: 주어 'The shapes'가 복수이므로 동사는 `is`가 아닌 `are`가 되어야 한다.\n- ⓒ: 목적을 나타내는 so that 절이므로 `could enjoy`와 같이 조동사를 사용하는 것이 자연스럽다.\n- ⓓ: 'one of the + 최상급' 다음에는 반드시 복수명사인 `churches`가 와야 한다.\n- ⓑ와 ⓔ는 어법상 오류가 없는 올바른 문장이다."
+            },
+            {
+                question: `다음 두 문장을 ‘도시 사람들이 그것들을 즐길 수 있도록’이라는 목적의 의미가 되도록 한 문장으로 합친 것 중 가장 적절한 것은?`,
+                passage: `> The architect, Zaha Hadid, took the curved lines from nature.\n> City people could enjoy them.`,
+                options: ["The architect, Zaha Hadid, took the curved lines from nature, and city people could enjoy them.", "Because the architect, Zaha Hadid, took the curved lines from nature, city people could enjoy them.", "The architect, Zaha Hadid, took the curved lines from nature so that city people could enjoy them.", "The curved lines from nature were so beautiful that city people could enjoy them.", "The architect, Zaha Hadid, took the curved lines from nature, but city people could enjoy them."],
+                answer: 2,
+                type: 'mc',
+                explanation: "‘~하기 위해서’라는 목적을 나타내는 접속사는 `so that`이다. ③번은 두 문장을 `so that`으로 자연스럽게 연결하여 ‘도시 사람들이 즐길 수 있도록 하기 위해 건축가가 자연에서 곡선을 가져왔다’는 목적의 의미를 정확하게 표현했다. ①번은 단순 나열, ②번은 원인, ④번은 결과를 나타내므로 문맥에 맞지 않다."
+            },
+            {
+                question: `다음 글의 (A), (B), (C)의 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?`,
+                passage: `Have you heard of the expression, “Art imitates nature”? Many artists get their ideas and inspirations from the world around them. This is (A) [because / because of] the natural world is a beautiful place. The shapes in nature are very pleasing to the eye. For example, look at the egg on the left. It is round and delicate, yet (B) [strong enough / enough strong] to protect its contents. Can you imagine a building that looks like an egg? Such a building actually (C) [exists / is existed] in London.`,
+                options: ["(A) because (B) strong enough (C) exists", "(A) because (B) enough strong (C) is existed", "(A) because of (B) strong enough (C) exists", "(A) because of (B) enough strong (C) is existed", "(A) because (B) strong enough (C) is existed"],
+                answer: 0,
+                type: 'mc',
+                explanation: "(A) 뒤에는 `the natural world is...`라는 주어와 동사를 갖춘 절이 오므로 접속사 `because`가 맞다. `because of` 뒤에는 명사(구)가 와야 한다.\n(B) `enough`가 부사로 형용사 `strong`을 수식할 때는 뒤에서 꾸며주는 `strong enough` 어순이 맞다.\n(C) `exist`는 ‘존재하다’라는 의미의 자동사로, 수동태(`is existed`)로 사용하지 않는다."
+            },
+            {
+                question: `다음 글의 내용상, 그리고 어법상 밑줄 친 부분을 바르게 수정한 것은?`,
+                passage: `Jørn Utzon, the architect of the Sydney Opera House, took a shape from nature and added his imagination. Can you guess what inspired him? Many people think that it is the waves in the ocean or a sailing boat. But interestingly, the inspiration came from an orange. When orange lights are shone on the building, you can see the peels more clearly. Zaha Hadid also used natural shapes for DDP, <u>so that to make city people enjoy the curved lines.</u>`,
+                options: ["so as to city people enjoy the curved lines.", "in order that city people could enjoy the curved lines.", "because city people can enjoy the curved lines.", "so beautiful that city people enjoyed the curved lines.", "in order that to make city people enjoy the curved lines."],
+                answer: 1,
+                type: 'mc',
+                explanation: "밑줄 친 부분은 ‘~하기 위해서’라는 목적을 나타내야 한다. `so that to make`는 어법에 맞지 않는 표현이다. 같은 의미의 목적을 나타내는 접속사 `in order that`을 사용하여 `in order that city people could enjoy...`로 고치는 것이 가장 적절하다. ①번의 `so as to` 뒤에는 동사원형이 와야 하며 의미상의 주어를 표현하는 방식이 틀렸고, ③번은 원인, ④번은 결과를 나타내며, ⑤번은 `in order that`과 `to make`를 중복 사용한 오류이다."
+            },
+            {
+                question: `다음 글의 제목으로 가장 적절한 것은?`,
+                passage: `Have you heard of the expression, “Art imitates nature”? Many artists get their ideas and inspirations from the world around them. This is because the natural world is a beautiful place. The shapes in nature are very pleasing to the eye.\nNature has inspired many architects around the world. The famous architect, Antoni Gaudi, used the shape of trees in the Sagrada Familia. That’s how he brought the beauty of nature indoors. Jørn Utzon, the architect of the Sydney Opera House, took a shape from an orange and added his imagination. Zaha Hadid, the architect of Dongdaemun Design Plaza, also took the curved lines from nature so that city people could enjoy them. As you can see, many buildings try to capture the beauty of nature in their design.`,
+                options: ["Great Architects and Their Masterpieces", "The Hidden Beauty of Nature", "Architecture: Nature's Gift to the City", "Creative Designs Inspired by Everyday Objects", "How Modern Cities Imitate Ancient Buildings"],
+                answer: 2,
+                type: 'mc',
+                explanation: "이 글은 ‘예술은 자연을 모방한다’는 주제로 시작하여, 여러 건축가(Gaudi, Utzon, Hadid)들이 자연(나무, 오렌지, 곡선)에서 영감을 얻어 도시의 건축물을 디자인한 구체적인 사례들을 제시하고 있다. 따라서 ‘건축’이 ‘자연’이라는 선물을 ‘도시’에 가져온다는 의미의 ③번이 글 전체의 핵심 메시지를 가장 잘 담고 있다. ①번은 ‘자연’이라는 핵심 키워드가 빠졌고, ②번은 ‘건축’과의 연결성이 부족하다. ④번과 ⑤번은 본문의 내용과 다르다."
+            },
+            {
+                question: `다음 글의 주제로 가장 적절한 것은?`,
+                passage: `In the first two examples, we can easily see what inspired the architect. But in the next example from Australia, this is not so obvious. Jørn Utzon, the architect of the Sydney Opera House, took a shape from nature and added his imagination. Can you guess what inspired him? Many people think that it is the waves in the ocean or a sailing boat. But interestingly, the inspiration came from an orange.\nWhat about Korea? Many people think that the Dongdaemun Design Plaza looks like a giant spaceship. But the architect, Zaha Hadid, took the curved lines from nature so that city people could enjoy them.`,
+                options: ["the difficulty of finding inspiration in nature", "the process of designing world-famous buildings", "architects' efforts to combine nature with imagination", "the contrast between buildings in Australia and Korea", "common misconceptions about architectural designs"],
+                answer: 2,
+                type: 'mc',
+                explanation: "이 글은 시드니 오페라 하우스와 DDP 두 가지 사례를 통해 건축가들이 단순히 자연을 모방하는 것을 넘어, 자신의 ‘상상력(imagination)’을 더하거나 자연의 ‘곡선(curved lines)’을 가져와 새로운 디자인을 창조했음을 보여준다. 따라서 ‘자연과 상상력을 결합하려는 건축가들의 노력’을 설명하는 ③번이 글의 핵심 주제이다. ⑤번(건축 디자인에 대한 흔한 오해)은 매력적인 오답이지만, 글의 핵심은 ‘오해’ 자체가 아니라 ‘자연을 활용한 창의성’에 있다."
+            },
+            {
+                question: `다음 글의 내용을 한 문장으로 요약하고자 한다. 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?<br><br>-> Because Gaudi recognized the superiority of natural forms, he was able to design a building that is both beautiful and (A)____________________. In this way, his work shows a perfect example of how architecture can (B)____________________ nature.`,
+                passage: `Nature has inspired many architects around the world. This is the Sagrada Familia in Spain. It is one of the most famous churches in the world. Look at the beautiful tall columns inside the church. They look like trees, don’t they? The famous architect, Antoni Gaudi, used the shape of trees in the Sagrada Familia. That’s how he brought the beauty of nature indoors.`,
+                options: ["(A) famous (B) imitate", "(A) delicate (B) protect", "(A) functional (B) capture", "(A) strong (B) resemble", "(A) popular (B) design"],
+                answer: 2,
+                type: 'mc',
+                explanation: "가우디가 나무 형태의 기둥을 사용한 것은 단순히 아름다움을 위해서만이 아니라, 지붕의 무게를 효과적으로 지탱하기 위한 ‘기능적(functional)’ 목적도 있었다고 본문 전체에서 추론할 수 있다. 그리고 그의 작품은 건축이 어떻게 자연의 아름다움을 ‘담아낼(capture)’ 수 있는지를 보여주는 완벽한 예시이다. ①번의 `imitate`(모방하다)는 글의 내용과 관련이 있지만, (A)에 들어갈 `famous`는 요약문의 흐름상 적절하지 않다."
+            },
+            {
+                question: `다음 글에서 필자가 말하고자 하는 바로 가장 적절한 것은?`,
+                passage: `Have you heard of the expression, “Art imitates nature”? Many artists get their ideas and inspirations from the world around them. This is because the natural world is a beautiful place. The shapes in nature are very pleasing to the eye. For example, look at the egg on the left. Isn’t it beautiful? It is round and delicate, yet strong enough to protect its contents. Can you imagine a building that looks like an egg? Such a building actually exists in London. As you can see, many buildings try to capture the beauty of nature in their design. They are perfect examples of “Nature meets city.”`,
+                options: ["Natural objects are structurally perfect for inspiring new designs.", "London is a city famous for its nature-inspired architecture.", "The most important function of a building is protecting its contents.", "Architects should focus more on beauty than on strength.", "The main purpose of art is to show the delicate side of nature."],
+                answer: 0,
+                type: 'mc',
+                explanation: "이 글은 ‘예술이 자연을 모방한다’는 개념을 설명하기 위해 ‘달걀’을 예로 들고 있다. 달걀이 둥글고 연약해 보이지만(beautiful, delicate), 내용물을 보호할 만큼 튼튼하다(strong enough to protect)는 점을 언급하며, 이러한 특징이 건축물에 영감을 주었다고 설명한다. 이를 통해 필자는 자연물이 단순히 아름다울 뿐만 아니라 구조적으로도 완벽하여 새로운 디자인에 영감을 주기에 적합하다는 점을 말하고 있다. ②, ③번은 너무 지엽적인 내용이며, ④, ⑤번은 본문에서 추론할 수 없는 내용이다."
+            },
+            {
+                question: `윗글 전체의 내용을 바탕으로 할 때, "Nature meets city"라는 표현이 의미하는 바로 가장 적절한 것은?`,
+                passage: ``,
+                options: ["도시 개발을 위해 자연환경을 보존해야 한다는 주장", "도시 생활 속에서 자연의 아름다움을 접목한 건축 양식", "자연과 도시의 대립적인 관계를 극복하려는 노력", "건축물을 통해 도시의 인공적인 면을 강조하는 디자인 철학", "자연의 재료를 사용하여 친환경적인 도시를 만드는 방법"],
+                answer: 1,
+                type: 'mc',
+                explanation: "본문 전체는 건축가들이 자연(나무, 오렌지, 곡선 등)에서 영감을 얻어 도시(city)의 건축물(사그라다 파밀리아, 오페라 하우스, DDP 등)을 디자인한 사례를 보여준다. 따라서 'Nature meets city'는 ‘도시 생활의 공간인 건축물에 자연의 형태나 아름다움을 접목시킨다’는 의미로 해석하는 것이 가장 적절하다. ①번(환경 보존)이나 ⑤번(친환경 재료)은 본문에서 직접적으로 다루지 않은 내용이며, ③번과 ④번은 본문의 긍정적인 논조와 반대되는 해석이다."
+            }
+        ];
+
+        const quizForm = document.getElementById('quiz-form');
+        const circledNumbers = ['①', '②', '③', '④', '⑤'];
+
+        quizData.forEach((q, index) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+            
+            let content = `<div class="q-title">${q.question.replace(/\n/g, '<br>')}</div>`;
+            
+            if (q.passage) {
+                content += `<div class="passage">${q.passage.replace(/\n/g, '<br>')}</div>`;
+            }
+
+            if (q.type === 'mc') {
+                content += '<div class="options">';
+                q.options.forEach((opt, i) => {
+                    content += `<label><input type="radio" name="q${index}" value="${i}"> ${circledNumbers[i]} ${opt}</label>`;
+                });
+                content += '</div>';
+            } else if (q.type === 'text') {
+                content += `<input type="text" name="q${index}" placeholder="정답을 입력하세요.">`;
+            }
+            questionBlock.innerHTML = content;
+            quizForm.appendChild(questionBlock);
+        });
+
+        function submitQuiz() {
+            const studentName = document.getElementById('studentName').value || '익명';
+            let score = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '';
+            let resultString = `학생 ID: ${studentName}\n날짜: ${new Date().toLocaleDateString()}\n\n[채점 결과]\n\n`;
+
+            quizData.forEach((q, index) => {
+                const inputs = document.getElementsByName(`q${index}`);
+                let userAnswerRaw;
+                let userAnswerText = "답변 안 함";
+                let isCorrect = false;
+
+                if (q.type === 'mc') {
+                    for (const input of inputs) {
+                        if (input.checked) {
+                            userAnswerRaw = parseInt(input.value);
+                            userAnswerText = `${circledNumbers[userAnswerRaw]} ${q.options[userAnswerRaw]}`;
+                            break;
+                        }
+                    }
+                    isCorrect = (userAnswerRaw === q.answer);
+                } else if (q.type === 'text') {
+                    userAnswerRaw = inputs[0].value.trim();
+                    userAnswerText = userAnswerRaw;
+                    const correctAnswer = q.answer.toLowerCase().replace(/\.$/, '');
+                    isCorrect = (userAnswerRaw.toLowerCase().replace(/\.$/, '') === correctAnswer);
+                }
+                
+                const feedbackP = document.createElement('p');
+                let resultLine;
+                const correctAnswerText = q.type === 'mc' ? `${circledNumbers[q.answer]} ${q.options[q.answer]}` : q.answer;
+
+                const detailsBlock = `
+                    <details class="explanation-details">
+                        <summary>해설 보기</summary>
+                        <div class="explanation-content">${q.explanation}</div>
+                    </details>`;
+                
+                if (isCorrect) {
+                    score++;
+                    feedbackP.innerHTML = `${index + 1}번: <span class="correct">정답 (1)</span> ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 1\n`;
+                } else {
+                    feedbackP.innerHTML = `${index + 1}번: <span class="incorrect">오답 (0)</span> (정답: ${correctAnswerText}) ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 0\t학생이 고른 오답: ${userAnswerText}\n`;
+                }
+                feedbackDiv.appendChild(feedbackP);
+                resultString += resultLine;
+            });
+
+            const finalScore = (score / quizData.length) * 100;
+            document.getElementById('score').innerText = `총점: ${score} / ${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('results').style.display = 'block';
+            
+            resultString += `\n총점: ${score}/${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('resultText').value = resultString;
+        }
+    </script>
+</body>
+</html>
+

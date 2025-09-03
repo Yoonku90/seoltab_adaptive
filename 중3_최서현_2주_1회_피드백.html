@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>중3 최서현 학생 · 내신 학습 지식맵 (2025-09-01)</title>
+  <style>
+    :root{
+      --bg: #f6f7fb; --card:#ffffff; --border:#e6e8ef; --text:#0f172a; --muted:#64748b;
+      --indigo:#4f46e5; --green:#16a34a; --yellow:#f59e0b; --red:#ef4444;
+      --green-100:#dcfce7; --yellow-100:#fef9c3; --red-100:#fee2e2; --gray-100:#f1f5f9;
+    }
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#ffffff, var(--bg));color:var(--text);font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR",Apple SD Gothic Neo,Pretendard,Helvetica,Arial,sans-serif}
+    .container{max-width:1120px;margin:0 auto;padding:24px}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .between{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 4px 12px rgba(15,23,42,.04)}
+    .p-16{padding:16px}.p-20{padding:20px}.p-24{padding:24px}
+    .btn{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 14px;cursor:pointer}
+    .btn.active{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+    .input{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 12px;min-width:260px}
+    .grid{display:grid;gap:16px}
+    @media(min-width:640px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}}
+    @media(min-width:768px){.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}}
+    .stat{min-width:240px}
+    .hbar{height:8px;background:var(--gray-100);border-radius:999px;overflow:hidden}
+    .hbar > span{display:block;height:100%}
+    .pill{padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700;display:inline-block}
+    .legend .pill{border:1px solid var(--border);}
+    .muted{color:var(--muted)}
+    .title{font-weight:800;letter-spacing:-.3px}
+    .sub{font-size:12px}
+    .kc-card{display:flex;gap:12px}
+    .kc-ico{flex:0 0 auto;width:36px;height:36px;border-radius:12px;background:#f8fafc;display:grid;place-items:center;border:1px solid var(--border)}
+    .small{font-size:12px}
+    .type-card{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .kbd{font-variant-numeric:tabular-nums}
+    .footer{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:flex-start}
+
+    /* 피드백 스타일 */
+    .feedback-section h3 { font-size: 20px; margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px; }
+    .feedback-section h4 { font-size: 16px; margin: 24px 0 8px 0; color: var(--indigo); border-left: 3px solid var(--indigo); padding-left: 8px;}
+    .feedback-section .summary { font-size: 14px; color: var(--muted); margin-top: -12px; margin-bottom: 24px; }
+    .feedback-section hr { border: 0; border-top: 1px solid var(--border); margin: 24px 0; }
+    .feedback-section blockquote { margin: 12px 0; padding: 12px; background-color: var(--gray-100); border-left: 4px solid var(--border); border-radius: 8px; font-size: 13px; }
+    .feedback-section .analysis { margin-top: 8px; }
+    .feedback-section .analysis strong { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="between" style="gap:16px;flex-wrap:wrap">
+      <div>
+        <div class="title" style="font-size:24px">중3 6과 <span style="color:var(--indigo)">KC & 유형 성취도</span> 대시보드</div>
+        <div class="sub muted">학생: <strong>중3_최서현 학생</strong> · 시험일: <strong>2025-09-01</strong> · 교재: 동아(이병민)</div>
+      </div>
+      <div class="row">
+        <button id="printBtn" class="btn">내보내기/인쇄</button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:16px;align-items:center">
+      <div class="row">
+        <button data-view="all" class="btn view-btn active">전체</button>
+        <button data-view="core" class="btn view-btn">기반</button>
+        <button data-view="dialogue" class="btn view-btn">대화문</button>
+        <button data-view="reading" class="btn view-btn">본문</button>
+        <button data-view="types" class="btn view-btn">문제 유형</button>
+        <button data-view="feedback" class="btn view-btn">피드백</button>
+      </div>
+      <div style="flex:1"></div>
+      <input id="search" class="input" placeholder="KC 코드/이름/설명/유형 검색" />
+    </div>
+
+    <div class="grid grid-2" style="margin-top:16px">
+      <div class="card p-16 stat">
+        <div class="muted small">KC 평균 성취도</div>
+        <div id="avgKC" class="title" style="font-size:22px;margin-top:4px">—</div>
+        <div class="hbar" style="margin-top:8px"><span id="avgKCBar" style="width:0"></span></div>
+      </div>
+      <div class="card p-16 stat">
+        <div class="muted small">문제 유형 평균 성취도</div>
+        <div id="avgType" class="title" style="font-size:22px;margin-top:4px">—</div>
+        <div class="hbar" style="margin-top:8px"><span id="avgTypeBar" style="width:0"></span></div>
+      </div>
+    </div>
+
+    <div class="legend row card p-16" style="margin-top:16px">
+      <div class="muted small">범례:</div>
+      <span class="pill" style="background:var(--green-100);color:var(--green)">우수 ≥ 85%</span>
+      <span class="pill" style="background:var(--yellow-100);color:var(--yellow)">60–84%</span>
+      <span class="pill" style="background:var(--red-100);color:var(--red)">1–59%</span>
+      <span class="pill" style="background:#e5e7eb;color:#374151">미평가</span>
+    </div>
+
+    <div id="mount"></div>
+
+    <section class="card p-20" style="margin-top:16px" id="focusBox">
+      <div class="between">
+        <div>
+          <div class="title" style="font-size:18px">📌 집중 보완 영역 (상위 3개 KC)</div>
+          <div class="sub muted">점수가 낮은 순으로 자동 추천</div>
+        </div>
+      </div>
+      <ol id="focusList" class="small" style="margin-top:8px;padding-left:18px"></ol>
+    </section>
+
+    <div class="footer" style="margin-top:16px">
+      <span>색상 기준: 🟢 85% 이상, 🟡 60–84%, 🟥 1–59%, 회색=미평가. 검색 또는 상단 버튼으로 뷰를 전환할 수 있습니다. 인쇄 버튼으로 PDF 저장 가능.</span>
+    </div>
+  </div>
+
+  <script>
+    // ======== 데이터 설정 ========
+    const studentName = "중3_최서현";
+    const examDate = "2025-09-01";
+
+    const kcMeta = {
+      "KC-6C1": { area: "의사소통", label: "감사하기", desc: "Thank you for ~" },
+      "KC-6C2": { area: "의사소통", label: "금지하기", desc: "You’re not allowed to ~" },
+      "KC-6G1": { area: "문법", label: "목적을 나타내는 so that", desc: "'~하기 위해서' 목적 표현" },
+      "KC-6G2": { area: "문법", label: "형용사/부사 + enough to", desc: "'~할 만큼 충분히 ...하다' 표현" },
+      "KC-6V1": { area: "어휘", label: "예술 및 건축 관련 어휘", desc: "imitate, inspiration, architect 등" },
+      "KC-6D1": { area: "대화문", label: "여행 안내에 대한 감사", desc: "Thank you for showing me around." },
+      "KC-6D2": { area: "대화문", label: "생일 파티 초대에 대한 감사", desc: "Thank you for inviting me." },
+      "KC-6D3": { area: "대화문", label: "콘서트 예매 시 규칙 확인", desc: "Not allowed to bring children under 8." },
+      "KC-6D6": { area: "대화문", label: "실내 반입 금지 안내", desc: "Not allowed to bring your umbrella inside." },
+      "KC-6D9": { area: "대화문", label: "미술관 관람 규칙 안내", desc: "Not allowed to touch them." },
+      "KC-6R1": { area: "본문", label: "자연을 모방하는 예술 (달걀)", desc: "strong enough to protect ~" },
+      "KC-6R2": { area: "본문", label: "사그라다 파밀리아 (나무)", desc: "가우디가 나무 형태를 사용한 사례" },
+      "KC-6R3": { area: "본문", label: "시드니 오페라 하우스 (오렌지)", desc: "오렌지에서 영감을 받은 사례" },
+      "KC-6R4": { area: "본문", label: "동대문 디자인 플라자 (곡선)", desc: "so that city people could enjoy ~" }
+    };
+
+    const kcScores = {
+      "KC-6C1": 86, "KC-6C2": 100, "KC-6D1": 88.2, "KC-6D2": 100, "KC-6D3": 100,
+      "KC-6D6": 100, "KC-6D9": 100, "KC-6G1": 100, "KC-6G2": 91.4, "KC-6R1": 84.3,
+      "KC-6R2": 84.4, "KC-6R3": 93.1, "KC-6R4": 100, "KC-6V1": 82.2
+    };
+
+    const groups = [
+      { id: "core", title: "A. 기반 지식", subtitle: "의사소통·문법·어휘 기반", items:["KC-6C1","KC-6C2","KC-6G1","KC-6G2","KC-6V1"] },
+      { id: "dialogue", title: "B-1. 적용 · 대화문", subtitle: "실제 대화 상황 이해", items:["KC-6D1","KC-6D2","KC-6D3","KC-6D6","KC-6D9"] },
+      { id: "reading", title: "B-2. 적용 · 본문", subtitle: "자연에서 영감을 얻은 건축물", items:["KC-6R1","KC-6R2","KC-6R3","KC-6R4"] }
+    ];
+
+    const typeScores = [
+      { code:"112", name:"대화 내용 일치/불일치", area:"대화", score:100, kcs:["KC-6C1","KC-6D1","KC-6D3"]},
+      { code:"113", name:"요약문 내용 일치/불일치", area:"대화", score:100, kcs:["KC-6C2","KC-6D9"]},
+      { code:"121", name:"대화 흐름 파악", area:"대화", score:100, kcs:["KC-6C2","KC-6D6"]},
+      { code:"122", name:"대화 순서 배열", area:"대화", score:100, kcs:["KC-6C1","KC-6D1","KC-6D3"]},
+      { code:"124", name:"대화 빈칸 추론", area:"대화", score:88.2, kcs:["KC-6C1","KC-6D1"]},
+      { code:"131", name:"어휘 의미 파악", area:"어휘", score:100, kcs:["KC-6C2","KC-6D6"]},
+      { code:"241", name:"문장 전환하기", area:"문법", score:100, kcs:["KC-6G1","KC-6G2"]},
+      { code:"242", name:"조건에 맞게 영작하기", area:"문법", score:100, kcs:["KC-6G1","KC-6R4"]},
+      { code:"251", name:"어법상 옳은/틀린 것 고르기", area:"문법", score:70.6, kcs:["KC-6G2","KC-6R1","KC-6R2"]},
+      { code:"252", name:"어법 쓰임 구분하기", area:"문법", score:100, kcs:["KC-6R2","KC-6R4"]},
+      { code:"253", name:"빈칸에 적절한 어법/어휘", area:"문법", score:100, kcs:["KC-6R1"]},
+      { code:"311", name:"글의 주제/제목 파악", area:"독해", score:100, kcs:["KC-6R1","KC-6R4"]},
+      { code:"312", name:"본문 내용 일치/불일치", area:"독해", score:100, kcs:["KC-6R1","KC-6R2","KC-6R3","KC-6R4"]},
+      { code:"321", name:"주어진 문장 넣기", area:"독해", score:66.7, kcs:["KC-6R2"]},
+      { code:"322", name:"글의 순서 배열", area:"독해", score:100, kcs:["KC-6R3","KC-6R4"]},
+      { code:"325", name:"본문 빈칸 추론", area:"독해", score:83.3, kcs:["KC-6G1","KC-6R4","KC-6V1"]},
+      { code:"331", name:"어휘 의미 파악", area:"독해", score:100, kcs:["KC-6V1","KC-6R2"]},
+      { code:"342", name:"영어로 답하기 (서술형)", area:"독해", score:100, kcs:["KC-6R2","KC-6R3"]}
+    ];
+
+    // ======== 헬퍼 ========
+    const thresholds = { excellent:85, ok:60 };
+    const clamp = (n) => Math.max(0, Math.min(100, Number(n||0)));
+    function statusColor(v, bgOnly=false){
+      if(v==null) return bgOnly? '#e5e7eb' : 'background:#e5e7eb;color:#374151';
+      if(v>=thresholds.excellent) return bgOnly? 'var(--green-100)' : 'background:var(--green-100);color:var(--green)';
+      if(v>=thresholds.ok) return bgOnly? 'var(--yellow-100)' : 'background:var(--yellow-100);color:var(--yellow)';
+      return bgOnly? 'var(--red-100)' : 'background:var(--red-100);color:var(--red)';
+    }
+    function barColor(v){
+      if(v==null) return '#e5e7eb';
+      if(v>=thresholds.excellent) return 'var(--green)';
+      if(v>=thresholds.ok) return 'var(--yellow)';
+      return 'var(--red)';
+    }
+    function scoreLabel(v) {
+        if (v == null) return '미평가';
+        const n = +v;
+        if (n === 100) return '100%';
+        return n.toFixed(1) + '%';
+    }
+    function average(nums){
+      const vals = nums.filter(v => v!=null);
+      if(!vals.length) return null;
+      return vals.reduce((a,b)=>a+Number(b),0)/vals.length;
+    }
+
+    function getFeedbackHTML() {
+      return `
+        <h3>📊 상세 분석 및 맞춤 피드백</h3>
+        <hr>
+        <h4>✍️ 본문 독해: 글의 '연결고리'를 찾는 힘이 부족해요</h4>
+        <p class="summary">글의 개별 문장은 잘 해석하지만, 문장과 문장이 어떻게 논리적으로 이어지는지 파악하는 능력이 다소 부족합니다. 특히, 한 문장이 바로 앞 문장의 '이유'가 되는지, '예시'가 되는지를 판단하는 힘을 길러야 합니다. 이로 인해 <strong>문장 삽입 유형(321)</strong>에서 66.7%의 낮은 성취도를 보였습니다.</p>
+        <blockquote>
+          <strong>대표 문제 예시 (대단원평가 3번)</strong>
+          <p style="margin-top:8px; margin-bottom:4px;"><strong>[지문 일부]</strong><br>Nature has inspired many architects around the world for long time. (B) This is the Sagrada Familia in Spain.</p>
+          <p style="margin-top:4px; margin-bottom:4px;"><strong>[문제]</strong><br>3. 주어진 문장이 들어갈 위치로 가장 적절한 곳을 고르시오.<br><code>That's because nature is so appealing to architects.</code></p>
+          <p style="margin-top:4px; margin-bottom:4px;">➡️ <strong>학생 답안: ③번</strong> (정답: ②번)</p>
+        </blockquote>
+        <div class="analysis">
+          <p>아쉽게 틀린 문제예요. 이 문제의 핵심은 <code>That's because...</code> (~이기 때문이다)라는 표현이 <strong>'원인'</strong>을 설명한다는 것을 파악하는 것입니다.</p>
+          <ul>
+            <li style="margin-bottom:4px;"><strong>(B)의 바로 앞 문장:</strong> "자연은 오랫동안 전 세계의 많은 건축가들에게 영감을 주어왔다." (<strong>결과</strong>)</li>
+            <li><strong>주어진 문장:</strong> "그것은 자연이 건축가들에게 매우 매력적이기 때문이다." (<strong>원인</strong>)</li>
+          </ul>
+          <p>앞 문장이 결과, 주어진 문장이 원인이므로 둘은 (B) 위치에서 완벽한 짝을 이룹니다. 반면 ${studentName} 학생이 고른 ③번(C) 앞에는 가우디의 사그라다 파밀리아라는 구체적인 <strong>'예시'</strong>가 나오기 때문에, 일반적인 원인을 설명하는 문장이 들어가기에는 흐름이 어색합니다. 이처럼 문장의 논리적 관계를 나타내는 연결사를 단서로 활용하는 연습이 필요합니다.</p>
+        </div>
+        <hr>
+        <h4>📚 어법: 아는 규칙도 놓치는 '꼼꼼함'이 아쉬워요</h4>
+        <p class="summary">여러 어법 사항을 동시에 판단해야 하는 복합 문제(<strong>유형 251, 성취도 70.6%</strong>)에서 약점을 보이고 있습니다. 이는 각각의 문법 규칙은 알고 있지만, 여러 문장 속에서 오류를 빠짐없이 찾아내는 정확성과 꼼꼼함이 부족하다는 신호입니다.</p>
+        <blockquote>
+          <strong>대표 문제 예시 (대단원평가 4번)</strong>
+          <p style="margin-top:8px; margin-bottom:4px;"><strong>[문제]</strong><br>4. 윗글의 밑줄 친 ① ~ ⑦ 중 문법적으로 올바른 것의 개수는?</p>
+          <p style="margin-top:4px; margin-bottom:4px;"><strong>[밑줄 친 부분들]</strong><br>① The shapes in nature <code>is</code> very pleasing...<br>⑦ ...If you were an architect, what <code>you would choose</code> from nature?</p>
+          <p style="margin-top:4px; margin-bottom:4px;">➡️ <strong>학생 답안: ②번 (4개)</strong> (정답: ③번 (5개))</p>
+        </blockquote>
+        <div class="analysis">
+          <p>정답에 매우 근접했지만, 마지막 한 끗 차이로 오답을 골라 아쉬운 문제입니다. ${studentName} 학생은 <code>① is → are</code>, <code>③ church → churches</code> 와 같은 명백한 오류들을 잘 찾아냈을 거예요.</p>
+          <p>하지만 아마 <strong>⑦번 <code>what you would choose</code></strong>가 어법상 올바르다는 것을 놓쳤을 가능성이 큽니다.</p>
+          <p><strong>⑦번이 옳은 이유:</strong> 이 문장은 '만약 당신이 건축가라면'이라는 조건절(If...)에 연결된 문장입니다. 흔히 의문문은 <code>what would you choose?</code>처럼 조동사(would)가 주어(you) 앞으로 와야 한다고 생각하기 쉽지만, 이 문장처럼 <strong>If절에 포함된 질문</strong>은 <code>의문사 + 주어 + 동사</code> 순서를 그대로 따릅니다. 따라서 <code>what you would choose</code>는 어법상 올바른 표현입니다.</p>
+          <p>이처럼 문제 끝까지 집중력을 잃지 않고, 모든 선택지의 문장 구조를 정확히 분석하는 연습이 필요합니다.</p>
+        </div>
+      `;
+    }
+
+    // ======== 렌더링 ========
+    const mount = document.getElementById('mount');
+    const searchEl = document.getElementById('search');
+    const focusBox = document.getElementById('focusBox');
+    let currentView = 'all';
+
+    function render(){
+      const q = (searchEl.value||'').trim().toLowerCase();
+      mount.innerHTML = '';
+      focusBox.style.display = currentView === 'feedback' ? 'none' : 'block';
+
+      ['core','dialogue','reading'].forEach(id => {
+        if(!(currentView==='all' || currentView===id)) return;
+        const g = groups.find(x=>x.id===id);
+        const items = g.items.filter(k => {
+          if(!q) return true;
+          const m = kcMeta[k]||{};
+          return k.toLowerCase().includes(q) || (m.label||'').toLowerCase().includes(q) || (m.desc||'').toLowerCase().includes(q) || (m.area||'').toLowerCase().includes(q);
+        });
+        if(!items.length) return;
+
+        const sec = document.createElement('section');
+        sec.className = 'card p-20';
+        sec.style.marginTop = '16px';
+        sec.innerHTML = `
+          <div class="between">
+            <div>
+              <div class="title" style="font-size:18px">${id==='core'?'🧩':id==='dialogue'?'💬':'📖'} ${g.title}</div>
+              <div class="sub muted">${g.subtitle}</div>
+            </div>
+          </div>
+        `;
+        const grid = document.createElement('div');
+        grid.className = 'grid grid-2 grid-3';
+        grid.style.marginTop = '12px';
+        items.forEach(k => grid.appendChild(KCCard(k)));
+        sec.appendChild(grid);
+        mount.appendChild(sec);
+      });
+
+      if(currentView==='all' || currentView==='types'){
+        const filteredTypes = typeScores.filter(t => {
+          if(!q) return true;
+          return (t.name+t.code+t.area+(t.kcs||[]).join(',')).toLowerCase().includes(q);
+        });
+        if(filteredTypes.length){
+          const sec = document.createElement('section');
+          sec.className = 'card p-20';
+          sec.style.marginTop = '16px';
+          sec.innerHTML = `<div class="between"><div><div class="title" style="font-size:18px">📝 문제 유형 성취도</div><div class="sub muted">각 유형이 연계하는 KC와 성취도를 함께 확인</div></div></div>`;
+          const grid = document.createElement('div');
+          grid.className = 'grid grid-2';
+          grid.style.marginTop = '12px';
+          filteredTypes.forEach(t => grid.appendChild(TypeCard(t)));
+          sec.appendChild(grid);
+          mount.appendChild(sec);
+        }
+      }
+
+      if(currentView==='all' || currentView==='feedback'){
+        const sec = document.createElement('section');
+        sec.className = 'card p-24 feedback-section';
+        sec.style.marginTop = '16px';
+        sec.innerHTML = getFeedbackHTML();
+        mount.appendChild(sec);
+      }
+
+      const avgKCVal = average(Object.values(kcScores));
+      document.getElementById('avgKC').textContent = scoreLabel(avgKCVal);
+      document.getElementById('avgKCBar').style.width = (avgKCVal==null?0:clamp(avgKCVal))+'%';
+      document.getElementById('avgKCBar').style.background = barColor(avgKCVal);
+
+      const avgTypeVal = average(typeScores.map(t=>t.score));
+      document.getElementById('avgType').textContent = scoreLabel(avgTypeVal);
+      document.getElementById('avgTypeBar').style.width = (avgTypeVal==null?0:clamp(avgTypeVal))+'%';
+      document.getElementById('avgTypeBar').style.background = barColor(avgTypeVal);
+
+      renderFocus();
+    }
+
+    function KCCard(id){
+      const m = kcMeta[id]||{}; const v = kcScores[id];
+      const el = document.createElement('div');
+      el.className = 'card p-16'; el.style.borderColor = '#e5e7eb';
+      el.innerHTML = `
+        <div class="kc-card">
+          <div class="kc-ico">${m.area==='의사소통'?'💬':m.area==='문법'?'✍️':m.area==='어휘'?'🔤':m.area==='대화문'?'💬':'📖'}</div>
+          <div style="flex:1;min-width:0">
+            <div class="row" style="align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="small" style="font-weight:700">${id}</span>
+              <span class="pill" style="${statusColor(v)}">${scoreLabel(v)}</span>
+            </div>
+            <div class="small" style="font-weight:700;margin-top:4px">${m.label||''}</div>
+            <div class="small muted" style="margin-top:2px">${m.desc||''}</div>
+            <div class="hbar" style="margin-top:8px"><span style="width:${clamp(v||0)}%; background:${barColor(v)}"></span></div>
+          </div>
+        </div>
+      `;
+      return el;
+    }
+
+    function TypeCard(t){
+      const el = document.createElement('div');
+      el.className = 'card p-16';
+      const related = (t.kcs||[]).map(k=>`${k} (${scoreLabel(kcScores[k])})`).join(' · ');
+      el.innerHTML = `
+        <div class="type-card">
+          <div style="min-width:0">
+            <div class="row" style="gap:6px;flex-wrap:wrap">
+              <span class="small" style="font-weight:700">${t.name}</span>
+              <span class="small muted">[${t.code}]</span>
+              <span class="pill" style="background:#f3f4f6;color:#374151">${t.area}</span>
+            </div>
+            <div class="small muted" style="margin-top:4px">연계 KC: ${related}</div>
+          </div>
+          <div style="text-align:right;min-width:120px">
+            <div style="font-weight:700">${scoreLabel(t.score)}</div>
+            <div class="hbar" style="margin-top:6px"><span style="width:${clamp(t.score||0)}%; background:${barColor(t.score)}"></span></div>
+          </div>
+        </div>
+      `;
+      return el;
+    }
+
+    function renderFocus(){
+      const list = document.getElementById('focusList');
+      const entries = Object.entries(kcScores)
+        .filter(([k,v])=>v!=null && v < thresholds.excellent)
+        .sort((a,b)=> (a[1]-b[1]) || (kcMeta[a[0]].area > kcMeta[b[0]].area ? 1 : -1))
+        .slice(0,3);
+
+      const tips = {
+        'KC-6V1': '본문 속 건축/예술 관련 영영풀이를 다시 확인하세요.',
+        'KC-6R1': '핵심 문법(enough to)이 사용된 문장을 직접 영작해 보세요.',
+        'KC-6R2': '사그라다 파밀리아 관련 세부 내용을(건축가, 특징) 다시 암기하세요.'
+      };
+
+      list.innerHTML = entries.map(([k,v])=>{
+        const m = kcMeta[k]||{}; const tip = tips[k]||'핵심 개념 복습 후 관련 문제를 풀어보세요.';
+        return `<li style="margin:6px 0"><strong>${k}</strong> (${m.label}) — <span class="pill" style="${statusColor(v)}">${scoreLabel(v)}</span><br><span class="muted">처방: ${tip}</span></li>`;
+      }).join('') || '<li class="muted">집중 보완이 필요한 영역이 없습니다. 잘하고 있어요!</li>';
+    }
+
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        currentView = btn.dataset.view;
+        render();
+      });
+    });
+    document.getElementById('search').addEventListener('input', render);
+
+    render();
+  </script>
+</body>
+</html>

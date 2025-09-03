@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>고1 서민지 - 약점 보완 맞춤형 문제</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin:0; padding:2em; background:#f4f7f9; color:#333; }
+    .quiz-container { max-width:800px; margin:auto; background:#fff; padding:2em; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.05); }
+    h1, h2 { text-align:center; color:#2c3e50; }
+    .info-block { margin-bottom:2em; padding-bottom:1em; border-bottom:1px solid #e0e0e0; }
+    .question-block { margin-bottom:2.5em; border-top:1px solid #e0e0e0; padding-top:1.5em; }
+    .question-block .q-title { font-weight:bold; margin-bottom:1em; line-height:1.5; }
+    .passage { background:#f8f9fa; border-left:4px solid #007bff; padding:1em; margin:1em 0; font-size:.95em; color:#555; white-space:pre-wrap; line-height:1.6; }
+    .options label { display:block; margin-bottom:.8em; cursor:pointer; padding:.5em; border-radius:5px; transition:background-color .2s; }
+    .options label:hover { background:#e9ecef; }
+    input[type="radio"], input[type="text"] { margin-right:.5em; vertical-align:middle; }
+    input[type="text"] { width:90%; padding:.5em; border:1px solid #ccc; border-radius:4px; }
+    .submit-btn { display:block; width:100%; padding:1em; font-size:1.1em; background:#28a745; color:#fff; border:none; border-radius:5px; cursor:pointer; transition:background-color .2s; margin-top:2em; }
+    .submit-btn:hover { background:#218838; }
+    .results-area { margin-top:2em; padding:1.5em; background:#eef8ff; border:1px solid #b8dcf1; border-radius:8px; }
+    textarea { width:100%; height:200px; margin-top:1em; font-family:monospace; }
+    .correct { color:green; font-weight:bold; }
+    .incorrect { color:red; font-weight:bold; }
+    .explanation-details { margin-top:10px; font-size:.9em; }
+    .explanation-details summary { cursor:pointer; color:#0056b3; font-weight:normal; display:inline-block; padding:2px 6px; border-radius:4px; background:#e9ecef; }
+    .explanation-details[open] summary { background:#007bff; color:#fff; }
+    .explanation-content { margin-top:8px; padding:10px; background:#f8f9fa; border-radius:4px; color:#444; line-height:1.6; }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>고1 서민지 - 약점 보완 퀴즈</h1>
+    <div class="info-block">
+      <label for="studentName">이름:</label>
+      <input type="text" id="studentName" placeholder="이름을 입력하세요" value="고1_서민지"/>
+    </div>
+    <div id="quiz-form"></div>
+    <button class="submit-btn" onclick="submitQuiz()">결과 확인 및 복사하기</button>
+    <div id="results" class="results-area" style="display:none;">
+      <h2>📝 채점 결과</h2>
+      <p id="score"></p>
+      <div id="feedback"></div>
+      <h3>📋 결과 복사하기</h3>
+      <p>아래 내용을 복사하여 선생님께 제출하세요.</p>
+      <textarea id="resultText" readonly></textarea>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "다음 글을 읽고, Rummins와 Bert의 행동에 대한 추론으로 가장 적절한 것은?",
+        passage: `He then added, “Hmm, I think I may buy it. The legs of my table at home are broken. I can cut off the legs of your table and attach them to mine.” “How much?” Rummins asked. “Not much, I’m afraid. This is just a reproduction,” said Mr. Boggis. “So how much?” “Ten pounds.” “Ten? It’s worth more than that.” “How about fifteen?” “Make it fifty.” “Well, thirty. This is my final offer.” “OK, it’s yours, but how are you going to take it? This thing will not go in a car!” “We’ll see,” Mr. Boggis said and went out to bring his car. On his way to the car, Mr. Boggis couldn’t help smiling. The table was what every dealer dreamed of. He couldn’t believe his luck. “Dad, what if this thing doesn’t go in his car? He might not pay you,” said Bert. Rummins then had an idea. “What he wants is only the legs. Let’s cut the legs off for him,” said Rummins. “Great idea!” said Bert. Bert then took out a saw and began to cut off the legs. When Mr. Boggis came back, the legs had been cut off. “Don’t worry, this was a favor. I won’t charge you for this,” said Rummins. Mr. Boggis was so shocked that he couldn’t say anything.`,
+        options: [
+          "Boggis의 차가 작을 것을 걱정하여 그가 지불을 거절할까 봐 염려했다.",
+          "Boggis가 오직 다리 부분만 원한다는 말을 그의 진짜 의도라고 믿었다.",
+          "테이블의 실제 가치를 깨닫고 Boggis에게 팔지 않기 위해 다리를 잘랐다.",
+          "Boggis에게 친절을 베푸는 척하며 다리를 자른 것에 대해 추가 비용을 요구하려 했다.",
+          "테이블이 복제품(reproduction)이라는 Boggis의 말을 처음부터 믿지 않고 있었다."
+        ],
+        answer: 1,
+        type: "mc",
+        explanation: "Rummins와 Bert는 Boggis의 말(다리만 필요하다)을 곧이곧대로 받아들여 도와준다고 생각하고 다리를 잘라 주었다고 추론할 수 있다."
+      },
+      {
+        question: "다음 글의 밑줄 친 ⓐ~ⓔ 중, 문맥상 낱말의 쓰임이 적절하지 <u>않는</u> 것은?",
+        passage: `He then added, “Hmm, I think I may buy it. The legs of my table at home are broken. I can cut off the legs of your table and attach them to mine.” “How much?” Rummins asked. “Not much, I’m afraid. This is just a ⓐ<u>reproduction</u>,” said Mr. Boggis. “So how much?” “Ten pounds.” “Ten? It’s ⓑ<u>worth</u> more than that.” “How about fifteen?” “Make it fifty.” “Well, thirty. This is my ⓒ<u>first</u> offer.” “OK, it’s yours, but how are you going to take it? This thing will not go in a car!” “We’ll see,” Mr. Boggis said and went out to bring his car. On his way to the car, Mr. Boggis couldn’t help smiling. The table was what every dealer dreamed of. He couldn’t believe his luck. “Dad, what if this thing doesn’t go in his car? He might not pay you,” said Bert. Rummins then had an idea. “What he wants is only the legs. Let’s cut the legs off for him,” said Rummins. “Great idea!” said Bert. Bert then took out a saw and began to cut off the legs. When Mr. Boggis came back, the legs had been cut off. “Don’t worry, this was a ⓓ<u>favor</u>. I won’t ⓔ<u>charge</u> you for this,” said Rummins. Mr. Boggis was so shocked that he couldn’t say anything.`,
+        options: ["ⓐ","ⓑ","ⓒ","ⓓ","ⓔ"],
+        answer: 2,
+        type: "mc",
+        explanation: "흥정 맥락상 ‘최종 제안’이어야 자연스러우므로 `first`는 부적절하다. 따라서 ③(ⓒ)이 문맥상 맞지 않다."
+      },
+      {
+        question: "밑줄 친 <u>He couldn’t believe his luck</u>이 다음 글에서 의미하는 바로 가장 적절한 것은?",
+        passage: `He then added, “Hmm, I think I may buy it. The legs of my table at home are broken. I can cut off the legs of your table and attach them to mine.” “How much?” Rummins asked. “Not much, I’m afraid. This is just a reproduction,” said Mr. Boggis. “So how much?” “Ten pounds.” “Ten? It’s worth more than that.” “How about fifteen?” “Make it fifty.” “Well, thirty. This is my final offer.” “OK, it’s yours, but how are you going to take it? This thing will not go in a car!” “We’ll see,” Mr. Boggis said and went out to bring his car. On his way to the car, Mr. Boggis couldn’t help smiling. The table was what every dealer dreamed of. <u>He couldn’t believe his luck</u>. “Dad, what if this thing doesn’t go in his car? He might not pay you,” said Bert. Rummins then had an idea.`,
+        options: [
+          "자신의 차에 테이블이 실릴 수 있을 만큼 충분히 크다는 것을 깨달은 것",
+          "Rummins 부자가 테이블을 차에 실을 수 있도록 도와주겠다고 제안한 것",
+          "매우 가치 있는 가구를 자신이 제시한 낮은 가격에 얻게 된 상황",
+          "집에 있는 부서진 테이블의 다리를 마침내 교체할 수 있게 된 기쁨",
+          "Rummins가 더 이상 가격을 흥정하지 않고 자신의 최종 제안을 받아들인 것"
+        ],
+        answer: 2,
+        type: "mc",
+        explanation: "그가 ‘운이 믿기지 않는다’고 느낀 이유는 값비싼 가구를 낮은 가격에 손에 넣을 수 있게 되었기 때문이다."
+      },
+      {
+        question: "다음 글의 내용과 일치하지 <u>않는</u> 것을 <u>모두</u> 고르면?",
+        passage: `Mr. Boggis first went to the kitchen, and there was nothing. He then moved to the living room. And there it was! A table which was a priceless piece of eighteenth-century English furniture. He was so excited that he almost fell over. “What’s wrong?” Bert asked. “Oh, nothing. Nothing at all,” Mr. Boggis lied. He then said with a straight face, “This table is a reproduction. It’s worth only a few pounds.” He then added, “Hmm, I think I may buy it. The legs of my table at home are broken. I can cut off the legs of your table and attach them to mine.” “How much?” Rummins asked. “Not much, I’m afraid. This is just a reproduction,” said Mr. Boggis. “So how much?” “Ten pounds.” “Ten? It’s worth more than that.” “How about fifteen?” “Make it fifty.” “Well, thirty. This is my final offer.”`,
+        type: "text",
+        answer: "③, ④, ⑤",
+        explanation: "③ 첫 제안 10파운드는 즉시 수락되지 않았다. ④ 그는 상판이 아니라 ‘다리’가 필요하다고 했다. ⑤ 집에 들어오자마자 아니라 부엌 → 거실을 거쳐 발견했다."
+      },
+      {
+        question: "위 글을 통해 추론할 수 있는 내용으로 가장 적절한 것은?",
+        passage: `Cyril Boggis was an antique furniture dealer in London. He was known for buying good things at a low price and then selling them at a high price. People asked him where he had got the furniture, but he just said, “It’s a secret.” Mr. Boggis’ secret was simple. He went to small towns every Sunday and knocked on doors. He told people that he was a furniture dealer. People didn’t know how valuable their things were, so Mr. Boggis took advantage of them. He was able to buy things very cheaply. Now it was another Sunday, and Mr. Boggis was in a small town again. At a house he visited, he met two men. One was Rummins, the owner, and the other was his son Bert. “I buy old furniture. Do you have any?” asked Mr. Boggis. “No, I don’t,” said Rummins. “Can I just take a look?” asked Mr. Boggis.`,
+        options: [
+          "Boggis was famous among dealers for his honesty and fair prices.",
+          "Rummins initially had no intention of selling any furniture to Boggis.",
+          "Boggis preferred visiting large cities to find rare antique furniture.",
+          "People in small towns were often suspicious of Boggis's identity.",
+          "Boggis revealed his secret of acquiring furniture to his customers."
+        ],
+        answer: 1,
+        type: "mc",
+        explanation: "Rummins는 처음에 가구가 없다고 말해 판매 의사가 없었음을 보인다. 나머지는 본문과 다르거나 근거가 없다."
+      },
+      {
+        question: "다음 우리말과 같은 뜻이 되도록 [보기]에 주어진 단어들을 한 번씩만 사용하여 문장을 완성하시오.",
+        passage: `[보기]
+every / dreamed / was / what / of / dealer / the table
+
+→ <u>그 탁자는 모든 상인들이 꿈꿔왔던 것이었다.</u>
+The table ________________________________.`,
+        options: [
+          "was what dreamed of every dealer",
+          "dreamed of what every dealer was",
+          "was what every dealer dreamed of",
+          "what was every dealer dreamed of",
+          "every dealer dreamed of what was"
+        ],
+        answer: 2,
+        type: "mc",
+        explanation: "`be what S V` + `every dealer dreamed of` 구문이 자연스럽다. ③이 정답이다."
+      },
+      {
+        question: "다음 글의 밑줄 친 ⓐ~ⓔ 중, 어법상 쓰임이 적절하지 <u>않은</u> 것은?",
+        passage: `Cyril Boggis was an antique furniture dealer in London. He was known for buying good things at a low price and then selling them at a high price. People asked him ⓐ<u>where he had got the furniture</u>, but he just said, “It’s a secret.” Mr. Boggis’ secret was simple. He went to small towns every Sunday and knocked on doors. He told people that he was a furniture dealer. People didn’t know ⓑ<u>how valuable their things were</u>, so Mr. Boggis took advantage of them. When Mr. Boggis came back, the legs ⓒ<u>had been cut off</u>. “Don’t worry, this was a favor. I won’t charge you for this,” said Rummins. Mr. Boggis was so shocked that he couldn’t say anything. The table was ⓓ<u>that every dealer dreamed of</u>. He couldn’t believe his luck. He was able to buy things very cheaply because people did not know ⓔ<u>what their things were worth</u>.`,
+        options: ["ⓐ","ⓑ","ⓒ","ⓓ","ⓔ"],
+        answer: 3,
+        type: "mc",
+        explanation: "ⓓ에는 선행사 포함 명사절이 와야 하므로 `that`이 아닌 `what`이어야 한다."
+      },
+      {
+        question: "다음 글의 (A), (B), (C)의 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?",
+        passage: `Now it was another Sunday, and Mr. Boggis was in a small town again. At a house he visited, he met two men. One was Rummins, the owner, and the other was his son Bert. “I buy old furniture. Do you have any?” asked Mr. Boggis. “No, I don’t,” said Rummins. He then moved to the living room. And there it was! A table which was a priceless piece of eighteenth-century English furniture. He was so excited that he almost (A)[fell / fallen] over. “What’s wrong?” Bert asked. “Oh, nothing. Nothing at all,” Mr. Boggis lied. After Mr. Boggis (B)[left / had left] to bring his car, Bert said to his father, “What if this thing doesn’t go in his car?” Rummins then had an idea. “(C)[What / That] he wants is only the legs. Let’s cut the legs off for him.”
+
+  (A)            (B)             (C)`,
+        options: [
+          "fell         had left         What",
+          "fell         left                That",
+          "fallen      had left         What",
+          "fallen      left                That",
+          "fell         had left         That"
+        ],
+        answer: 0,
+        type: "mc",
+        explanation: "(A) 과거시제이므로 fell, (B) 선행 사건 완료 had left, (C) 선행사 포함 명사절 What이 적절하여 ①이 정답이다."
+      },
+      {
+        question: "다음 <보기>의 문장 중 어법상 옳은 것의 개수는?",
+        passage: `<보기>
+(a) What surprised me the most was his honest reaction.
+(b) She finally found the wallet that she had lost a week before.
+(c) The police investigated that the witness saw at the scene.
+(d) I had lived in this town for five years before I moved to Seoul.
+(e) He told me the funny story what he heard from his friend.`,
+        options: ["1개","2개","3개","4개","5개"],
+        answer: 2,
+        type: "mc",
+        explanation: "(a), (b), (d)가 옳다 → 총 3개. (c)는 목적어절이 어색하고, (e)는 what 대신 that/which가 와야 한다."
+      },
+      {
+        question: "다음 대화의 내용과 일치하지 <u>않는</u> 것은?",
+        passage: `[대화문: KC-6D7 전체 제공]
+B: Excuse me, Ms. Carter. Can I ask you a question? Did I get the main role in the play?
+W: Yes, you did. Congratulations, Jiho! You're going to be Romeo in our school play, Romeo and Juliet.
+B: Really? I'm so excited. Thank you so much, Ms. Carter.
+W: I know how much you wanted the role. I'm so happy for you.
+B: Thank you. What about Sumi? Did she get the role she wanted, too?
+W: Unfortunately, no. She's very disappointed.
+B: Oh, I'm sorry to hear that. Anyway, when is the first practice?
+W: It's at 2 p.m. on September 20th, in the acting club room. You'll get a text message about it soon.
+B: OK. I'll be there.
+
+① Jiho will perform the main role of Romeo in the school play.
+② Sumi got the role she wanted and feels excited about it.
+③ The first practice is scheduled for 2 p.m. on September 20th.
+④ The practice location is the acting club room.
+⑤ Jiho will receive a text message with practice information.`,
+        options: ["①","②","③","④","⑤"],
+        answer: 1,
+        type: "mc",
+        explanation: "대화에서 Sumi는 원하는 배역을 받지 못해 실망했다. 따라서 ②가 일치하지 않는다."
+      }
+    ];
+
+    const quizForm = document.getElementById('quiz-form');
+    const circledNumbers = ['①','②','③','④','⑤'];
+
+    quizData.forEach((q, index) => {
+      const questionBlock = document.createElement('div');
+      questionBlock.className = 'question-block';
+
+      let content = `<div class="q-title">${q.question}</div>`;
+      if (q.passage) {
+        content += `<div class="passage">${q.passage.replace(/\n\n/g,'<br><br>')}</div>`;
+      }
+
+      if (q.type === 'mc') {
+        content += '<div class="options">';
+        q.options.forEach((opt, i) => {
+          content += `<label><input type="radio" name="q${index}" value="${i}"> ${circledNumbers[i]} ${opt}</label>`;
+        });
+        content += '</div>';
+      } else if (q.type === 'text') {
+        content += `<input type="text" name="q${index}" placeholder="정답을 입력하세요. 예: ③, ④, ⑤">`;
+      }
+
+      questionBlock.innerHTML = content;
+      quizForm.appendChild(questionBlock);
+    });
+
+    function submitQuiz() {
+      const studentName = document.getElementById('studentName').value || '익명';
+      let score = 0;
+      const feedbackDiv = document.getElementById('feedback');
+      feedbackDiv.innerHTML = '';
+      const todayKR = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'2-digit', day:'2-digit' });
+      let resultString = `학생 ID: ${studentName}\n날짜: ${todayKR}\n\n[채점 결과]\n\n`;
+
+      quizData.forEach((q, index) => {
+        const inputs = document.getElementsByName(`q${index}`);
+        let userAnswerRaw;
+        let userAnswerText = "답변 안 함";
+        let isCorrect = false;
+
+        if (q.type === 'mc') {
+          for (const input of inputs) {
+            if (input.checked) {
+              userAnswerRaw = parseInt(input.value);
+              userAnswerText = `${circledNumbers[userAnswerRaw]} ${q.options[userAnswerRaw]}`;
+              break;
+            }
+          }
+          isCorrect = (userAnswerRaw === q.answer);
+        } else if (q.type === 'text') {
+          userAnswerRaw = inputs[0].value.trim();
+          userAnswerText = userAnswerRaw;
+          const correctAnswer = String(q.answer).toLowerCase().replace(/\.$/, '');
+          isCorrect = (userAnswerRaw.toLowerCase().replace(/\.$/, '') === correctAnswer);
+        }
+
+        const feedbackP = document.createElement('p');
+        const correctAnswerText = q.type === 'mc' ? `${circledNumbers[q.answer]} ${q.options[q.answer]}` : q.answer;
+        const detailsBlock = `
+          <details class="explanation-details">
+            <summary>해설 보기</summary>
+            <div class="explanation-content">${q.explanation}</div>
+          </details>`;
+
+        if (isCorrect) {
+          score++;
+          feedbackP.innerHTML = `${index+1}번: <span class="correct">정답 (1)</span> ${detailsBlock}`;
+          resultString += `문제 번호: ${index+1}\t정오 여부: 1\n`;
+        } else {
+          feedbackP.innerHTML = `${index+1}번: <span class="incorrect">오답 (0)</span> (정답: ${correctAnswerText}) ${detailsBlock}`;
+          resultString += `문제 번호: ${index+1}\t정오 여부: 0\t학생이 고른 오답: ${userAnswerText}\n`;
+        }
+        feedbackDiv.appendChild(feedbackP);
+      });
+
+      const finalScore = (score / quizData.length) * 100;
+      document.getElementById('score').innerText = `총점: ${score} / ${quizData.length} (${finalScore.toFixed(1)}점)`;
+      document.getElementById('results').style.display = 'block';
+
+      resultString += `\n총점: ${score}/${quizData.length} (${finalScore.toFixed(1)}점)`;
+      document.getElementById('resultText').value = resultString;
+    }
+  </script>
+</body>
+</html>
