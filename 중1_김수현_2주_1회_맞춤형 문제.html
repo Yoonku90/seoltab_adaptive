@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중1 김수현 - 약점 보완 맞춤형 문제</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 2em; background-color: #f4f7f9; color: #333; }
+        .quiz-container { max-width: 800px; margin: auto; background: white; padding: 2em; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        h1, h2 { text-align: center; color: #2c3e50; }
+        .info-block { margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #e0e0e0; }
+        .question-block { margin-bottom: 2.5em; border-top: 1px solid #e0e0e0; padding-top: 1.5em; }
+        .question-block .q-title { font-weight: bold; margin-bottom: 1em; line-height: 1.5; }
+        .passage { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 1em; margin: 1em 0; font-size: 0.95em; color: #555; white-space: pre-wrap; line-height: 1.6; }
+        .options label { display: block; margin-bottom: 0.8em; cursor: pointer; padding: 0.5em; border-radius: 5px; transition: background-color 0.2s; }
+        .options label:hover { background-color: #e9ecef; }
+        input[type="radio"], input[type="text"] { margin-right: 0.5em; vertical-align: middle; }
+        input[type="text"] { width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { display: block; width: 100%; padding: 1em; font-size: 1.1em; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; margin-top: 2em; }
+        .submit-btn:hover { background-color: #218838; }
+        .results-area { margin-top: 2em; padding: 1.5em; background-color: #eef8ff; border: 1px solid #b8dcf1; border-radius: 8px; }
+        textarea { width: 100%; height: 200px; margin-top: 1em; font-family: monospace; }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+        .explanation-details { margin-top: 10px; font-size: 0.9em; }
+        .explanation-details summary { cursor: pointer; color: #0056b3; font-weight: normal; display: inline-block; padding: 2px 6px; border-radius: 4px; background-color: #e9ecef; }
+        .explanation-details[open] summary { background-color: #007bff; color: white; }
+        .explanation-content { margin-top: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #444; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>중1 영어 6과 약점 보완 퀴즈</h1>
+        <div class="info-block">
+            <label for="studentName">이름:</label>
+            <input type="text" id="studentName" placeholder="이름을 입력하세요" value="중1_김수현">
+        </div>
+        <div id="quiz-form"></div>
+        <button class="submit-btn" onclick="submitQuiz()">결과 확인 및 복사하기</button>
+        <div id="results" class="results-area" style="display:none;">
+            <h2>📝 채점 결과</h2>
+            <p id="score"></p>
+            <div id="feedback"></div>
+            <h3>📋 결과 복사하기</h3>
+            <p>아래 내용을 복사하여 선생님께 제출하세요.</p>
+            <textarea id="resultText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: `다음 밑줄 친 to부정사의 쓰임이 나머지 넷과 <u>다른</u> 것은?`,
+                passage: null,
+                options: [
+                    "He hopes <u>to become</u> a famous scientist someday.",
+                    "My family decided <u>to move</u> to a new city next year.",
+                    "Her main goal for this year is <u>to read</u> fifty books.",
+                    "I want <u>to learn</u> how to play the electric guitar.",
+                    "They planned <u>to travel</u> around the world together."
+                ],
+                answer: 2,
+                type: 'mc',
+                explanation: "①, ②, ④, ⑤번의 to부정사는 각각 동사 hopes, decided, want, planned의 목적어(~하는 것을) 역할을 한다. 하지만 ③번은 be동사 is 뒤에서 주어(Her main goal)를 보충 설명하는 보어(~하는 것이다) 역할을 하므로 쓰임이 다르다."
+            },
+            {
+                question: "다음 글의 내용과 일치하지 <u>않는</u> 것을 <u>모두</u> 고른 것은?",
+                passage: `Challenge 01 Reduce Food Waste
+Olivia: My birthday was last Saturday, and my family and I ate out. There were lots of leftovers, but we brought them home. The next day, I made a nice lunch out of them. FYI, you can find great cooking ideas for leftovers on the Internet.
+
+<보기>
+a. Olivia had a birthday party at her home last Saturday.
+b. Olivia cooked a new meal using the food from the restaurant.
+c. The family threw away the food that was left after eating out.
+d. Olivia thinks the Internet is a useful source for cooking recipes.
+e. The family decided to eat out to reduce food waste.`,
+                options: ["a, b", "a, c, e", "b, d", "c, d, e", "d, e"],
+                answer: 1,
+                type: 'mc',
+                explanation: "a: 집이 아닌 밖에서 외식했다(ate out). c: 남은 음식을 버리지 않고 집으로 가져왔다(brought them home). e: 음식물 쓰레기를 줄이기 위해서가 아니라 생일이어서 외식했다. 따라서 내용과 일치하지 않는 것은 a, c, e이다."
+            },
+            {
+                question: "주어진 글 다음에 이어질 대화의 순서로 가장 적절한 것은?",
+                passage: `B: Hi, Yuna. What are you doing here?
+G: Hi, Alex. I'm plogging with my club members.
+
+(A) 
+G: Plogging. It means jogging and picking up trash at the same time.
+B: Sounds cool! So you're a member of a plogging club.
+
+(B) 
+B: Excuse me?
+
+(C) 
+G: Yes. We plog together every Saturday morning from 10 to 12. Interested?
+B: Well, I'll think about it.`,
+                options: ["(A) - (C) - (B)", "(B) - (A) - (C)", "(B) - (C) - (A)", "(C) - (A) - (B)", "(C) - (B) - (A)"],
+                answer: 1,
+                type: 'mc',
+                explanation: "플로깅이라는 생소한 단어를 듣고 되묻는 (B)가 가장 먼저 와야 한다. 그에 대한 설명인 (A)가 이어지고, 추가적인 정보를 제공하는 (C)가 마지막에 오는 것이 자연스럽다."
+            },
+            {
+                question: "<보기>의 설명 중, 주어진 글의 내용과 일치하는 것의 개수는?",
+                passage: `Challenge 04 Recycle
+Minsu: Yesterday, I took some plastic and glass bottles to a recycling machine near my house. I put them into the machine one by one, and I got some points in return. What can I do with those points? Well, I can use them like money. Don't you think that's cool?
+
+<보기>
+a. Minsu put all the bottles into the machine at the same time.
+b. The recycling machine was located far away from Minsu's home.
+c. Minsu received cash as a reward for recycling the bottles.
+d. The points Minsu earned can be used for purchasing things.
+e. Minsu thinks that using the recycling machine is a great idea.`,
+                options: ["1개", "2개", "3개", "4개", "5개"],
+                answer: 1,
+                type: 'mc',
+                explanation: "a: 'one by one'(하나씩)이라고 했으므로 틀렸다. b: 'near my house'(집 근처)라고 했으므로 틀렸다. c: 현금(cash)이 아닌 포인트(points)를 받았으므로 틀렸다. d, e는 본문의 내용과 일치한다. 따라서 일치하는 것은 2개이다."
+            },
+            {
+                question: "다음 글의 밑줄 친 ①~⑤ 중, 어법상 쓰임이 적절하지 <u>않은</u> 것은?",
+                passage: `Domingo: My dog tore my bag. I wanted ①<u>to buy</u> a new one, but I thought again. I learned ②<u>that</u> reusing is important for zero-waste living. So, I decided ③<u>to fix</u> it and reuse it. I'm not very good at ④<u>sewing</u>, and I don't think that the bag looks ⑤<u>perfectly</u>. I guess it's all right.`,
+                options: ["①", "②", "③", "④", "⑤"],
+                answer: 4,
+                type: 'mc',
+                explanation: "⑤번의 동사 `look`은 감각동사로, 뒤에 부사(perfectly)가 아닌 형용사(perfect)를 보어로 취해야 한다. '완벽하게 보이다'는 `looks perfect`가 올바른 표현이다."
+            },
+            {
+                question: "다음 대화의 내용으로 추론할 수 있는 것으로 가장 적절한 것은?",
+                passage: `M: For here or to go?
+G: For here, please. And can you please put my smoothie in a plastic cup, not in a glass?
+M: I'm sorry, but we don't use single-use plastic cups inside the café.
+G: Oh, I see.`,
+                options: [
+                    "손님은 유리컵에 담긴 스무디를 마시고 싶어 한다.",
+                    "직원은 매장 내 모든 플라스틱 제품 사용을 금지하고 있다.",
+                    "손님은 음료를 포장해서 가지고 나갈 계획이다.",
+                    "해당 카페는 매장 내 취식 고객에게는 일회용 컵을 제공하지 않는다.",
+                    "직원은 손님에게 텀블러를 사용할 것을 제안했다."
+                ],
+                answer: 3,
+                type: 'mc',
+                explanation: "손님은 'For here, please'라고 말하며 매장 내에서 마실 것임을 밝혔다. 이에 직원은 '카페 안에서는(inside the café)' 일회용 플라스틱 컵을 사용하지 않는다고 답했다. 이를 통해 ④번이 가장 적절한 추론임을 알 수 있다."
+            },
+            {
+                question: "다음 밑줄 친 낱말의 영영풀이가 적절하지 <u>않은</u> 것은?",
+                passage: null,
+                options: [
+                    "① It's important to reduce <u>waste</u> to protect the environment.\n(waste: material that is not wanted; the unusable remains of something)",
+                    "② After the big party, we had a lot of <u>leftovers</u> to eat for the next few days.\n(leftovers: food remaining after a meal)",
+                    "③ Bringing a <u>reusable</u> bag to the market is a good habit.\n(reusable: able to be used again or more than once)",
+                    "④ I often use a food <u>delivery</u> service when I'm too busy to cook.\n(delivery: the act of buying goods at a local store or market)",
+                    "⑤ To reduce trash, we should avoid using <u>single-use</u> plastic items.\n(single-use: designed to be used only once and then thrown away)"
+                ],
+                answer: 3,
+                type: 'mc',
+                explanation: "④번 `delivery`는 '배달' 즉, 물건을 특정 장소나 사람에게 가져다주는 행위를 의미한다. 영영풀이(지역 상점에서 물건을 사는 행위)는 `shopping`에 더 가깝다."
+            },
+            {
+                question: "다음 중 어법상 옳은 문장은?",
+                passage: null,
+                options: [
+                    "To saving paper is a way to help the Earth.",
+                    "My little brother enjoys to play with his toys.",
+                    "We promised to not make the same mistake.",
+                    "Her dream is to travel to many different countries.",
+                    "He finished to read the book in just two days."
+                ],
+                answer: 3,
+                type: 'mc',
+                explanation: "① 'To save'가 되어야 한다. ② 'enjoys playing'이 되어야 한다(동명사 목적어). ③ to부정사의 부정은 'not to' 이므로 'promised not to make'가 되어야 한다. ⑤ 'finished reading'이 되어야 한다(동명사 목적어). ④는 주격보어로 쓰인 to부정사로 어법상 올바르다."
+            },
+            {
+                question: "다음 글의 빈칸에 들어갈 말로 가장 적절한 것은?",
+                passage: `Emma: I often use food delivery services, but today I didn't. Instead, I walked to my favorite restaurant with a _____________________ container and picked up the food. I heard that plastic never goes away completely. I didn't use any single-use plastic today. I felt good!`,
+                options: ["disposable", "delivery", "single-use", "plastic", "reusable"],
+                answer: 4,
+                type: 'mc',
+                explanation: "글의 맥락은 일회용 플라스틱(single-use plastic) 사용을 피하기 위해 직접 용기를 가져간 상황이다. 따라서 빈칸에는 '재사용 가능한'이라는 의미의 `reusable`이 가장 적절하다."
+            },
+            {
+                question: "다음 대화의 내용으로 추론할 수 <u>없는</u> 것은?",
+                passage: `M: Can you please carry this box to my car?
+G: I'm really sorry, Dad, but I'm late for my class.
+M: Oh, I see. I'll ask somebody else.`,
+                options: [
+                    "아빠는 딸에게 도움을 요청하고 있다.",
+                    "딸은 현재 수업에 늦은 상황이다.",
+                    "아빠는 딸의 상황을 이해하고 다른 방법을 찾으려 한다.",
+                    "딸은 상자가 너무 무거워서 옮길 수 없다고 생각한다.",
+                    "딸은 아빠의 부탁을 정중하게 거절하고 있다."
+                ],
+                answer: 3,
+                type: 'mc',
+                explanation: "딸은 부탁을 거절한 이유로 '수업에 늦었다(I'm late for my class)'고 명확히 밝혔다. 상자의 무게에 대해서는 전혀 언급하지 않았으므로 ④번은 대화 내용으로 추론할 수 없다."
+            }
+        ];
+
+        const quizForm = document.getElementById('quiz-form');
+        const circledNumbers = ['①', '②', '③', '④', '⑤'];
+
+        quizData.forEach((q, index) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+            
+            let content = `<div class="q-title">${index + 1}. ${q.question}</div>`;
+            
+            if (q.passage) {
+                 content += `<div class="passage">${q.passage.replace(/\n\n/g, '<br><br>')}</div>`;
+            }
+
+            if (q.type === 'mc') {
+                content += '<div class="options">';
+                q.options.forEach((opt, i) => {
+                    content += `<label><input type="radio" name="q${index}" value="${i}"> ${circledNumbers[i]} ${opt}</label>`;
+                });
+                content += '</div>';
+            } else if (q.type === 'text') {
+                content += `<input type="text" name="q${index}" placeholder="정답을 입력하세요.">`;
+            }
+            questionBlock.innerHTML = content;
+            quizForm.appendChild(questionBlock);
+        });
+
+        function submitQuiz() {
+            const studentName = document.getElementById('studentName').value || '익명';
+            let score = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '';
+            let resultString = `학생 ID: ${studentName}\n날짜: ${new Date().toLocaleDateString()}\n\n[채점 결과]\n\n`;
+
+            quizData.forEach((q, index) => {
+                const inputs = document.getElementsByName(`q${index}`);
+                let userAnswerRaw;
+                let userAnswerText = "답변 안 함";
+                let isCorrect = false;
+
+                if (q.type === 'mc') {
+                    for (const input of inputs) {
+                        if (input.checked) {
+                            userAnswerRaw = parseInt(input.value);
+                            userAnswerText = `${circledNumbers[userAnswerRaw]} ${q.options[userAnswerRaw]}`;
+                            break;
+                        }
+                    }
+                    isCorrect = (userAnswerRaw === q.answer);
+                } else if (q.type === 'text') {
+                    userAnswerRaw = inputs[0].value.trim();
+                    userAnswerText = userAnswerRaw;
+                    const correctAnswer = q.answer.toLowerCase().replace(/\.$/, '');
+                    isCorrect = (userAnswerRaw.toLowerCase().replace(/\.$/, '') === correctAnswer);
+                }
+                
+                const feedbackP = document.createElement('p');
+                let resultLine;
+                const correctAnswerText = q.type === 'mc' ? `${circledNumbers[q.answer]} ${q.options[q.answer]}` : q.answer;
+
+                const detailsBlock = `
+                    <details class="explanation-details">
+                        <summary>해설 보기</summary>
+                        <div class="explanation-content">${q.explanation}</div>
+                    </details>`;
+                
+                if (isCorrect) {
+                    score++;
+                    feedbackP.innerHTML = `${index + 1}번: <span class="correct">정답 (1)</span> ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 1\n`;
+                } else {
+                    feedbackP.innerHTML = `${index + 1}번: <span class="incorrect">오답 (0)</span> (정답: ${correctAnswerText}) ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 0\t학생이 고른 오답: ${userAnswerText}\n`;
+                }
+                feedbackDiv.appendChild(feedbackP);
+                resultString += resultLine;
+            });
+
+            const finalScore = (score / quizData.length) * 100;
+            document.getElementById('score').innerText = `총점: ${score} / ${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('results').style.display = 'block';
+            
+            resultString += `\n총점: ${score}/${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('resultText').value = resultString;
+        }
+    </script>
+</body>
+</html>
