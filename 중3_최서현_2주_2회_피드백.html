@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+ <meta charset="utf-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <title>중3 최서현 학생 · 내신 학습 지식맵 (2025-09-03)</title>
+ <style>
+  :root{
+  --bg: #f6f7fb; --card:#ffffff; --border:#e6e8ef; --text:#0f172a; --muted:#64748b;
+  --indigo:#4f46e5; --green:#16a34a; --yellow:#f59e0b; --red:#ef4444; --blue:#3b82f6;
+  --green-100:#dcfce7; --yellow-100:#fef9c3; --red-100:#fee2e2; --gray-100:#f1f5f9; --blue-100:#dbeafe;
+  }
+  *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#ffffff, var(--bg));color:var(--text);font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR",Apple SD Gothic Neo,Pretendard,Helvetica,Arial,sans-serif}
+  .container{max-width:1120px;margin:0 auto;padding:24px}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+  .between{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 4px 12px rgba(15,23,42,.04)}
+  .p-16{padding:16px}.p-20{padding:20px}.p-24{padding:24px}
+  .btn{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 14px;cursor:pointer}
+  .btn.active{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+  .input{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 12px;min-width:260px}
+  .grid{display:grid;gap:16px}
+  @media(min-width:640px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media(min-width:768px){.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}}
+  .stat{min-width:240px}
+  .hbar{height:8px;background:var(--gray-100);border-radius:999px;overflow:hidden}
+  .hbar > span{display:block;height:100%}
+  .pill{padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700;display:inline-block}
+  .legend .pill{border:1px solid var(--border);}
+  .muted{color:var(--muted)}
+  .title{font-weight:800;letter-spacing:-.3px}
+  .sub{font-size:12px}
+  .kc-card{display:flex;gap:12px}
+  .kc-ico{flex:0 0 auto;width:36px;height:36px;border-radius:12px;background:#f8fafc;display:grid;place-items:center;border:1px solid var(--border)}
+  .small{font-size:12px}
+  .type-card{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .kbd{font-variant-numeric:tabular-nums}
+  .footer{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:flex-start}
+  .feedback-section h3 { font-size: 20px; margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px; }
+  .feedback-section h4 { font-size: 16px; margin: 24px 0 8px 0; color: var(--indigo); border-left: 3px solid var(--indigo); padding-left: 8px;}
+  .feedback-section .summary { font-size: 14px; color: var(--muted); margin-top: -12px; margin-bottom: 24px; }
+  .feedback-section hr { border: 0; border-top: 1px solid var(--border); margin: 24px 0; }
+  .feedback-section blockquote { margin: 12px 0; padding: 12px; background-color: var(--gray-100); border-left: 4px solid var(--border); border-radius: 8px; font-size: 13px; }
+  .feedback-section .analysis { margin-top: 8px; }
+  .feedback-section .analysis strong { color: var(--text); }
+ </style>
+</head>
+<body>
+ <div class="container">
+  <div class="between" style="gap:16px;flex-wrap:wrap">
+  <div>
+  <div class="title" style="font-size:24px">중3 6과 <span style="color:var(--indigo)">KC & 유형 성취도</span> 대시보드</div>
+  <div class="sub muted">학생: <strong>최서현 학생</strong> · 시험일: <strong>2025-09-03</strong> · 교재: 동아(이병민)</div>
+  </div>
+  <div class="row">
+  <button id="printBtn" class="btn">내보내기/인쇄</button>
+  </div>
+  </div>
+  <div class="row" style="margin-top:16px;align-items:center">
+  <div class="row">
+  <button data-view="all" class="btn view-btn active">전체</button>
+  <button data-view="core" class="btn view-btn">기반</button>
+  <button data-view="dialogue" class="btn view-btn">대화문</button>
+  <button data-view="reading" class="btn view-btn">본문</button>
+  <button data-view="types" class="btn view-btn">문제 유형</button>
+  <button data-view="feedback" class="btn view-btn">피드백</button>
+  </div>
+  <div style="flex:1"></div>
+  <input id="search" class="input" placeholder="KC 코드/이름/설명/유형 검색" />
+  </div>
+  <div class="grid grid-2" style="margin-top:16px">
+  <div class="card p-16 stat">
+  <div class="muted small">KC 평균 성취도</div>
+  <div class="row" style="align-items:center;gap:6px">
+  <div id="avgKC" class="title" style="font-size:22px;margin-top:4px">—</div>
+  <div id="avgKCDiff" class="small" style="font-weight:700;"></div>
+  </div>
+  <div class="hbar" style="margin-top:8px"><span id="avgKCBar" style="width:0"></span></div>
+  </div>
+  <div class="card p-16 stat">
+  <div class="muted small">문제 유형 평균 성취도</div>
+  <div class="row" style="align-items:center;gap:6px">
+  <div id="avgType" class="title" style="font-size:22px;margin-top:4px">—</div>
+  <div id="avgTypeDiff" class="small" style="font-weight:700;"></div>
+  </div>
+  <div class="hbar" style="margin-top:8px"><span id="avgTypeBar" style="width:0"></span></div>
+  </div>
+  </div>
+  <div class="legend row card p-16" style="margin-top:16px">
+  <div class="muted small">범례:</div>
+  <span class="pill" style="background:var(--green-100);color:var(--green)">우수 ≥ 85%</span>
+  <span class="pill" style="background:var(--yellow-100);color:var(--yellow)">60–84%</span>
+  <span class="pill" style="background:var(--red-100);color:var(--red)">1–59%</span>
+  <span class="pill" style="background:#e5e7eb;color:#374151">미평가</span>
+  <span class="pill" style="background:var(--blue-100);color:var(--blue)">NEW</span>
+  <span class="muted small">▲▼ 이전 대비</span>
+  </div>
+  <div id="mount"></div>
+  <section class="card p-20" style="margin-top:16px" id="focusBox">
+  <div class="between">
+  <div>
+  <div class="title" style="font-size:18px">📌 집중 보완 영역 (상위 3개 KC)</div>
+  <div class="sub muted">점수가 낮은 순으로 자동 추천</div>
+  </div>
+  </div>
+  <ol id="focusList" class="small" style="margin-top:8px;padding-left:18px"></ol>
+  </section>
+  <div class="footer" style="margin-top:16px">
+  <span>색상 기준: 🟢 85% 이상, 🟡 60–84%, 🟥 1–59%, 회색=미평가. 검색 또는 상단 버튼으로 뷰를 전환할 수 있습니다. 인쇄 버튼으로 PDF 저장 가능.</span>
+  </div>
+ </div>
+ <script>
+  // ======== 데이터(교체 대상) ========
+  const studentName = "최서현";
+  const examDate = "2025-09-03";
+
+  // --- 이전 성취도 ---
+  const prevKcScores = { "KC-6C1": 86, "KC-6C2": 100, "KC-6D1": 88.2, "KC-6D2": 100, "KC-6D3": 100, "KC-6D6": 100, "KC-6D9": 100, "KC-6G1": 100, "KC-6G2": 91.4, "KC-6R1": 84.3, "KC-6R2": 84.4, "KC-6R3": 93.1, "KC-6R4": 100, "KC-6V1": 82.2 };
+  const prevTypeScores = { "112": 100, "113": 100, "121": 100, "122": 100, "124": 88.2, "131": 100, "241": 100, "242": 100, "251": 70.6, "252": 100, "253": 100, "311": 100, "312": 100, "321": 66.7, "322": 100, "325": 83.3, "331": 100, "342": 100 };
+
+  // --- 현재 성취도 ---
+  const kcScores = { "KC-6C1": 89.1, "KC-6C2": 100, "KC-6D1": 94.3, "KC-6D2": 100, "KC-6D3": 85.2, "KC-6D5": 100, "KC-6D6": 100, "KC-6D9": 100, "KC-6G1": 93.6, "KC-6G2": 77.9, "KC-6R1": 84.7, "KC-6R2": 84.4, "KC-6R3": 94.1, "KC-6R4": 100, "KC-6V1": 85.9 };
+  const typeScores = [
+  { code:"112", name:"대화 내용 일치/불일치", area:"대화", score:100, kcs:["KC-6C2","KC-6D1","KC-6D3","KC-6D5"]},
+  { code:"113", name:"요약문 내용 일치/불일치", area:"대화", score:100, kcs:[]},
+  { code:"121", name:"대화 흐름 파악", area:"대화", score:75, kcs:["KC-6D3"]},
+  { code:"122", name:"대화 순서 배열", area:"대화", score:100, kcs:["KC-6D1"]},
+  { code:"124", name:"대화 빈칸 추론", area:"대화", score:91.7, kcs:["KC-6C1","KC-6D1"]},
+  { code:"131", name:"어휘 의미 파악", area:"어휘", score:100, kcs:["KC-6V1"]},
+  { code:"132", name:"영영풀이", area:"어휘", score:33.3, kcs:["KC-6V1"]},
+  { code:"133", name:"표현 및 활용 알기", area:"어휘", score:100, kcs:["KC-6V1"]},
+  { code:"141", name:"해석 및 질문에 답하기", area:"대화", score:100, kcs:["KC-6V1"]},
+  { code:"142", name:"영작하기", area:"문법", score:100, kcs:["KC-6C2","KC-6D5"]},
+  { code:"241", name:"문장 전환하기", area:"문법", score:100, kcs:["KC-6G1","KC-6R4","KC-6C2","KC-6D3"]},
+  { code:"242", name:"조건 영작", area:"문법", score:100, kcs:["KC-6R4","KC-6G2","KC-6C2"]},
+  { code:"251", name:"어법상 옳은/틀린 것", area:"문법", score:74, kcs:["KC-6R2","KC-6R3","KC-6R4","KC-6G1","KC-6R1","KC-6G2"]},
+  { code:"252", name:"쓰임 구분하기", area:"문법", score:100, kcs:["KC-6R4","KC-6R1"]},
+  { code:"253", name:"어법상 빈칸 추론", area:"문법", score:100, kcs:["KC-6R4","KC-6G2","KC-6G1"]},
+  { code:"311", name:"글의 주제/제목", area:"독해", score:100, kcs:["KC-6R1","KC-6R2"]},
+  { code:"312", name:"본문 내용 일치/불일치", area:"독해", score:84.1, kcs:["KC-6R2","KC-6R3","KC-6R4","KC-6R1"]},
+  { code:"314", name:"요약문 완성", area:"독해", score:100, kcs:["KC-6R3","KC-6R1","KC-6R2"]},
+  { code:"321", name:"문장 삽입/흐름", area:"독해", score:91.7, kcs:["KC-6R3","KC-6R2","KC-6R4"]},
+  { code:"322", name:"글의 순서 배열", area:"독해", score:100, kcs:["KC-6R1","KC-6R2"]},
+  { code:"324", name:"지칭/의미 추론", area:"독해", score:100, kcs:["KC-6V1","KC-6R1","KC-6R2"]},
+  { code:"325", name:"본문 빈칸 추론", area:"독해", score:86.8, kcs:["KC-6R4","KC-6R2","KC-6R1"]},
+  { code:"331", name:"어휘 의미 파악", area:"독해", score:100, kcs:["KC-6V1","KC-6R2","KC-6R4"]},
+  { code:"332", name:"영영풀이 알기", area:"독해", score:100, kcs:["KC-6V1","KC-6R1","KC-6R2"]},
+  { code:"333", name:"어휘의 관계 및 활용 알기", area:"독해", score:100, kcs:["KC-6V1","KC-6R2"]},
+  { code:"342", name:"영어로 표현하기", area:"독해", score:100, kcs:[]}
+  ];
+
+  // KC 메타
+  const kcMeta = {
+  "KC-6C1": { area: "의사소통", label: "감사하기", desc: "Thank you for ~" },
+  "KC-6C2": { area: "의사소통", label: "금지하기", desc: "You’re not allowed to ~" },
+  "KC-6G1": { area: "문법", label: "목적을 나타내는 so that", desc: "'~하기 위해서', '~하도록'" },
+  "KC-6G2": { area: "문법", label: "형용사/부사 + enough to", desc: "'~할 만큼 충분히 ...하다'" },
+  "KC-6V1": { area: "어휘", label: "예술/건축 어휘", desc: "imitate, inspiration, architect 등" },
+  "KC-6D1": { area: "대화문", label: "여행 안내 감사", desc: "Thank you for showing me around." },
+  "KC-6D2": { area: "대화문", label: "생일 파티 초대 감사", desc: "Thank you for inviting me." },
+  "KC-6D3": { area: "대화문", label: "콘서트 예매 규칙 확인", desc: "not allowed to bring children" },
+  "KC-6D5": { area: "대화문", label: "미술관 관람 규칙", desc: "Thank you for visiting / not allowed to touch" },
+  "KC-6D6": { area: "대화문", label: "(기타)미술관 관람 규칙", desc: "Thank you for visiting" },
+  "KC-6D9": { area: "대화문", label: "(기타)콘서트 예매 규칙", desc: "not allowed to bring" },
+  "KC-6R1": { area: "본문", label: "자연을 모방하는 예술", desc: "달걀 예시와 enough to 구문" },
+  "KC-6R2": { area: "본문", label: "사그라다 파밀리아 성당", desc: "가우디, 나무 형태의 기둥" },
+  "KC-6R3": { area: "본문", label: "시드니 오페라 하우스", desc: "오렌지에서 얻은 영감" },
+  "KC-6R4": { area: "본문", label: "동대문 디자인 플라자", desc: "DDP와 so that 목적절" }
+  };
+
+  const groups = [
+  { id: "core", title: "A. 기반 지식", subtitle: "의사소통·문법·어휘 기반", items:["KC-6C1","KC-6C2","KC-6G1","KC-6G2","KC-6V1"] },
+  { id: "dialogue", title: "B-1. 적용 · 대화문", subtitle: "실제 대화 상황 이해", items:["KC-6D1","KC-6D2","KC-6D3","KC-6D5","KC-6D6","KC-6D9"] },
+  { id: "reading", title: "B-2. 적용 · 본문", subtitle: "자연과 도시의 만남, 건축", items:["KC-6R1","KC-6R2","KC-6R3","KC-6R4"] }
+  ];
+
+  // ======== 변화 계산 ========
+  const kcChanges = Object.keys(kcScores).reduce((acc, key) => {
+  const prev = prevKcScores[key];
+  const curr = kcScores[key];
+  acc[key] = { isNew: prev === undefined, diff: prev !== undefined ? curr - prev : 0 };
+  return acc;
+  }, {});
+  const typeChanges = typeScores.reduce((acc, item) => {
+  const prev = prevTypeScores[item.code];
+  const curr = item.score;
+  acc[item.code] = { isNew: prev === undefined, diff: prev !== undefined ? curr - prev : 0 };
+  return acc;
+  }, {});
+
+  // ======== 헬퍼 ========
+  const thresholds = { excellent:85, ok:60 };
+  const clamp = (n) => Math.max(0, Math.min(100, Number(n||0)));
+  function statusColor(v, bgOnly=false){
+  if(v==null) return bgOnly? '#e5e7eb' : 'background:#e5e7eb;color:#374151';
+  if(v>=thresholds.excellent) return bgOnly? 'var(--green-100)' : 'background:var(--green-100);color:var(--green)';
+  if(v>=thresholds.ok) return bgOnly? 'var(--yellow-100)' : 'background:var(--yellow-100);color:var(--yellow)';
+  return bgOnly? 'var(--red-100)' : 'background:var(--red-100);color:var(--red)';
+  }
+  function barColor(v){
+  if(v==null) return '#e5e7eb';
+  if(v>=thresholds.excellent) return 'var(--green)';
+  if(v>=thresholds.ok) return 'var(--yellow)';
+  return 'var(--red)';
+  }
+  function scoreLabel(v){ if(v==null) return '미평가'; const n=+v; return n===100 ? '100%' : n.toFixed(1)+'%'; }
+  function average(nums){
+  const vals = nums.filter(v => v!=null && !Number.isNaN(Number(v)));
+  if(!vals.length) return null;
+  return vals.reduce((a,b)=>a+Number(b),0)/vals.length;
+  }
+  function getFeedbackHTML(){
+  return `
+  <h3>📊 상세 분석 및 맞춤 피드백</h3>
+  <div>
+  <p style="padding:12px; background-color: var(--gray-100); border-radius: 12px; font-size: 14px; margin-top:0;">
+  <strong>총평:</strong> ${studentName} 학생은 전반적으로 매우 뛰어난 성취도를 보여주었습니다! 👏 본문과 대화문의 내용을 이해하고 핵심 문법(<code>so that</code>)을 활용하는 능력은 거의 완벽에 가깝습니다. 다만, 몇 가지 특정 유형과 문법에서 아쉬운 부분이 발견되어 이 점을 보완한다면 최상위권 실력을 더욱 굳힐 수 있을 것입니다.
+  </p>
+  </div>
+  <hr>
+  <h4>✍️ 어법: 아는 규칙도 실전에서는 실수, <code>enough to</code> 구문과 어법성 판단</h4>
+  <p class="summary">핵심 문법인 <code>so that</code>의 이해도(<strong>93.6%</strong>)는 매우 높지만, 또 다른 주요 문법인 <strong><code>enough to</code> 구문(KC-6G2)의 성취도는 77.9%</strong>로 상대적으로 낮았습니다. 특히, 여러 문장의 문법성을 종합적으로 판단하는 <strong>어법상 맞는/틀린 것 고르기(유형 251) 유형에서 74.0%</strong>의 성취도를 보여, 아는 지식이라도 복잡한 문제 속에서 실수하는 경향이 나타났습니다.</p>
+  <blockquote>
+  <p><strong>대표 문제 예시 (실전 영작어법 25번)</strong></p>
+  <p><strong>[문제]</strong> &lt;보기&gt;에서 문법적으로 옳은 문장의 개수는?</p>
+  <p><strong>&lt;보기&gt;</strong> (A) You have to hurry so to catch the last bus. (B) I worked hard in order that I might succeed. (C) I think this is warm enough for me to eat now. (D) The problem is so difficult that I can't solve it. (E) This is enough complicated for me to fully understand.</p>
+  <p>➡️ <strong>정답: ③번 (3개)</strong> / <strong>학생 답안: ②번 (2개)</strong></p>
+  </blockquote>
+  <p class="analysis"><strong>분석:</strong> 정답은 (B), (C), (D) 총 3개이지만, 학생은 2개를 골랐습니다. 아마도 (A)의 오류(<code>so</code> → <code>so as</code>)와 함께 (E)의 오류를 발견하지 못했거나, 옳은 문장 중 하나를 틀렸다고 판단했을 가능성이 큽니다.<br><br>특히 (E) 문장은 이번 학습의 핵심 약점과 직결됩니다. <code>enough</code>가 형용사나 부사를 수식할 때는 <strong>반드시 뒤에서 꾸며주어야</strong> 합니다. 따라서 <code>enough complicated</code>가 아닌 <strong><code>complicated enough</code></strong>가 올바른 어순입니다. 이처럼 기본적인 규칙이라도 여러 문장 속에서 정확히 찾아내는 훈련이 필요합니다.</p>
+  <hr>
+  <h4>📖 어휘: 단어의 '정확한' 의미 파악 능력 부족</h4>
+  <p class="summary">전반적인 어휘 활용 능력은 좋지만, 단어의 영문 정의를 정확히 이해하고 연결하는 <strong>영영풀이 알기(유형 132) 유형의 성취도가 33.3%</strong>로 매우 낮았습니다. 이는 단어의 대략적인 뜻은 알지만, 그 단어만이 가진 고유하고 정확한 의미(nuance)를 파악하는 데 약점이 있다는 신호입니다.</p>
+  <blockquote>
+  <p><strong>대표 문제 예시 (실전 영작어법 15번)</strong></p>
+  <p><strong>[문제]</strong> 다음 영영풀이에 해당하는 단어가 아닌 것을 고르시오.</p>
+  <p>➡️ <strong>정답: ①번 imitation</strong> / <strong>학생 답안: ③번 journey</strong></p>
+  </blockquote>
+  <p class="analysis"><strong>분석:</strong> 이 문제는 각 단어와 그 영영풀이를 나열하고, 그중 <strong>잘못된 설명을 하는 단어</strong>를 찾는 문제입니다. 정답은 ①번 <code>imitation</code>인데, 문제에서 제시된 <code>the ability to form pictures or ideas in your mind</code>라는 설명은 <code>imitation</code>(모방)이 아닌 ⑤번 <code>imagination</code>(상상력)에 대한 영영풀이입니다.<br><br>학생이 고른 ③번 <code>journey</code>는 <code>an act of traveling from one place to another</code>라는 올바른 영영풀이와 짝지어져 있습니다. 이 실수는 각 단어의 영문 정의를 꼼꼼하게 해석하고 대조하기보다, 익숙하지 않은 단어를 성급하게 답으로 고른 결과로 보입니다.</p>
+  <hr>
+  <h4>🧐 독해: '큰 그림'은 보지만 '작은 함정'을 놓치는 아쉬움</h4>
+  <p class="summary">본문과 대화문의 전체적인 내용을 파악하는 능력은 매우 우수합니다. 하지만 대화의 논리적 흐름을 따지는 <strong>문맥 파악하기(유형 121) 성취도가 75.0%</strong>, 본문의 세부 정보를 묻는 <strong>내용 일치/불일치(유형 312) 성취도가 84.1%</strong>로 나타나, 꼼꼼함이 요구되는 문제에서 실수가 발생하고 있습니다.</p>
+  <blockquote>
+  <p><strong>대표 문제 예시 (최다빈출 공략 25번)</strong></p>
+  <p><strong>[대화]</strong> B: ... There are no tickets left for November 5th. / G: Sounds good. Let's get two student tickets.</p>
+  <p><strong>[문제]</strong> 대화에서 밑줄 친 부분 중 문맥상 어색한 것을 고르시오.</p>
+  <p>➡️ <strong>학생 답안: (오답)</strong></p>
+  </blockquote>
+  <p class="analysis"><strong>분석:</strong> 이 문제의 핵심은 B가 "<strong>남은 표가 없다</strong>"고 말했는데, G가 곧바로 "<strong>좋아, 학생 표 2장 사자</strong>"고 답하는 부분의 논리적 모순을 찾아내는 것입니다. 학생은 각 문장을 개별적으로는 이해했지만, 두 문장 사이의 대화 흐름이 어색하다는 점을 놓쳤습니다. 이처럼 전체적인 맥락 속에서 세부 내용의 논리성을 따지는 연습이 필요합니다.<br><br>또한 <strong>발전_문맥 추론하기 1번 문제</strong>처럼 '답을 찾을 수 없는 질문의 개수'를 묻는 고난도 세부 정보 문제에서 오답이 발생한 것도 같은 맥락입니다. 글을 꼼꼼히 읽고 사실관계를 하나씩 정확하게 대조하는 훈련을 통해 실수를 줄일 수 있습니다.</p>
+  `;
+  }
+
+  // ======== 렌더 ========
+  const mount = document.getElementById('mount');
+  const searchEl = document.getElementById('search');
+  const focusBox = document.getElementById('focusBox');
+  let currentView = 'all';
+  function render(){
+  const q = (searchEl.value||'').trim().toLowerCase();
+  mount.innerHTML = '';
+  focusBox.style.display = currentView === 'feedback' ? 'none' : 'block';
+  ['core','dialogue','reading'].forEach(id=>{
+  if(!(currentView==='all' || currentView===id)) return;
+  const g = groups.find(x=>x.id===id);
+  const items = g.items.filter(k=>{
+  if(!q) return true;
+  const m = kcMeta[k]||{};
+  return k.toLowerCase().includes(q) || (m.label||'').toLowerCase().includes(q) || (m.desc||'').toLowerCase().includes(q) || (m.area||'').toLowerCase().includes(q);
+  });
+  if(!items.length) return;
+  const sec = document.createElement('section');
+  sec.className = 'card p-20';
+  sec.style.marginTop = '16px';
+  sec.innerHTML = `
+  <div class="between">
+  <div>
+  <div class="title" style="font-size:18px">${id==='core'?'🧩':id==='dialogue'?'💬':'📖'} ${g.title}</div>
+  <div class="sub muted">${g.subtitle}</div>
+  </div>
+  </div>
+  `;
+  const grid = document.createElement('div');
+  grid.className = 'grid grid-2 grid-3';
+  grid.style.marginTop = '12px';
+  items.forEach(k => grid.appendChild(KCCard(k)));
+  sec.appendChild(grid);
+  mount.appendChild(sec);
+  });
+  if(currentView==='all' || currentView==='types'){
+  const filteredTypes = typeScores.filter(t=>{
+  if(!q) return true;
+  return (t.name+t.code+t.area+(t.kcs||[]).join(',')).toLowerCase().includes(q);
+  });
+  if(filteredTypes.length){
+  const sec = document.createElement('section');
+  sec.className = 'card p-20';
+  sec.style.marginTop = '16px';
+  sec.innerHTML = `<div class="between"><div><div class="title" style="font-size:18px">📝 문제 유형 성취도</div><div class="sub muted">각 유형이 연계하는 KC와 성취도를 함께 확인</div></div></div>`;
+  const grid = document.createElement('div');
+  grid.className = 'grid grid-2';
+  grid.style.marginTop = '12px';
+  filteredTypes.forEach(t => grid.appendChild(TypeCard(t)));
+  sec.appendChild(grid);
+  mount.appendChild(sec);
+  }
+  }
+  if(currentView==='all' || currentView==='feedback'){
+  const sec = document.createElement('section');
+  sec.className = 'card p-24 feedback-section';
+  sec.style.marginTop = '16px';
+  sec.innerHTML = getFeedbackHTML();
+  mount.appendChild(sec);
+  }
+
+  const avgKCVal = average(Object.values(kcScores));
+  document.getElementById('avgKC').textContent = scoreLabel(avgKCVal);
+  const avgKCBar = document.getElementById('avgKCBar');
+  if(avgKCBar) {
+    avgKCBar.style.width = (avgKCVal==null?0:clamp(avgKCVal))+'%';
+    avgKCBar.style.background = barColor(avgKCVal);
+  }
+
+  const prevKCAvgVal = average(Object.keys(kcScores).map(k => (prevKcScores.hasOwnProperty(k) ? prevKcScores[k] : null)));
+  const kcDiffEl = document.getElementById('avgKCDiff');
+  if(kcDiffEl){
+  if(prevKCAvgVal==null){
+  kcDiffEl.innerHTML = `<span class="pill" style="background:var(--blue-100);color:var(--blue)">NEW</span>`;
+  }else{
+  const diff = (avgKCVal??0) - prevKCAvgVal;
+  if(Math.abs(diff) > 0.05){
+  const color = diff>0 ? 'var(--green)' : 'var(--red)';
+  const arrow = diff>0 ? '▲' : '▼';
+  kcDiffEl.innerHTML = `<span style="color:${color};font-variant-numeric:tabular-nums">${arrow}${Math.abs(diff).toFixed(1)}</span>`;
+  }else{
+  kcDiffEl.textContent = '';
+  }
+  }
+  }
+
+  const avgTypeVal = average(typeScores.map(t=>t.score));
+  document.getElementById('avgType').textContent = scoreLabel(avgTypeVal);
+  const avgTypeBar = document.getElementById('avgTypeBar');
+  if(avgTypeBar){
+   avgTypeBar.style.width = (avgTypeVal==null?0:clamp(avgTypeVal))+'%';
+   avgTypeBar.style.background = barColor(avgTypeVal);
+  }
+  
+  const prevTypeAvgVal = average(typeScores.map(t => (prevTypeScores.hasOwnProperty(t.code) ? prevTypeScores[t.code] : null)));
+  const typeDiffEl = document.getElementById('avgTypeDiff');
+  if(typeDiffEl){
+  if(prevTypeAvgVal==null){
+  typeDiffEl.innerHTML = `<span class="pill" style="background:var(--blue-100);color:var(--blue)">NEW</span>`;
+  }else{
+  const diff = (avgTypeVal??0) - prevTypeAvgVal;
+  if(Math.abs(diff) > 0.05){
+  const color = diff>0 ? 'var(--green)' : 'var(--red)';
+  const arrow = diff>0 ? '▲' : '▼';
+  typeDiffEl.innerHTML = `<span style="color:${color};font-variant-numeric:tabular-nums">${arrow}${Math.abs(diff).toFixed(1)}</span>`;
+  }else{
+  typeDiffEl.textContent = '';
+  }
+  }
+  }
+  renderFocus();
+  }
+
+  function KCCard(id){
+  const m = kcMeta[id]||{}; const v = kcScores[id];
+  const change = kcChanges[id] || { isNew:true, diff:0 };
+  let changeHTML = '';
+  if(change.isNew){
+  changeHTML = `<span class="pill" style="background:var(--blue-100); color:var(--blue);">NEW</span>`;
+  }else if(Math.abs(change.diff) > 0.05){
+  const color = change.diff > 0 ? 'var(--green)' : 'var(--red)';
+  const arrow = change.diff > 0 ? '▲' : '▼';
+  changeHTML = `<span style="font-size:11px;font-weight:700;color:${color};">${arrow}${Math.abs(change.diff).toFixed(1)}</span>`;
+  }
+  const el = document.createElement('div');
+  el.className = 'card p-16'; el.style.borderColor = '#e5e7eb';
+  el.innerHTML = `
+  <div class="kc-card">
+  <div class="kc-ico">${m.area==='의사소통'?'💬':m.area==='문법'?'✍️':m.area==='어휘'?'🔤':m.area==='대화문'?'💬':'📖'}</div>
+  <div style="flex:1;min-width:0">
+  <div class="row" style="align-items:center;gap:6px;flex-wrap:nowrap">
+  <span class="small" style="font-weight:700;white-space:nowrap">${id}</span>
+  <span class="pill" style="${statusColor(v)}">${scoreLabel(v)}</span>
+  ${changeHTML}
+  </div>
+  <div class="small" style="font-weight:700;margin-top:4px">${m.label||''}</div>
+  <div class="small muted" style="margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.desc||''}</div>
+  <div class="hbar" style="margin-top:8px"><span style="width:${clamp(v||0)}%; background:${barColor(v)}"></span></div>
+  </div>
+  </div>
+  `;
+  return el;
+  }
+  function TypeCard(t){
+  const change = typeChanges[t.code] || { isNew:true, diff:0 };
+  let changeHTML = '';
+  if(change.isNew){
+  changeHTML = `<span class="pill" style="background:var(--blue-100); color:var(--blue); margin-left:4px;">NEW</span>`;
+  }else if(Math.abs(change.diff) > 0.05){
+  const color = change.diff > 0 ? 'var(--green)' : 'var(--red)';
+  const arrow = change.diff > 0 ? '▲' : '▼';
+  changeHTML = `<span style="font-size:12px;font-weight:700;color:${color};margin-left:4px;">${arrow}${Math.abs(change.diff).toFixed(1)}</span>`;
+  }
+  const el = document.createElement('div');
+  el.className = 'card p-16';
+  const related = (t.kcs||[]).map(k=>`${k} (${scoreLabel(kcScores[k])})`).join(' · ');
+  el.innerHTML = `
+  <div class="type-card">
+  <div style="min-width:0">
+  <div class="row" style="gap:6px;flex-wrap:wrap">
+  <span class="small" style="font-weight:700">${t.name}</span>
+  <span class="small muted">[${t.code}]</span>
+  <span class="pill" style="background:#f3f4f6;color:#374151">${t.area}</span>
+  </div>
+  <div class="small muted" style="margin-top:4px">연계 KC: ${related}</div>
+  </div>
+  <div style="text-align:right;min-width:120px;flex-shrink:0;">
+  <div class="row" style="justify-content:flex-end;gap:0;">
+  <div style="font-weight:700">${scoreLabel(t.score)}</div>
+  ${changeHTML}
+  </div>
+  <div class="hbar" style="margin-top:6px"><span style="width:${clamp(t.score||0)}%; background:${barColor(t.score)}"></span></div>
+  </div>
+  </div>
+  `;
+  return el;
+  }
+  function renderFocus(){
+  const list = document.getElementById('focusList');
+  const entries = Object.entries(kcScores)
+  .filter(([k,v])=>v!=null && v < thresholds.excellent)
+  .sort((a,b)=> (a[1]-b[1]) || (kcMeta[a[0]].area > kcMeta[b[0]].area ? 1 : -1))
+  .slice(0,3);
+  const tips = {
+    'KC-6G2': '`형용사/부사 + enough to` 어순을 문장 속에서 반복 연습하세요.',
+    'KC-6R1': '본문 1의 세부 내용(달걀의 특성 등)을 다시 확인하세요.',
+    'KC-6R2': '사그라다 파밀리아의 건축적 특징을 설명하는 부분을 복습하세요.'
+  };
+
+  list.innerHTML = entries.map(([k,v])=>{
+  const m = kcMeta[k]||{}; const tip = tips[k]||'핵심 개념 복습과 유사 문항 반복 연습을 권장합니다.';
+  return `<li style="margin:6px 0"><strong>${k}</strong> (${m.label}) — <span class="pill" style="${statusColor(v)}">${scoreLabel(v)}</span><br><span class="muted">처방: ${tip}</span></li>`;
+  }).join('') || '<li class="muted">집중 보완이 필요한 영역이 없습니다. 잘하고 있어요!</li>';
+  }
+  document.getElementById('printBtn').addEventListener('click', () => window.print());
+  document.querySelectorAll('.view-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+  document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentView = btn.dataset.view;
+  render();
+  });
+  });
+  document.getElementById('search').addEventListener('input', render);
+  render();
+ </script>
+</body>
+</html>
