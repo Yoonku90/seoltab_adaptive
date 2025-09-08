@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일반동사 과거형 만들기 연습 퀴즈</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 2em; background-color: #f4f7f9; color: #333; }
+        .quiz-container { max-width: 800px; margin: auto; background: white; padding: 2em; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        h1, h2 { text-align: center; color: #2c3e50; }
+        .info-block { margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #e0e0e0; }
+        .question-block { margin-bottom: 2.5em; border-top: 1px solid #e0e0e0; padding-top: 1.5em; }
+        .question-block .q-title { font-weight: bold; margin-bottom: 1em; line-height: 1.5; }
+        .passage { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 1em; margin: 1em 0; font-size: 0.95em; color: #555; white-space: pre-wrap; line-height: 1.6; }
+        .options label { display: block; margin-bottom: 0.8em; cursor: pointer; padding: 0.5em; border-radius: 5px; transition: background-color 0.2s; }
+        .options label:hover { background-color: #e9ecef; }
+        input[type="radio"], input[type="text"] { margin-right: 0.5em; vertical-align: middle; }
+        input[type="text"] { width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { display: block; width: 100%; padding: 1em; font-size: 1.1em; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; margin-top: 2em; }
+        .submit-btn:hover { background-color: #218838; }
+        .results-area { margin-top: 2em; padding: 1.5em; background-color: #eef8ff; border: 1px solid #b8dcf1; border-radius: 8px; }
+        textarea { width: 100%; height: 200px; margin-top: 1em; font-family: monospace; }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+        .explanation-details { margin-top: 10px; font-size: 0.9em; }
+        .explanation-details summary { cursor: pointer; color: #0056b3; font-weight: normal; display: inline-block; padding: 2px 6px; border-radius: 4px; background-color: #e9ecef; }
+        .explanation-details[open] summary { background-color: #007bff; color: white; }
+        .explanation-content { margin-top: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #444; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>일반동사 과거형 만들기 연습 퀴즈</h1>
+        <div class="info-block">
+            <label for="studentName">이름:</label>
+            <input type="text" id="studentName" placeholder="이름을 입력하세요">
+        </div>
+        <p><b>지시문:</b> 다음 문장의 괄호 안에 있는 동사를 알맞은 과거형으로 바꾸어 빈칸에 입력하세요.</p>
+        <div id="quiz-form"></div>
+        <button class="submit-btn" onclick="submitQuiz()">결과 확인 및 복사하기</button>
+        <div id="results" class="results-area" style="display:none;">
+            <h2>📝 채점 결과</h2>
+            <p id="score"></p>
+            <div id="feedback"></div>
+            <h3>📋 결과 복사하기</h3>
+            <p>아래 내용을 복사하여 선생님께 제출하세요.</p>
+            <textarea id="resultText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            // 규칙 1: 대부분의 동사 (+ed)
+            { question: "I ________ (watch) a movie last night.", answer: "watched", type: 'text', explanation: "대부분의 동사는 동사원형에 -ed를 붙여 과거형을 만든다." },
+            { question: "She ________ (talk) to her friend on the phone.", answer: "talked", type: 'text', explanation: "대부분의 동사는 동사원형에 -ed를 붙여 과거형을 만든다." },
+            { question: "We ________ (listen) to music yesterday.", answer: "listened", type: 'text', explanation: "대부분의 동사는 동사원형에 -ed를 붙여 과거형을 만든다." },
+            { question: "He ________ (walk) his dog in the park.", answer: "walked", type: 'text', explanation: "대부분의 동사는 동사원형에 -ed를 붙여 과거형을 만든다." },
+            { question: "They ________ (want) to visit the museum.", answer: "wanted", type: 'text', explanation: "대부분의 동사는 동사원형에 -ed를 붙여 과거형을 만든다." },
+            { question: "The concert ________ (start) at 7 PM.", answer: "started", type: 'text', explanation: "대부분의 동사는 동사원형에 -ed를 붙여 과거형을 만든다." },
+            { question: "It ________ (rain) all day yesterday.", answer: "rained", type: 'text', explanation: "대부분의 동사는 동사원형에 -ed를 붙여 과거형을 만든다." },
+            // 규칙 2: <자음 + e>로 끝나는 동사 (+d)
+            { question: "My grandmother ________ (live) in Busan.", answer: "lived", type: 'text', explanation: "<자음+e>로 끝나는 동사는 -d를 붙여 과거형을 만든다." },
+            { question: "He ________ (smile) when he saw me.", answer: "smiled", type: 'text', explanation: "<자음+e>로 끝나는 동사는 -d를 붙여 과거형을 만든다." },
+            { question: "We ________ (dance) at the party.", answer: "danced", type: 'text', explanation: "<자음+e>로 끝나는 동사는 -d를 붙여 과거형을 만든다." },
+            { question: "Sarah ________ (invite) me to her birthday.", answer: "invited", type: 'text', explanation: "<자음+e>로 끝나는 동사는 -d를 붙여 과거형을 만든다." },
+            { question: "I ________ (love) the book you gave me.", answer: "loved", type: 'text', explanation: "<자음+e>로 끝나는 동사는 -d를 붙여 과거형을 만든다." },
+            { question: "They ________ (change) the plan.", answer: "changed", type: 'text', explanation: "<자음+e>로 끝나는 동사는 -d를 붙여 과거형을 만든다." },
+            // 규칙 3: <자음 + y>로 끝나는 동사 (y -> ied)
+            { question: "The baby ________ (cry) a lot.", answer: "cried", type: 'text', explanation: "<자음+y>로 끝나는 동사는 y를 i로 고치고 -ed를 붙인다." },
+            { question: "I ________ (study) hard for the test.", answer: "studied", type: 'text', explanation: "<자음+y>로 끝나는 동사는 y를 i로 고치고 -ed를 붙인다." },
+            { question: "He ________ (try) to open the door.", answer: "tried", type: 'text', explanation: "<자음+y>로 끝나는 동사는 y를 i로 고치고 -ed를 붙인다." },
+            { question: "She ________ (worry) about her exam results.", answer: "worried", type: 'text', explanation: "<자음+y>로 끝나는 동사는 y를 i로 고치고 -ed를 붙인다." },
+            // 규칙 4: <단모음 + 단자음>으로 끝나는 동사 (자음 한번 더 + ed)
+            { question: "The bus ________ (stop) suddenly.", answer: "stopped", type: 'text', explanation: "<단모음+단자음>으로 끝나는 동사는 마지막 자음을 한 번 더 쓰고 -ed를 붙인다." },
+            { question: "We ________ (plan) our summer vacation.", answer: "planned", type: 'text', explanation: "<단모음+단자음>으로 끝나는 동사는 마지막 자음을 한 번 더 쓰고 -ed를 붙인다." },
+            { question: "They ________ (chat) for hours.", answer: "chatted", type: 'text', explanation: "<단모음+단자음>으로 끝나는 동사는 마지막 자음을 한 번 더 쓰고 -ed를 붙인다." },
+            { question: "I ________ (drop) my phone on the floor.", answer: "dropped", type: 'text', explanation: "<단모음+단자음>으로 끝나는 동사는 마지막 자음을 한 번 더 쓰고 -ed를 붙인다." },
+            // 불규칙 1: 현재형 = 과거형
+            { question: "He ________ (put) the keys on the table.", answer: "put", type: 'text', explanation: "put의 과거형은 현재형과 같은 put이다." },
+            { question: "I ________ (cut) my finger while cooking.", answer: "cut", type: 'text', explanation: "cut의 과거형은 현재형과 같은 cut이다." },
+            { question: "The baseball player ________ (hit) a home run.", answer: "hit", type: 'text', explanation: "hit의 과거형은 현재형과 같은 hit이다." },
+            { question: "She ________ (read) the entire book in one day.", answer: "read", type: 'text', explanation: "read의 과거형은 현재형과 철자가 같지만 발음은 [red]로 한다." },
+            // 불규칙 2: 현재형 ≠ 과거형
+            { question: "I ________ (do) my homework.", answer: "did", type: 'text', explanation: "do의 과거형은 did이다." },
+            { question: "We ________ (go) to the beach.", answer: "went", type: 'text', explanation: "go의 과거형은 went이다." },
+            { question: "He ________ (eat) a big lunch.", answer: "ate", type: 'text', explanation: "eat의 과거형은 ate이다." },
+            { question: "She ________ (run) in the marathon.", answer: "ran", type: 'text', explanation: "run의 과거형은 ran이다." },
+            { question: "They ________ (meet) a famous actor.", answer: "met", type: 'text', explanation: "meet의 과거형은 met이다." },
+            { question: "I ________ (write) a letter to my friend.", answer: "wrote", type: 'text', explanation: "write의 과거형은 wrote이다." },
+            { question: "My mom ________ (bring) some snacks.", answer: "brought", type: 'text', explanation: "bring의 과거형은 brought이다." },
+            { question: "We ________ (have) a great time.", answer: "had", type: 'text', explanation: "have의 과거형은 had이다." },
+            { question: "The teacher ________ (tell) us a funny story.", answer: "told", type: 'text', explanation: "tell의 과거형은 told이다." },
+            { question: "I ________ (get) a new bike for my birthday.", answer: "got", type: 'text', explanation: "get의 과거형은 got이다." },
+            { question: "He ________ (see) a shooting star.", answer: "saw", type: 'text', explanation: "see의 과거형은 saw이다." },
+            { question: "She ________ (drink) a glass of water.", answer: "drank", type: 'text', explanation: "drink의 과거형은 drank이다." },
+            { question: "My parents ________ (give) me a gift.", answer: "gave", type: 'text', explanation: "give의 과거형은 gave이다." },
+            { question: "Mr. Kim ________ (teach) us English.", answer: "taught", type: 'text', explanation: "teach의 과거형은 taught이다." },
+            { question: "My cousin ________ (come) to my house.", answer: "came", type: 'text', explanation: "come의 과거형은 came이다." },
+            { question: "The cat ________ (sleep) on the sofa.", answer: "slept", type: 'text', explanation: "sleep의 과거형은 slept이다." },
+            { question: "He ________ (speak) clearly.", answer: "spoke", type: 'text', explanation: "speak의 과거형은 spoke이다." },
+            { question: "My father ________ (make) a wooden chair.", answer: "made", type: 'text', explanation: "make의 과거형은 made이다." },
+            { question: "She ________ (take) a picture of the sunset.", answer: "took", type: 'text', explanation: "take의 과거형은 took이다." },
+            { question: "I ________ (hear) a strange noise outside.", answer: "heard", type: 'text', explanation: "hear의 과거형은 heard이다." },
+            { question: "He ________ (buy) new shoes at the mall.", answer: "bought", type: 'text', explanation: "buy의 과거형은 bought이다." }
+        ];
+
+        const quizForm = document.getElementById('quiz-form');
+        
+        quizData.forEach((q, index) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+            
+            let content = `<div class="q-title">${index + 1}. ${q.question.split('________')[0]} <input type="text" name="q${index}" placeholder="과거형 입력" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"> ${q.question.split('________')[1]}</div>`;
+            
+            questionBlock.innerHTML = content;
+            quizForm.appendChild(questionBlock);
+        });
+
+        function submitQuiz() {
+            const studentName = document.getElementById('studentName').value || '익명';
+            let score = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '';
+            let resultString = `학생 ID: ${studentName}\n날짜: ${new Date().toLocaleDateString()}\n퀴즈 종류: 일반동사 과거형 연습\n\n[채점 결과]\n\n`;
+
+            quizData.forEach((q, index) => {
+                const input = document.getElementsByName(`q${index}`)[0];
+                let userAnswerRaw = input.value.trim();
+                let isCorrect = false;
+
+                const correctAnswer = q.answer.toLowerCase();
+                isCorrect = (userAnswerRaw.toLowerCase() === correctAnswer);
+                
+                const feedbackP = document.createElement('p');
+                let resultLine;
+                const correctAnswerText = q.answer;
+
+                const detailsBlock = `
+                    <details class="explanation-details">
+                        <summary>해설 보기</summary>
+                        <div class="explanation-content">${q.explanation}</div>
+                    </details>`;
+                
+                if (isCorrect) {
+                    score++;
+                    feedbackP.innerHTML = `${index + 1}번: <span class="correct">정답 (1)</span> ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 1\n`;
+                } else {
+                    feedbackP.innerHTML = `${index + 1}번: <span class="incorrect">오답 (0)</span> (정답: ${correctAnswerText}) ${detailsBlock}`;
+                    resultLine = `문제 번호: ${index + 1}\t정오 여부: 0\t학생이 쓴 답: ${userAnswerRaw || "미입력"}\n`;
+                }
+                feedbackDiv.appendChild(feedbackP);
+                resultString += resultLine;
+            });
+
+            const finalScore = (score / quizData.length) * 100;
+            document.getElementById('score').innerText = `총점: ${score} / ${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('results').style.display = 'block';
+            
+            resultString += `\n총점: ${score}/${quizData.length} (${finalScore.toFixed(1)}점)`;
+            document.getElementById('resultText').value = resultString;
+        }
+    </script>
+</body>
+</html>
