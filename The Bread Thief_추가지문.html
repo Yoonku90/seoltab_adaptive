@@ -17,7 +17,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1000px; /* 좌우 배치를 위해 너비를 조금 넓힘 */
             margin: 20px auto;
             background-color: #ffffff;
             padding: 30px;
@@ -43,9 +43,46 @@
             font-size: 1.8em;
             margin-bottom: 20px;
         }
+
+        h3 {
+            font-size: 1.2em;
+            color: #333;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
         
         section {
             margin-bottom: 40px;
+        }
+        
+        /* 좌우 비교 섹션 */
+        .text-comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .english-column p {
+            font-family: 'Merriweather', serif;
+            font-style: italic;
+            color: #495057;
+            margin: 0 0 10px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px dotted #e9ecef;
+        }
+        
+        .korean-column p {
+            margin: 0 0 10px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px dotted #e9ecef;
+        }
+        
+        /* 모바일 화면에서는 위아래로 배치 */
+        @media (max-width: 768px) {
+            .text-comparison-grid {
+                grid-template-columns: 1fr;
+            }
         }
         
         /* 공통 숫자 아이콘 스타일 */
@@ -55,23 +92,8 @@
             margin-right: 10px;
         }
 
-        #english-passage p {
-            font-family: 'Merriweather', serif;
-            font-style: italic;
-            background-color: #f1f3f5;
-            padding: 12px 20px;
-            border-left: 5px solid #007bff;
-            border-radius: 5px;
-            line-height: 1.8;
-            margin: 5px 0;
-        }
-        
-        .translation p {
-            margin: 0 0 10px 0;
-        }
-        
         .vocabulary-section {
-            margin-top: 30px; /* 해석과 어휘 사이 간격 */
+            margin-top: 30px;
         }
         
         .vocabulary ul {
@@ -86,7 +108,7 @@
         .vocabulary li {
             background-color: #e9ecef;
             padding: 8px 15px;
-            border-radius: 20px; /* 둥근 모서리 */
+            border-radius: 20px;
             font-size: 0.95em;
         }
         
@@ -124,10 +146,9 @@
             color: #6c757d;
         }
         
-        /* 지문 내 설명 번호 스타일 */
         .marker {
             font-weight: bold;
-            color: #d9534f; /* 눈에 띄는 빨간색 */
+            color: #d9534f;
             vertical-align: super;
             font-size: 0.8em;
             margin: 0 2px;
@@ -164,51 +185,55 @@
     <div class="container">
         <h1>The Bread Thief (중3 심화 분석)</h1>
 
-        <section id="english-passage">
-            <h2>원본 지문 (English)</h2>
-            <p><span class="num-icon">[1]</span>In the cozy town of Harmonyville, a kind man named Mr. Anderson faced a tough choice when his family was hungry.</p>
-            <p><span class="num-icon">[2]</span>With no money for food, he took a loaf of bread from the bakery.</p>
-            <p><span class="num-icon">[3]</span>The town quickly became divided.</p>
-            <p><span class="num-icon">[4]</span>Some thought he should be punished, while others wanted to help.</p>
-            <p><span class="num-icon">[5]</span>Kids from Harmonyville Elementary School even had discussions about it in class.</p>
-            <p><span class="num-icon">[6]</span>Some said Mr. Anderson should have asked for help, while others understood he was just trying to feed his family.</p>
-            <p><span class="num-icon">[7]</span>The wise Judge Miller listened to everyone and decided not to punish Mr. Anderson.</p>
-            <p><span class="num-icon">[8]</span>Instead, she asked the community to work together to help families like his.</p>
-            <p><span class="num-icon">[9]</span>Now, Harmonyville is coming together to make sure no one goes to bed hungry.</p>
-            <p><span class="num-icon">[10]</span>It's a lesson for all of us about understanding and helping each other when times get tough.</p>
+        <section id="side-by-side-text">
+            <h2>원본 & 해석 비교</h2>
+            <div class="text-comparison-grid">
+                <div class="english-column">
+                    <h3>원본 지문 (English)</h3>
+                    <p><span class="num-icon">[1]</span>In the cozy town of Harmonyville, a kind man named Mr. Anderson faced a tough choice when his family was hungry.</p>
+                    <p><span class="num-icon">[2]</span>With no money for food, he took a loaf of bread from the bakery.</p>
+                    <p><span class="num-icon">[3]</span>The town quickly became divided.</p>
+                    <p><span class="num-icon">[4]</span>Some thought he should be punished, while others wanted to help.</p>
+                    <p><span class="num-icon">[5]</span>Kids from Harmonyville Elementary School even had discussions about it in class.</p>
+                    <p><span class="num-icon">[6]</span>Some said Mr. Anderson should have asked for help, while others understood he was just trying to feed his family.</p>
+                    <p><span class="num-icon">[7]</span>The wise Judge Miller listened to everyone and decided not to punish Mr. Anderson.</p>
+                    <p><span class="num-icon">[8]</span>Instead, she asked the community to work together to help families like his.</p>
+                    <p><span class="num-icon">[9]</span>Now, Harmonyville is coming together to make sure no one goes to bed hungry.</p>
+                    <p><span class="num-icon">[10]</span>It's a lesson for all of us about understanding and helping each other when times get tough.</p>
+                </div>
+                <div class="korean-column">
+                    <h3>지문 해석 (Korean)</h3>
+                    <p><span class="num-icon">[1]</span>아늑한 마을 하모니빌에서, 친절한 남자 앤더슨 씨는 가족이 배고플 때 어려운 선택을 해야 했습니다.</p>
+                    <p><span class="num-icon">[2]</span>음식을 살 돈이 없었기 때문에, 그래서 그는 빵집에서 빵 한 덩어리를 가져갔다.</p>
+                    <p><span class="num-icon">[3]</span>마을 사람들은 금방 의견이 나뉘었다.</p>
+                    <p><span class="num-icon">[4]</span>일부는 그가 처벌을 받아야 한다고 생각했지만, 다른 사람들은 그를 도와야 한다고 생각했다.</p>
+                    <p><span class="num-icon">[5]</span>하모니빌 초등학교의 아이들도 수업에서 이 문제를 토론했다.</p>
+                    <p><span class="num-icon">[6]</span>어떤 아이들은 앤더슨 씨가 도움을 요청했어야 한다고 말했지만, 다른 아이들은 그가 단지 가족을 먹이려고 했다고 이해했다.</p>
+                    <p><span class="num-icon">[7]</span>현명한 밀러 판사는 모두의 의견을 듣고 앤더슨 씨를 처벌하지 않기로 결정했다.</p>
+                    <p><span class="num-icon">[8]</span>대신, 그녀는 마을 사람들이 힘을 합쳐 앤더슨 씨 같은 가족을 돕도록 요청했다.</p>
+                    <p><span class="num-icon">[9]</span>이제 하모니빌은 모두가 배고픈 채로 잠자리에 들지 않도록 함께 노력하고 있다.</p>
+                    <p><span class="num-icon">[10]</span>이 이야기는 힘든 시기에 서로를 이해하고 돕는 것이 중요하다는 교훈을 우리 모두에게 준다.</p>
+                </div>
+            </div>
         </section>
 
         <hr>
-
-        <section id="translation-vocab">
-            <h2>전지문 해석 & 필수 어휘</h2>
-            <div class="translation">
-                <p><span class="num-icon">[1]</span>아늑한 마을 하모니빌에서, 친절한 남자 앤더슨 씨는 가족이 배고플 때 어려운 선택을 해야 했습니다.</p>
-                <p><span class="num-icon">[2]</span>음식을 살 돈이 없었기 때문에, 그래서 그는 빵집에서 빵 한 덩어리를 가져갔다.</p>
-                <p><span class="num-icon">[3]</span>마을 사람들은 금방 의견이 나뉘었다.</p>
-                <p><span class="num-icon">[4]</span>일부는 그가 처벌을 받아야 한다고 생각했지만, 다른 사람들은 그를 도와야 한다고 생각했다.</p>
-                <p><span class="num-icon">[5]</span>하모니빌 초등학교의 아이들도 수업에서 이 문제를 토론했다.</p>
-                <p><span class="num-icon">[6]</span>어떤 아이들은 앤더슨 씨가 도움을 요청했어야 한다고 말했지만, 다른 아이들은 그가 단지 가족을 먹이려고 했다고 이해했다.</p>
-                <p><span class="num-icon">[7]</span>현명한 밀러 판사는 모두의 의견을 듣고 앤더슨 씨를 처벌하지 않기로 결정했다.</p>
-                <p><span class="num-icon">[8]</span>대신, 그녀는 마을 사람들이 힘을 합쳐 앤더슨 씨 같은 가족을 돕도록 요청했다.</p>
-                <p><span class="num-icon">[9]</span>이제 하모니빌은 모두가 배고픈 채로 잠자리에 들지 않도록 함께 노력하고 있다.</p>
-                <p><span class="num-icon">[10]</span>이 이야기는 힘든 시기에 서로를 이해하고 돕는 것이 중요하다는 교훈을 우리 모두에게 준다.</p>
-            </div>
-            <div class="vocabulary-section">
-                <div class="vocabulary">
-                    <ul>
-                        <li><b>a loaf of bread:</b> 빵 한 덩어리</li>
-                        <li><b>divided:</b> 의견이 나뉜</li>
-                        <li><b>punish:</b> 처벌하다</li>
-                        <li><b>discussion:</b> 토론</li>
-                        <li><b>should have asked:</b> 요청했어야 했다</li>
-                        <li><b>work together:</b> 함께 노력하다, 협력하다</li>
-                        <li><b>like his:</b> 그의 가족과 같은</li>
-                        <li><b>make sure:</b> 확실하게 하다</li>
-                        <li><b>understanding:</b> 이해하는 것</li>
-                        <li><b>helping:</b> 돕는 것</li>
-                    </ul>
-                </div>
+        
+        <section id="vocab-section">
+            <h2>필수 어휘</h2>
+            <div class="vocabulary">
+                <ul>
+                    <li><b>a loaf of bread:</b> 빵 한 덩어리</li>
+                    <li><b>divided:</b> 의견이 나뉜</li>
+                    <li><b>punish:</b> 처벌하다</li>
+                    <li><b>discussion:</b> 토론</li>
+                    <li><b>should have asked:</b> 요청했어야 했다</li>
+                    <li><b>work together:</b> 함께 노력하다, 협력하다</li>
+                    <li><b>like his:</b> 그의 가족과 같은</li>
+                    <li><b>make sure:</b> 확실하게 하다</li>
+                    <li><b>understanding:</b> 이해하는 것</li>
+                    <li><b>helping:</b> 돕는 것</li>
+                </ul>
             </div>
         </section>
         
