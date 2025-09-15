@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>고2_박가인 학생 · 내신 학습 지식맵 (2025-09-12)</title>
+  <style>
+   :root{
+   --bg: #f6f7fb; --card:#ffffff; --border:#e6e8ef; --text:#0f172a; --muted:#64748b;
+   --indigo:#4f46e5; --green:#16a34a; --yellow:#f59e0b; --red:#ef4444; --blue:#3b82f6;
+   --green-100:#dcfce7; --yellow-100:#fef9c3; --red-100:#fee2e2; --gray-100:#f1f5f9; --blue-100:#dbeafe;
+   }
+   *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#ffffff, var(--bg));color:var(--text);font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR",Apple SD Gothic Neo,Pretendard,Helvetica,Arial,sans-serif}
+   .container{max-width:1120px;margin:0 auto;padding:24px}
+   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+   .between{display:flex;align-items:center;justify-content:space-between;gap:12px}
+   .card{background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 4px 12px rgba(15,23,42,.04)}
+   .p-16{padding:16px}.p-20{padding:20px}.p-24{padding:24px}
+   .btn{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 14px;cursor:pointer}
+   .btn.active{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+   .input{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 12px;min-width:260px}
+   .grid{display:grid;gap:16px}
+   @media(min-width:640px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}}
+   @media(min-width:1024px){.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}}
+   .stat{min-width:240px}
+   .hbar{height:8px;background:var(--gray-100);border-radius:999px;overflow:hidden}
+   .hbar > span{display:block;height:100%}
+   .pill{padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700;display:inline-block}
+   .legend .pill{border:1px solid var(--border);}
+   .muted{color:var(--muted)}
+   .title{font-weight:800;letter-spacing:-.3px}
+   .sub{font-size:12px}
+   .kc-card{display:flex;gap:12px}
+   .kc-ico{flex:0 0 auto;width:36px;height:36px;border-radius:12px;background:#f8fafc;display:grid;place-items:center;border:1px solid var(--border)}
+   .small{font-size:12px}
+   .type-card{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+   .kbd{font-variant-numeric:tabular-nums}
+   .footer{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:flex-start}
+   .feedback-section h3 { font-size: 20px; margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px; }
+   .feedback-section h4 { font-size: 16px; margin: 24px 0 8px 0; color: var(--indigo); border-left: 3px solid var(--indigo); padding-left: 8px;}
+   .feedback-section .summary { font-size: 14px; color: var(--muted); margin-top: -12px; margin-bottom: 24px; }
+   .feedback-section hr { border: 0; border-top: 1px solid var(--border); margin: 24px 0; }
+   .feedback-section blockquote { margin: 12px 0; padding: 12px; background-color: var(--gray-100); border-left: 4px solid var(--border); border-radius: 8px; font-size: 13px; }
+   .feedback-section .analysis { margin-top: 8px; }
+   .feedback-section .analysis strong { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="between" style="gap:16px;flex-wrap:wrap">
+      <div>
+        <div id="mainTitle" class="title" style="font-size:24px">수능특강 Light 영어독해연습 1강 <span style="color:var(--indigo)">KC & 유형 성취도</span> 대시보드</div>
+        <div id="subHeader" class="sub muted">이름: <strong>고2_박가인</strong> · 시험일: <strong>2025-09-12</strong> · 교재: 수능특강 Light 영어독해연습</div>
+      </div>
+      <div class="row">
+        <button id="printBtn" class="btn">내보내기/인쇄</button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:16px;align-items:center">
+      <div class="row">
+        <button data-view="all" class="btn view-btn active" aria-pressed="true">전체</button>
+        <button data-view="core" class="btn view-btn" aria-pressed="false">기반</button>
+        <button data-view="reading" class="btn view-btn" aria-pressed="false">본문</button>
+        <button data-view="types" class="btn view-btn" aria-pressed="false">문제 유형</button>
+        <button data-view="feedback" class="btn view-btn" aria-pressed="false">피드백</button>
+      </div>
+      <div style="flex:1"></div>
+      <input id="search" class="input" placeholder="KC 코드/이름/설명/유형 검색" />
+    </div>
+
+    <div class="grid grid-3" style="margin-top:16px">
+      <div class="card p-16 stat">
+        <div class="muted small">KC 평균 성취도</div>
+        <div id="avgKC" class="title" style="font-size:22px;margin-top:4px">—</div>
+        <div class="hbar" style="margin-top:8px"><span id="avgKCBar" style="width:0"></span></div>
+      </div>
+      <div class="card p-16 stat">
+        <div class="muted small">문제 유형 평균 성취도</div>
+        <div id="avgType" class="title" style="font-size:22px;margin-top:4px">—</div>
+        <div class="hbar" style="margin-top:8px"><span id="avgTypeBar" style="width:0"></span></div>
+      </div>
+       <div class="card p-16 stat">
+        <div class="muted small">문제 정답률</div>
+        <div class="row" style="align-items:baseline;gap:6px">
+          <div id="avgCorrectRate" class="title" style="font-size:22px;margin-top:4px">—</div>
+          <div id="totalCount" class="muted" style="font-weight:600; font-size: 14px;"></div>
+        </div>
+        <div class="hbar" style="margin-top:8px"><span id="avgCorrectRateBar" style="width:0"></span></div>
+      </div>
+    </div>
+
+    <div class="legend row card p-16" style="margin-top:16px">
+      <div class="muted small">범례:</div>
+      <span class="pill" style="background:var(--green-100);color:var(--green)">우수 ≥ 85%</span>
+      <span class="pill" style="background:var(--yellow-100);color:var(--yellow)">60–84%</span>
+      <span class="pill" style="background:var(--red-100);color:var(--red)">1–59%</span>
+      <span class="pill" style="background:#e5e7eb;color:#374151">미평가</span>
+    </div>
+
+    <div id="mount"></div>
+
+    <section class="card p-20" style="margin-top:16px" id="focusBox">
+      <div class="between">
+        <div>
+          <div class="title" style="font-size:18px">📌 집중 보완 영역 (상위 3개 KC)</div>
+          <div class="sub muted">점수가 낮은 순으로 자동 추천</div>
+        </div>
+      </div>
+      <ol id="focusList" class="small" style="margin-top:8px;padding-left:18px"></ol>
+    </section>
+
+    <div class="footer" style="margin-top:16px">
+      <span>색상 기준: 🟢 85% 이상, 🟡 60–84%, 🟥 1–59%, 회색=미평가. 검색 또는 상단 버튼으로 뷰를 전환할 수 있습니다. 인쇄 버튼으로 PDF 저장 가능.</span>
+    </div>
+  </div>
+
+  <script>
+  (() => { 'use strict';
+    // ======== 데이터 설정 ========
+    const studentName = "고2_박가인";
+    const examDate = "2025-09-12";
+
+    const kcScores = {
+      "KC-1G1": { score: 47.37, correct: 2, total: 4 }, "KC-1G2": { score: 100.00, correct: 1, total: 1 },
+      "KC-1G3": { score: 100.00, correct: 2, total: 2 }, "KC-1V1": { score: 77.61, correct: 22, total: 28 },
+      "KC-1R1": { score: 100.00, correct: 9, total: 9 }, "KC-1R2": { score: 82.46, correct: 8, total: 9 },
+      "KC-1R3": { score: 85.45, correct: 8, total: 9 }, "KC-1R4": { score: 88.24, correct: 8, total: 9 },
+      "KC-1R5": { score: 100.00, correct: 9, total: 9 }, "KC-1R6": { score: 61.29, correct: 5, total: 9 },
+      "KC-1R7": { score: 69.81, correct: 6, total: 9 }, "KC-1R8": { score: 41.27, correct: 4, total: 9 },
+      "KC-1R9": { score: 81.13, correct: 7, total: 9 }, "KC-1R10": { score: 92.54, correct: 8, total: 9 }
+    };
+
+    const typeScores = [
+        { code:"311", name:"핵심 내용 파악하기", area:"본문", score:78.52, kcs:["KC-1R1","KC-1R2","KC-1R5"], correct: 32, total: 40 },
+        { code:"312", name:"세부 내용 파악하기", area:"본문", score:87.01, kcs:["KC-1R4","KC-1R8"], correct: 13, total: 15 },
+        { code:"314", name:"지문 요약하기", area:"본문", score:88.89, kcs:["KC-1R2", "KC-1R8", "KC-1V1"], correct: 8, total: 9 },
+        { code:"325", name:"빈칸 추론하기", area:"본문", score:71.54, kcs:["KC-1R3", "KC-1R6", "KC-1G1"], correct: 19, total: 26 }
+    ];
+   
+    const totalCorrectAll = 72;
+    const totalProblemsAll = 90;
+
+    const kcMeta = {
+        "KC-1G1": { "area": "문법", "label": "관계사 (Relatives)", "desc": "주격/목적격/소유격 관계대명사, 관계부사, 복합관계사 등의 쓰임과 해석" },
+        "KC-1G2": { "area": "문법", "label": "5형식 구문", "desc": "사역동사, 지각동사 등 주요 5형식 동사의 목적격 보어 형태 이해" },
+        "KC-1G3": { "area": "문법", "label": "특수 구문", "desc": "It...that 강조, 도치, 가정법 등 특수한 문장 구조의 이해" },
+        "KC-1V1": { "area": "어휘", "label": "각 지문 핵심 어휘", "desc": "trivial, sequel, cyclical 등 지문 주제와 관련된 핵심 어휘의 문맥적 의미 파악" },
+        "KC-1R1": { "area": "본문", "label": "(1강 1번) 농담의 사회적 가치", "desc": "사소해 보이지만 중요한 사회적 자산으로 기능하는 농담의 역설적 본질 이해" },
+        "KC-1R2": { "area": "본문", "label": "(1강 2번) 영화 속편의 기원", "desc": "재정적 필요에 의해 탄생한 영화 속편의 역사와 발전 과정 이해" },
+        "KC-1R3": { "area": "본문", "label": "(1강 3번) 점진적 변화의 문제점", "desc": "사전 계획 없는 임기응변식 해결이 더 큰 문제로 이어짐을 비유로 이해" },
+        "KC-1R4": { "area": "본문", "label": "(1강 4번) 경제 성장과 행복의 관계", "desc": "GDP와 행복의 단기적/장기적 관계의 차이점 파악" },
+        "KC-1R5": { "area": "본문", "label": "(1강 5번) 정신력의 중요성", "desc": "신체적 한계를 극복하는 정신력의 역할에 대한 일화 이해" },
+        "KC-1R6": { "area": "본문", "label": "(1강 6번) 실패로부터의 회복력", "desc": "실패의 원인을 외부로 돌리는 것과 정직한 대처 전략의 차이 이해" },
+        "KC-1R7": { "area": "본문", "label": "(1강 7번) 행동에 미치는 맥락의 영향", "desc": "인간의 행동이 광범위한 맥락의 영향을 받는다는 점 이해" },
+        "KC-1R8": { "area": "본문", "label": "(1강 8번) 발명품의 사회적 유의미성", "desc": "발명품이 널리 사용되어야 사회적 의미를 갖는다는 주장 이해" },
+        "KC-1R9": { "area": "본문", "label": "(1강 9번) 성급한 변화에 대한 경계", "desc": "'체스터턴의 울타리' 비유를 통해 기존 제도를 이해할 필요성 파악" },
+        "KC-1R10": { "area": "본문", "label": "(1강 10번) 달성 가능한 목표의 중요성", "desc": "목표는 달성 가능할 때만 동기를 부여하며 조절될 필요가 있음을 이해" }
+    };
+    const groups = [
+      { id: "core", title: "A. 기반 지식", subtitle: "문법·어휘 기반", items:["KC-1G1", "KC-1G2", "KC-1G3", "KC-1V1"] },
+      { id: "reading", title: "B. 적용 · 본문", subtitle: "수능특강 Light 영어독해연습 1강", items:["KC-1R1","KC-1R2","KC-1R3", "KC-1R4", "KC-1R5", "KC-1R6", "KC-1R7", "KC-1R8", "KC-1R9", "KC-1R10"] }
+    ];
+   
+    function getFeedbackHTML() { 
+        return `
+    <h3>📊 상세 분석 및 맞춤 피드백</h3>
+    <div style="padding:12px; background-color: var(--gray-100); border-radius: 12px; font-size: 14px; margin-top:0;">
+        <strong>총평:</strong> ${studentName} 학생은 전반적으로 우수한 성취도(79.2%)를 보이고 있지만, <strong>특정 주제의 지문</strong>과 <strong>복잡한 문법 구조의 해석</strong>에서 뚜렷한 약점이 발견되었습니다. 강점은 유지하고 약점을 집중 보완하면 더 큰 성장을 이룰 수 있습니다.
+    </div>
+    <hr>
+    <h4>📚 본문 독해: '주장'의 핵심 논리를 놓치는 상태</h4>
+    <p class="summary">
+        <strong>핵심 약점: 발명품의 사회적 유의미성 (KC-1R8, 성취도: 41.3%)</strong>
+        <br>여러 예시를 통해 하나의 결론을 도출하는 설명문의 논리 구조를 따라가는 데 어려움을 겪고 있습니다. 특히 글의 핵심 주장을 정반대로 해석하는 실수가 있었습니다.
+    </p>
+    <blockquote>
+        <p><strong>대표 문제 예시 (3회 8번)</strong></p>
+        <p><strong>[지문]</strong> Joseph Schumpeter once said that an invention that is not widely used is irrelevant to human affairs. ... Out of the many thousands of inventions in history, <strong>only a few</strong> were able to travel the long and difficult path ... and effect significant change in the world.</p>
+        <p><strong>[문제]</strong> 08. 다음 글의 내용과 일치하는 것은?</p>
+        <p><strong>[선택지]</strong><br>
+        ...<br>
+        ④ (정답) Joseph Schumpeter believed that unused inventions are irrelevant to society.<br>
+        ⑤ All inventions throughout history have led to significant changes in the world.</p>
+        <p>➡️ <strong>정답: ④번</strong> / <strong>학생 답안: ⑤번</strong></p>
+    </blockquote>
+    <p class="analysis"><strong>분석:</strong> 학생이 고른 ⑤번 답안은 지문의 핵심 주장과 완전히 반대됩니다.<br>
+    • <strong>정답 분석 (④번):</strong> 이 선택지는 지문의 <strong>첫 문장</strong> "an invention that is not widely used is irrelevant to human affairs(널리 사용되지 않는 발명은 인간사에 무관하다)"를 정확히 요약한, 글의 주제 문장입니다.<br>
+    • <strong>오답 분석 (⑤번):</strong> 지문은 역사상 수많은 발명품 중 "<strong>오직 소수(only a few)</strong>"만이 세상에 중요한 변화를 가져왔다고 명확히 서술합니다. 하지만 ⑤번 선택지는 "<strong>모든(All)</strong> 발명품"이 변화를 이끌었다고 말하므로, 지문의 핵심 근거와 정면으로 배치됩니다.
+    </p>
+    <hr>
+    <h4>✍️ 문법: 복잡한 문장의 '의미'를 놓치는 상태</h4>
+    <p class="summary">
+        <strong>핵심 약점: 관계사 (KC-1G1, 성취도: 47.4%)</strong>
+        <br>관계사절이 포함된 문장의 논리 구조를 파악하는 데 어려움을 겪고 있습니다. 문법 규칙 자체보다, 그 규칙이 문장 전체의 의미를 어떻게 구성하는지 파악하는 능력이 부족합니다.
+    </p>
+    <blockquote>
+        <p><strong>대표 문제 예시 (1회 29번)</strong></p>
+        <p><strong>[지문]</strong> ...if you don't understand why the fence is there... you can't be confident that it's okay to tear it down. ... more thoughtful reformers reply, "<strong>If you don't see the use of it, I certainly won't let you clear it away.</strong>"</p>
+        <p><strong>[문제]</strong> 29. 다음 글을 읽고 빈칸에 들어가기에 가장 적절한 것을 고르시오.</p>
+        <p><strong>[선택지]</strong><br>
+        ① (정답) Unless you can articulate its value, I won't sanction its removal<br>
+        ...<br>
+        ⑤ The wisest course is to eliminate anything <strong>whose</strong> purpose is not immediately evident</p>
+        <p>➡️ <strong>정답: ①번</strong> / <strong>학생 답안: ⑤번</strong></p>
+    </blockquote>
+    <p class="analysis"><strong>분석:</strong> 학생은 글의 핵심 논리("이유를 모르면 함부로 없애지 마라")와 정반대되는 ⑤번을 선택했습니다.<br>
+    • <strong>정답 분석 (①번):</strong> "가치를 설명할 수 없다면, 제거를 허락하지 않겠다"는 의미로, 지문 내용과 정확히 일치합니다.<br>
+    • <strong>오답 분석 (⑤번):</strong> "가장 현명한 방법은 <strong>목적이 즉시 분명하지 않은 것은 무엇이든 제거하는 것</strong>이다"라는 의미입니다. 이 문장은 관계사 \`whose\`를 사용하여 복잡하게 표현되었지만, 그 내용은 '이유를 모르겠으면 없애라'는 것이므로 지문의 주장과 정반대입니다. 이처럼 관계사를 포함한 문장의 최종 의미를 정확히 파악하는 연습이 필요합니다.
+    </p>
+    `;
+    }
+
+    // ======== 렌더링 로직 ========
+    const mount = document.getElementById('mount');
+    const searchEl = document.getElementById('search');
+    const focusBox = document.getElementById('focusBox');
+    let currentView = 'all';
+
+    const thresholds = { excellent:85, ok:60 };
+    const clamp = (n) => Math.max(0, Math.min(100, Number(n||0)));
+   
+    // B 규칙: 정수 반올림
+    function scoreLabel(v){
+      if(v==null) return '미평가';
+      const n = Number(v);
+      return Math.round(n) + '%';
+    }
+    function average(nums){ const vals = nums.filter(v => v!=null && !Number.isNaN(Number(v))); if(!vals.length) return null; return vals.reduce((a,b)=>a+Number(b),0)/vals.length; }
+    function barColor(v){ if(v==null) return '#e5e7eb'; if(v>=thresholds.excellent) return 'var(--green)'; if(v>=thresholds.ok) return 'var(--yellow)'; return 'var(--red)'; }
+    function statusColor(v){ if(v==null) return 'background:#e5e7eb;color:#374151'; if(v>=thresholds.excellent) return 'background:var(--green-100);color:var(--green)'; if(v>=thresholds.ok) return 'background:var(--yellow-100);color:var(--yellow)'; return 'background:var(--red-100);color:var(--red)';}
+
+    function KCCard(id){
+      const m = kcMeta[id]||{}; const v = kcScores[id] || {score:null, correct:0, total:0};
+      const el = document.createElement('div');
+      el.className = 'card p-16'; el.style.borderColor = '#e5e7eb';
+      el.innerHTML = `
+        <div class="kc-card">
+          <div class="kc-ico">${m.area==='의사소통'?'💬':m.area==='문법'?'✍️':m.area==='어휘'?'🔤':m.area==='대화문'?'💬':'📖'}</div>
+          <div style="flex:1;min-width:0">
+            <div class="row" style="align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="small" style="font-weight:700">${id}</span>
+              <span class="pill" style="${statusColor(v.score)}">${scoreLabel(v.score)}</span>
+            </div>
+            <div class="row between">
+                <div class="small" style="font-weight:700;margin-top:4px">${m.label||''}</div>
+                <div class="small muted" style="margin-top:4px">(${v.correct}/${v.total})</div>
+            </div>
+            <div class="small muted" style="margin-top:2px">${m.desc||''}</div>
+            <div class="hbar" style="margin-top:8px"><span style="width:${clamp(v.score||0)}%; background:${barColor(v.score)}"></span></div>
+          </div>
+        </div>
+      `;
+      return el;
+    }
+
+    function TypeCard(t){
+      const el = document.createElement('div');
+      el.className = 'card p-16';
+      const related = (t.kcs||[]).map(k=>`${k} (${scoreLabel((kcScores[k]||{}).score)})`).join(' · ');
+      el.innerHTML = `
+        <div class="type-card">
+          <div style="min-width:0">
+            <div class="row" style="gap:6px;flex-wrap:wrap">
+              <span class="small" style="font-weight:700">${t.name}</span>
+              <span class="small muted">[${t.code}]</span>
+              <span class="pill" style="background:#f3f4f6;color:#374151">${t.area}</span>
+            </div>
+            <div class="small muted" style="margin-top:4px">(${t.correct}/${t.total})</div>
+            <div class="small muted" style="margin-top:4px">연계 KC: ${related}</div>
+          </div>
+          <div style="text-align:right;min-width:120px;flex-shrink:0;">
+            <div style="font-weight:700">${scoreLabel(t.score)}</div>
+            <div class="hbar" style="margin-top:6px"><span style="width:${clamp(t.score||0)}%; background:${barColor(t.score)}"></span></div>
+          </div>
+        </div>
+      `;
+      return el;
+    }
+   
+    function renderFocus(){
+      const list = document.getElementById('focusList');
+      if (!list) return;
+      const entries = Object.entries(kcScores)
+        .filter(([k,v])=>v.score!=null && v.score < thresholds.excellent)
+        .sort((a,b)=> (a[1].score-b[1].score) || (String((kcMeta[a[0]]||{}).area) > String((kcMeta[b[0]]||{}).area) ? 1 : -1))
+        .slice(0,3);
+
+      list.innerHTML = entries.map(([k,v])=>{
+        const m = kcMeta[k]||{};
+        return `<li style="margin:6px 0"><strong>${k}</strong> (${m.label||''}) — <span class="pill" style="${statusColor(v.score)}">${scoreLabel(v.score)}</span></li>`;
+      }).join('') || '<li class="muted">집중 보완이 필요한 영역이 없습니다. 잘하고 있어요!</li>';
+    }
+
+    function render(){
+        const q = (searchEl.value||'').trim().toLowerCase();
+        mount.innerHTML = '';
+        focusBox.style.display = currentView === 'feedback' ? 'none' : 'block';
+
+        ['core','reading'].forEach(id=>{
+            if(!(currentView==='all' || currentView===id)) return;
+            const g = groups.find(x=>x.id===id);
+            if (!g) return;
+            const items = g.items.filter(k=>{
+                if(!q) return true;
+                const m = kcMeta[k]||{};
+                return k.toLowerCase().includes(q) || (m.label||'').toLowerCase().includes(q) || (m.desc||'').toLowerCase().includes(q) || (m.area||'').toLowerCase().includes(q);
+            });
+            if(!items.length) return;
+
+            const sec = document.createElement('section');
+            sec.className = 'card p-20'; sec.style.marginTop = '16px';
+            const icon = id === 'core' ? '🧩' : '📖';
+            sec.innerHTML = `<div class="between"><div><div class="title" style="font-size:18px">${icon} ${g.title}</div><div class="sub muted">${g.subtitle}</div></div></div>`;
+            const grid = document.createElement('div');
+            grid.className = 'grid grid-2 grid-3'; grid.style.marginTop = '12px';
+            items.forEach(k => grid.appendChild(KCCard(k)));
+            sec.appendChild(grid);
+            mount.appendChild(sec);
+        });
+
+        if(currentView==='all' || currentView==='types'){
+            const filteredTypes = typeScores.filter(t=>{
+                if(!q) return true;
+                return (t.name+t.code+t.area+(t.kcs||[]).join(',')).toLowerCase().includes(q);
+            });
+            if(filteredTypes.length){
+                const sec = document.createElement('section');
+                sec.className = 'card p-20'; sec.style.marginTop = '16px';
+                sec.innerHTML = `<div class="between"><div><div class="title" style="font-size:18px">📝 문제 유형 성취도</div><div class="sub muted">총 ${totalProblemsAll}문제 중 ${totalCorrectAll}문제 정답</div></div></div>`;
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-2'; grid.style.marginTop = '12px';
+                filteredTypes.forEach(t => grid.appendChild(TypeCard(t)));
+                sec.appendChild(grid);
+                mount.appendChild(sec);
+            }
+        }
+
+        if(currentView==='all' || currentView==='feedback'){
+            const sec = document.createElement('section');
+            sec.className = 'card p-24 feedback-section'; sec.style.marginTop = '16px';
+            sec.innerHTML = getFeedbackHTML();
+            mount.appendChild(sec);
+        }
+       
+        const avgKCVal = average(Object.values(kcScores).map(k => k.score));
+        document.getElementById('avgKC').textContent = scoreLabel(avgKCVal);
+        document.getElementById('avgKCBar').style.width = clamp(avgKCVal) + '%';
+        document.getElementById('avgKCBar').style.background = barColor(avgKCVal);
+
+        const avgTypeVal = average(typeScores.map(t => t.score));
+        document.getElementById('avgType').textContent = scoreLabel(avgTypeVal);
+        document.getElementById('avgTypeBar').style.width = clamp(avgTypeVal) + '%';
+        document.getElementById('avgTypeBar').style.background = barColor(avgTypeVal);
+       
+        const correctRateVal = totalProblemsAll > 0 ? (totalCorrectAll / totalProblemsAll) * 100 : null;
+        const avgCorrectRateEl = document.getElementById('avgCorrectRate');
+        const totalCountEl = document.getElementById('totalCount');
+        const correctRateBarEl = document.getElementById('avgCorrectRateBar');
+        
+        if (avgCorrectRateEl) avgCorrectRateEl.textContent = scoreLabel(correctRateVal);
+        if (totalCountEl) totalCountEl.textContent = `(${totalCorrectAll}/${totalProblemsAll})`;
+        if (correctRateBarEl) {
+            correctRateBarEl.style.width = clamp(correctRateVal) + '%';
+            correctRateBarEl.style.background = barColor(correctRateVal);
+        }
+        renderFocus();
+    }
+   
+    function init() {
+        const subHeaderEl = document.getElementById('subHeader');
+        if (subHeaderEl) {
+            subHeaderEl.innerHTML = `이름: <strong>${studentName}</strong> · 시험일: <strong>${examDate}</strong> · 교재: <strong>수능특강 Light 영어독해연습</strong>`;
+        }
+        const printBtnEl = document.getElementById('printBtn');
+        if (printBtnEl) {
+            printBtnEl.addEventListener('click', () => window.print());
+        }
+        
+        document.body.addEventListener('click', (e) => {
+            const btn = e.target.closest('.view-btn');
+            if(!btn) return;
+            document.querySelectorAll('.view-btn').forEach(b => {
+                b.classList.remove('active');
+                b.setAttribute('aria-pressed', 'false');
+            });
+            btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
+            currentView = btn.dataset.view || 'all';
+            render();
+        });
+        
+        const searchInputEl = document.getElementById('search');
+        if(searchInputEl) {
+            searchInputEl.addEventListener('input', render);
+        }
+        render();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+  })();
+  </script>
+</body>
+</html>
