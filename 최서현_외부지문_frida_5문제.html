@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영어 내신 시험지 - Frida Kahlo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.8;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #2c3e50;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 18px;
+            color: #7f8c8d;
+        }
+        
+        .passage-box {
+            background-color: #f8f9fa;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+            border-radius: 5px;
+        }
+        
+        .passage-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .passage {
+            color: #34495e;
+            text-align: justify;
+            line-height: 2;
+        }
+        
+        .question-section {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        
+        .question-number {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .options {
+            margin-left: 20px;
+        }
+        
+        .option {
+            margin: 12px 0;
+            color: #34495e;
+            font-size: 15px;
+        }
+        
+        .underline {
+            text-decoration: underline;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .insert-sentence {
+            background-color: #fff3cd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border: 1px solid #ffc107;
+            font-weight: bold;
+            color: #856404;
+        }
+        
+        .answer-section {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 3px dashed #95a5a6;
+        }
+        
+        .answer-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .answer-item {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .answer-number {
+            font-weight: bold;
+            color: #27ae60;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .correct-answer {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .explanation {
+            color: #34495e;
+            line-height: 1.8;
+            margin-top: 10px;
+        }
+        
+        .highlight {
+            background-color: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        @media print {
+            .answer-section {
+                page-break-before: always;
+            }
+        }
+        
+        .position-marker {
+            color: #3498db;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>영어 내신 시험지</h1>
+            <div class="subtitle">Frida Kahlo: An Artist Who Transformed Pain into Art</div>
+        </div>
+
+        <!-- 문제 1 -->
+        <div class="question-section">
+            <div class="question-number">1. 세부 내용 파악하기</div>
+            <div class="question-text">주어진 글의 내용과 일치하지 않는 것을 고르시오.</div>
+            
+            <div class="passage-box">
+                <div class="passage">
+                    Frida Kahlo was a Mexican artist who painted many self-portraits. She always wanted to be a doctor. But when she was 18, a bus she was riding in had an accident. Kahlo was badly injured, and she could not go to medical school. She could not even walk and was stuck in bed for more than a year. To pass the time, she began painting. She used strong and bold colors that showed her pain. She painted many pictures of herself, and these paintings show the pains of her life. Although people do not enjoy seeing others' pain, her paintings became very famous and popular. They have inspired many artists. Kahlo changed her pain to art.
+                </div>
+            </div>
+            
+            <div class="options">
+                <div class="option">① 프리다 칼로는 원래 의사가 되기를 꿈꿨다.</div>
+                <div class="option">② 그녀는 18세에 당한 사고로 인해 심하게 다쳤다.</div>
+                <div class="option">③ 침대에 누워있는 동안 그림을 그리기 시작했다.</div>
+                <div class="option">④ 그녀의 그림은 주로 밝고 즐거운 색채를 사용했다.</div>
+                <div class="option">⑤ 그녀의 작품들은 다른 많은 예술가에게 영감을 주었다.</div>
+            </div>
+        </div>
+
+        <!-- 문제 2 -->
+        <div class="question-section">
+            <div class="question-number">2. 대의 파악하기</div>
+            <div class="question-text">주어진 글의 주제로 가장 알맞은 것은?</div>
+            
+            <div class="passage-box">
+                <div class="passage">
+                    Frida Kahlo was a Mexican artist who painted many self-portraits. She always wanted to be a doctor. But when she was 18, a bus she was riding in had an accident. Kahlo was badly injured, and she could not go to medical school. She could not even walk and was stuck in bed for more than a year. To pass the time, she began painting. She used strong and bold colors that showed her pain. She painted many pictures of herself, and these paintings show the pains of her life. Although people do not enjoy seeing others' pain, her paintings became very famous and popular. They have inspired many artists. Kahlo changed her pain to art.
+                </div>
+            </div>
+            
+            <div class="options">
+                <div class="option">① A doctor who became a famous artist</div>
+                <div class="option">② The life and art of an artist who turned pain into art</div>
+                <div class="option">③ The influence of Mexican culture on modern art</div>
+                <div class="option">④ The most famous self-portraits in history</div>
+                <div class="option">⑤ The dangers of public transportation</div>
+            </div>
+        </div>
+
+        <!-- 문제 3 -->
+        <div class="question-section">
+            <div class="question-number">3. 답할 수 있는/없는 것 고르기</div>
+            <div class="question-text">다음 글을 읽고 답할 수 없는 질문은?</div>
+            
+            <div class="passage-box">
+                <div class="passage">
+                    Frida Kahlo was a Mexican artist who painted many self-portraits. She always wanted to be a doctor. But when she was 18, a bus she was riding in had an accident. Kahlo was badly injured, and she could not go to medical school. She could not even walk and was stuck in bed for more than a year. To pass the time, she began painting. She used strong and bold colors that showed her pain. She painted many pictures of herself, and these paintings show the pains of her life. Although people do not enjoy seeing others' pain, her paintings became very famous and popular. They have inspired many artists. Kahlo changed her pain to art.
+                </div>
+            </div>
+            
+            <div class="options">
+                <div class="option">① What was Frida Kahlo's nationality?</div>
+                <div class="option">② What was Frida Kahlo's original dream job?</div>
+                <div class="option">③ Why did Frida Kahlo start painting?</div>
+                <div class="option">④ Who taught Frida Kahlo how to paint?</div>
+                <div class="option">⑤ What did Frida Kahlo's paintings often show?</div>
+            </div>
+        </div>
+
+        <!-- 문제 4 -->
+        <div class="question-section">
+            <div class="question-number">4. 문맥 파악하기</div>
+            <div class="question-text">주어진 글의 빈칸에 들어갈 말로 가장 알맞은 것은?</div>
+            
+            <div class="passage-box">
+                <div class="passage">
+                    Frida Kahlo was a Mexican artist who painted many self-portraits. She always wanted to be a doctor. But when she was 18, a bus she was riding in had an accident. Kahlo was badly injured, and she could not go to medical school. She could not even walk and was stuck in bed for more than a year. <span class="highlight">__________</span>, she began painting. She used strong and bold colors that showed her pain. She painted many pictures of herself, and these paintings show the pains of her life. Although people do not enjoy seeing others' pain, her paintings became very famous and popular. They have inspired many artists. Kahlo changed her pain to art.
+                </div>
+            </div>
+            
+            <div class="options">
+                <div class="option">① To make money</div>
+                <div class="option">② To become famous</div>
+                <div class="option">③ To pass the time</div>
+                <div class="option">④ To impress her family</div>
+                <div class="option">⑤ To express her happiness</div>
+            </div>
+        </div>
+
+        <!-- 문제 5 -->
+        <div class="question-section">
+            <div class="question-number">5. 어휘 알기</div>
+            <div class="question-text">밑줄 친 낱말의 영영풀이로 적절하지 않은 것은?</div>
+            
+            <div class="passage-box">
+                <div class="passage">
+                    Frida Kahlo was a Mexican artist who painted many self-portraits. She always wanted to be a doctor. But when she was 18, a bus she was riding in had an <span class="underline">①accident</span>. Kahlo was badly <span class="underline">②injured</span>, and she could not go to medical school. She could not even walk and was stuck in bed for more than a year. To pass the time, she began painting. She used strong and bold colors that showed her pain. She painted many pictures of herself, and these paintings show the pains of her life. Although people do not enjoy seeing others' pain, her paintings became very famous and <span class="underline">③popular</span>. They have <span class="underline">④inspired</span> many artists. Kahlo changed her <span class="underline">⑤pain</span> to art.
+                </div>
+            </div>
+            
+            <div class="options">
+                <div class="option">① accident: an unpleasant event that happens unexpectedly and causes damage or injury</div>
+                <div class="option">② injured: physically hurt or harmed</div>
+                <div class="option">③ popular: liked or enjoyed by a small number of people</div>
+                <div class="option">④ inspired: to give someone the idea for a piece of work</div>
+                <div class="option">⑤ pain: the feeling you have when a part of your body hurts</div>
+            </div>
+        </div>
+
+        <!-- 정답 및 해설 -->
+        <div class="answer-section">
+            <div class="answer-header">정답 및 해설</div>
+            
+            <div class="answer-item">
+                <div class="answer-number">문제 1</div>
+                <div class="correct-answer">정답: ④</div>
+                <div class="explanation">
+                    지문에서 "She used strong and bold colors that showed her pain"이라고 명시되어 있다. 프리다 칼로는 자신의 고통을 표현하기 위해 강렬하고 대담한 색채를 사용했다고 설명하고 있다. 따라서 ④번 "그녀의 그림은 주로 밝고 즐거운 색채를 사용했다"는 내용과 일치하지 않는다. 그녀의 그림은 고통을 표현한 것이지 밝고 즐거운 것이 아니다.
+                </div>
+            </div>
+            
+            <div class="answer-item">
+                <div class="answer-number">문제 2</div>
+                <div class="correct-answer">정답: ②</div>
+                <div class="explanation">
+                    이 글의 핵심 주제는 프리다 칼로가 사고로 인한 고통을 예술로 승화시킨 이야기다. 글의 마지막 문장 "Kahlo changed her pain to art"가 이를 명확히 보여준다. 의사가 되고자 했던 꿈이 좌절되고 육체적 고통을 겪었지만, 이를 예술 작품으로 표현한 그녀의 삶과 예술이 글의 중심 내용이다. 따라서 "The life and art of an artist who turned pain into art"가 가장 적절한 주제다.
+                </div>
+            </div>
+            
+            <div class="answer-item">
+                <div class="answer-number">문제 3</div>
+                <div class="correct-answer">정답: ④</div>
+                <div class="explanation">
+                    지문에는 프리다 칼로가 누구에게 그림을 배웠는지에 대한 정보가 전혀 언급되어 있지 않다. ①번은 멕시코인(Mexican)이라고 명시되어 있고, ②번은 의사(doctor)가 되고 싶어했다고 나와 있으며, ③번은 시간을 보내기 위해(to pass the time) 그림을 그리기 시작했다고 설명되어 있고, ⑤번은 그녀의 삶의 고통(pains of her life)을 보여준다고 설명되어 있다. 따라서 ④번만이 지문에서 답을 찾을 수 없는 질문이다.
+                </div>
+            </div>
+            
+            <div class="answer-item">
+                <div class="answer-number">문제 4</div>
+                <div class="correct-answer">정답: ③</div>
+                <div class="explanation">
+                    빈칸 앞 문장에서 칼로가 1년 이상 침대에 누워 있어야 했다고 설명하고, 빈칸 다음에 "she began painting"이라고 이어진다. 문맥상 오랜 시간 침대에 누워있던 칼로가 무료함을 달래기 위해 그림을 그리기 시작했다는 의미가 가장 자연스럽다. 실제로 원문에도 "To pass the time"(시간을 보내기 위해)이라고 명시되어 있다. 이는 장기간 병상 생활을 하던 중 시간을 보내기 위한 방법으로 그림을 시작했음을 나타낸다.
+                </div>
+            </div>
+            
+            <div class="answer-item">
+                <div class="answer-number">문제 5</div>
+                <div class="correct-answer">정답: ③</div>
+                <div class="explanation">
+                    ③번의 "popular"에 대한 영영풀이가 "liked or enjoyed by a small number of people"(소수의 사람들에게 좋아하거나 즐겨지는)로 되어 있는데, 이는 잘못된 설명이다. "popular"는 "많은 사람들에게 인기 있는"이라는 의미다. 지문에서도 "her paintings became very famous and popular"라고 하여 그녀의 그림이 매우 유명하고 인기를 얻었다고 설명하고 있다. 올바른 영영풀이는 "liked or enjoyed by many people"이어야 한다.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
