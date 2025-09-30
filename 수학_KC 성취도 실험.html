@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>김테스트 학생 · 수학 성취도 대시보드 (2025-09-30)</title>
+  <style>
+    :root {
+      --bg: #f8f9fa; --card: #ffffff; --border: #e9ecef; --text: #212529; --muted: #6c757d;
+      --indigo: #4c6ef5; --green: #28a745; --yellow: #ffc107; --red: #dc3545; --blue: #0d6efd;
+      --green-light: #d4edda; --yellow-light: #fff3cd; --red-light: #f8d7da; --blue-light: #cfe2ff;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--text);
+      background-color: var(--bg);
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+    .grid { display: grid; gap: 16px; }
+    @media (min-width: 992px) { .grid-4 { grid-template-columns: repeat(4, 1fr); } }
+    @media (min-width: 576px) and (max-width: 991px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+    .card {
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .title { font-weight: 700; font-size: 1.5rem; letter-spacing: -0.5px; }
+    .sub-title { font-size: 0.875rem; color: var(--muted); }
+    .stat-card h3 { font-size: 0.875rem; color: var(--muted); margin: 0 0 4px 0; font-weight: 500; }
+    .stat-card .score { font-size: 2.25rem; font-weight: 700; line-height: 1.1; }
+    .stat-card .desc { font-size: 1rem; font-weight: 600; }
+    .hbar { height: 8px; background-color: #e9ecef; border-radius: 99px; overflow: hidden; }
+    .hbar > span { display: block; height: 100%; border-radius: 99px; }
+    details { margin-top: 8px; border-left: 2px solid var(--border); }
+    details > summary { cursor: pointer; padding: 12px 16px; list-style: none; display: flex; align-items: center; gap: 8px; transition: background-color 0.2s; }
+    details > summary:hover { background-color: #f8f9fa; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::before {
+      content: '▶'; font-size: 0.7em;
+      transform: rotate(0deg); transition: transform 0.2s;
+    }
+    details[open] > summary::before { transform: rotate(90deg); }
+    .unit-info { flex-grow: 1; min-width: 0; }
+    .unit-info .name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .unit-info .counts { font-size: 0.875rem; color: var(--muted); }
+    .unit-score { font-weight: 700; font-size: 1rem; text-align: right; min-width: 60px; }
+    .unit-hbar { margin: 4px 0 0 0; }
+    .action-card ol { padding-left: 20px; margin: 12px 0 0 0; }
+    .action-card li { margin-bottom: 16px; }
+    .action-card .goal {
+      font-size: 0.875rem;
+      margin-top: 4px;
+      padding: 8px 12px;
+      background-color: #f8f9fa;
+      border-left: 3px solid var(--indigo);
+      border-radius: 4px;
+      color: #495057;
+    }
+    .kc-card { padding: 12px 16px; }
+    .kc-card-header { display: flex; align-items: center; gap: 8px; }
+    .kc-name { flex-grow: 1; min-width: 0; }
+    .kc-name strong { font-family: monospace; }
+    .kc-name span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: bottom; max-width: calc(100% - 110px); }
+
+    .pill {
+        padding: 2px 8px;
+        border-radius: 99px;
+        font-size: 0.8em;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+    .print-btn {
+        position: fixed; bottom: 20px; right: 20px;
+        background-color: var(--indigo); color: white;
+        border: none; border-radius: 50%; width: 50px; height: 50px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        font-size: 24px; cursor: pointer; display: grid; place-items: center;
+    }
+    @media print { .print-btn { display: none; } details { all: initial; } details[open] > summary { display: list-item; } summary { display:none; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header style="margin-bottom: 24px;">
+      <h1 class="title">[중2-2] 기말대비 수학 성취도 대시보드</h1>
+      <p class="sub-title">이름: <strong>김테스트</strong> · 시험일: <strong>2025-09-30</strong></p>
+    </header>
+
+    <main>
+      <section class="grid grid-4" id="summary-section" style="margin-bottom: 24px;"></section>
+      
+      <section class="card" style="margin-bottom: 24px;">
+        <h2 style="font-size: 1.25rem; margin:0 0 12px 0;">🌳 중단원별 상세 분석</h2>
+        <div id="tree-view"></div>
+      </section>
+
+      <section class="card action-card">
+        <h2 style="font-size: 1.25rem; margin:0;">💡 다음 학습을 위한 제안</h2>
+        <p class="sub-title" style="margin-top: 4px;">성취도가 가장 낮은 KC를 바탕으로 학습 목표를 확인하세요.</p>
+        <div id="action-items"></div>
+      </section>
+    </main>
+
+    <button class="print-btn" onclick="window.print()" title="인쇄하기">🖨️</button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // ======== 1. 데이터 정의 ========
+      const problemRawData = [
+        {num: 1, kc: "KC-SIM-PC4", difficulty: 2, correct: true}, {num: 2, kc: "KC-SIM-PC10", difficulty: 1, correct: true},
+        {num: 3, kc: "KC-SIM-PC15", difficulty: 1, correct: true}, {num: 4, kc: "KC-SIM-PA2", difficulty: 3, correct: false},
+        {num: 5, kc: "KC-SIM-PA7", difficulty: 3, correct: true}, {num: 6, kc: "KC-SIM-TB2", difficulty: 2, correct: true},
+        {num: 7, kc: "KC-SIM-TB5", difficulty: 2, correct: true}, {num: 8, kc: "KC-SIM-TB9", difficulty: 1, correct: true},
+        {num: 9, kc: "KC-SIM-TB13", difficulty: 1, correct: true}, {num: 10, kc: "KC-SIM-TA2", difficulty: 2, correct: true},
+        {num: 11, kc: "KC-SIM-TA6", difficulty: 1, correct: true}, {num: 12, kc: "KC-SIM-TA3", difficulty: 5, correct: false},
+        {num: 13, kc: "KC-SIM-PC17", difficulty: 4, correct: false}, {num: 14, kc: "KC-SIM-PL4", difficulty: 3, correct: true},
+        {num: 15, kc: "KC-SIM-PC1", difficulty: 5, correct: false}, {num: 16, kc: "KC-SIM-PC6", difficulty: 1, correct: true},
+        {num: 17, kc: "KC-SIM-T4", difficulty: 4, correct: true}, {num: 18, kc: "KC-SIM-PA5", difficulty: 3, correct: true},
+        {num: 19, kc: "KC-SIM-F5", difficulty: 2, correct: true}, {num: 20, kc: "KC-SIM-PC13", difficulty: 3, correct: false},
+        {num: 21, kc: "KC-SIM-PA2", difficulty: 4, correct: true}, {num: 22, kc: "KC-SIM-TB10", difficulty: 3, correct: false},
+        {num: 23, kc: "KC-SIM-PC15", difficulty: 1, correct: true}, {num: 24, kc: "KC-SIM-PC3", difficulty: 2, correct: true},
+        {num: 25, kc: "KC-SIM-PL12", difficulty: 4, correct: true}
+      ];
+
+      const achievementData = {
+        name: "대단원: 도형의 닮음", score: 63.8, correct: 19, total: 25,
+        children: [
+          { name: "중단원: 도형의 닮음", score: 80.0, correct: 2, total: 3, children: [
+              { name: "소단원: 닮음 도형", score: 100.0, correct: 1, total: 1, children: [ { name: "KC-SIM-F5 (다면체에서 닮음의 성질)", score: 100.0, correct: 1, total: 1 } ] },
+              { name: "소단원: 삼각형의 닮음 조건", score: 100.0, correct: 1, total: 1, children: [ { name: "KC-SIM-T4 (삼각형의 닮음 조건의 응용(2) AA 닮음)", score: 100.0, correct: 1, total: 1 } ] }
+          ]},
+          { name: "중단원: 닮은 도형의 성질", score: 46.2, correct: 9, total: 14, children: [
+              { name: "소단원: 평행선과 선분의 길이의 비", score: 100.0, correct: 2, total: 2, children: [
+                { name: "KC-SIM-PL4 (삼각형에서 평행선 사이의 선분의 길이의 비의 응용(2) 평행선이 두 쌍일 때)", score: 100.0, correct: 1, total: 1 }, { name: "KC-SIM-PL12 (사다리꼴에서 평행선 사이의 선분의 길이의 비)", score: 100.0, correct: 1, total: 1 }
+              ]},
+              { name: "소단원: 삼각형의 무게중심", score: 35.3, correct: 5, total: 8, children: [
+                { name: "KC-SIM-PC1 (삼각형의 두 변의 중점을 연결한 선분의 성질(1))", score: 0.0, correct: 0, total: 1 }, { name: "KC-SIM-PC3 (삼각형의 중점을 연결한 선분 응용(1) 중점)", score: 100.0, correct: 1, total: 1 },
+                { name: "KC-SIM-PC4 (삼각형의 중점을 연결한 선분 응용(2) 삼등분선)", score: 100.0, correct: 1, total: 1 }, { name: "KC-SIM-PC6 (삼각형의 세 변의 중점을 연결한 삼각형(1) 둘레의 길이)", score: 100.0, correct: 1, total: 1 },
+                { name: "KC-SIM-PC10 (삼각형의 무게중심(1) △ABC의 무게중심)", score: 100.0, correct: 1, total: 1 }, { name: "KC-SIM-PC13 (삼각형의 무게중심의 응용(2))", score: 0.0, correct: 0, total: 1 },
+                { name: "KC-SIM-PC15 (삼각형의 무게중심과 넓이의 관계(1) △ABC의 무게중심)", score: 100.0, correct: 2, total: 2 }, { name: "KC-SIM-PC17 (평행사변형에서 삼각형의 무게중심의 응용(1) 길이)", score: 0.0, correct: 0, total: 1 }
+              ]},
+              { name: "소단원: 닮은 도형의 넓이와 부피", score: 58.3, correct: 2, total: 4, children: [
+                { name: "KC-SIM-PA2 (닮은 두 평면도형의 넓이의 비(2) 닮은 도형을 이용하여 도형의 넓이 구하기)", score: 57.1, correct: 1, total: 2 }, { name: "KC-SIM-PA5 (닮은 두 입체도형의 겉넓이의 비의 활용)", score: 100.0, correct: 1, total: 1 },
+                { name: "KC-SIM-PA7 (닮은 두 입체도형의 부피의 비의 활용)", score: 100.0, correct: 1, total: 1 }
+              ]}
+          ]},
+          { name: "중단원: 피타고라스의 정리", score: 70.4, correct: 8, total: 8, children: [
+              { name: "소단원: 피타고라스의 정리", score: 62.5, correct: 4, total: 5, children: [
+                { name: "KC-SIM-TB2 (삼각형의 변의 길이 구하기(2))", score: 100.0, correct: 1, total: 1 }, { name: "KC-SIM-TB5 (사각형에서 피타고라스 정리의 이용(1) 대각선을 그어 푸는 경우)", score: 100.0, correct: 1, total: 1 },
+                { name: "KC-SIM-TB9 (피타고라스 정리의 설명(1) 유클리드의 방법)", score: 100.0, correct: 1, total: 1 }, { name: "KC-SIM-TB10 (피타고라스 정리의 설명(2) 피타고라스의 방법)", score: 0.0, correct: 0, total: 1 },
+                { name: "KC-SIM-TB13 (직각삼각형이 되기 위한 조건)", score: 100.0, correct: 1, total: 1 }
+              ]},
+              { name: "소단원: 피타고라스 정리의 활용", score: 25.0, correct: 2, total: 3, children: [
+                { name: "KC-SIM-TA2 (피타고라스 정리의 활용(2) 사각형)", score: 100.0, correct: 1, total: 1 }, { name: "KC-SIM-TA3 (피타고라스 정리의 활용(3) 직사각형 내부의 점)", score: 0.0, correct: 0, total: 1 },
+                { name: "KC-SIM-TA6 (피타고라스 정리의 활용(6) 히포크라테스의 원의 넓이)", score: 100.0, correct: 1, total: 1 }
+              ]}
+          ]}
+        ]
+      };
+      
+      const kcMeta = { /* KC Meta data from previous turn, abridged for brevity */ };
+      // (Full kcMeta object from previous turns would be inserted here)
+      // For brevity, using a smaller version for this example
+      const fullKcMeta = {"KC-SIM-F1":{jungdanwon:"도형의 닮음",sodanwon:"닮음 도형",label:"닮은 도형에서 서로 대응하는 것",desc:"..."},"KC-SIM-F2":{jungdanwon:"도형의 닮음",sodanwon:"닮음 도형",label:"항상 닮은 도형",desc:"..."},"KC-SIM-F3":{jungdanwon:"도형의 닮음",sodanwon:"닮음 도형",label:"평면도형에서 닮음의 성질",desc:"..."},"KC-SIM-F4":{jungdanwon:"도형의 닮음",sodanwon:"닮음 도형",label:"평면도형에서 닮음비의 응용",desc:"..."},"KC-SIM-F5":{jungdanwon:"도형의 닮음",sodanwon:"닮음 도형",label:"다면체에서 닮음의 성질",desc:"..."},"KC-SIM-F6":{jungdanwon:"도형의 닮음",sodanwon:"닮음 도형",label:"회전체에서 닮음의 성질",desc:"..."},"KC-SIM-F7":{jungdanwon:"도형의 닮음",sodanwon:"닮음 도형",label:"다면체에서 닮음비의 응용",desc:"..."},"KC-SIM-F8":{jungdanwon:"도형의 닮음",sodanwon:"닮음 도형",label:"회전체에서 닮음비의 응용",desc:"..."},"KC-SIM-T1":{jungdanwon:"도형의 닮음",sodanwon:"삼각형의 닮음 조건",label:"삼각형의 닮음 조건",desc:"..."},"KC-SIM-T2":{jungdanwon:"도형의 닮음",sodanwon:"삼각형의 닮음 조건",label:"두 삼각형이 닮음이기 위하여 필요한 조건",desc:"..."},"KC-SIM-T3":{jungdanwon:"도형의 닮음",sodanwon:"삼각형의 닮음 조건",label:"삼각형의 닮음 조건의 응용(1) SAS 닮음",desc:"..."},"KC-SIM-T4":{jungdanwon:"도형의 닮음",sodanwon:"삼각형의 닮음 조건",label:"삼각형의 닮음 조건의 응용(2) AA 닮음",desc:"..."},"KC-SIM-T5":{jungdanwon:"도형의 닮음",sodanwon:"삼각형의 닮음 조건",label:"평행선에서 삼각형의 닮음 조건의 응용",desc:"..."},"KC-SIM-T6":{jungdanwon:"도형의 닮음",sodanwon:"삼각형의 닮음 조건",label:"직각삼각형의 닮음(1) 공통인 각이 있는 경우",desc:"..."},"KC-SIM-T7":{jungdanwon:"도형의 닮음",sodanwon:"삼각형의 닮음 조건",label:"직각삼각형의 닮음(2) 한 예각의 크기가 같은 경우",desc:"..."},"KC-SIM-T8":{jungdanwon:"도형의 닮음",sodanwon:"삼각형의 닮음 조건",label:"직각삼각형의 닮음의 응용",desc:"..."},"KC-SIM-T9":{jungdanwon:"도형의 닮음",sodanwon:"삼각형의 닮음 조건",label:"종이접기와 삼각형의 닮음(1) 삼각형 접기",desc:"..."},"KC-SIM-T10":{jungdanwon:"도형의 닮음",sodanwon:"삼각형의 닮음 조건",label:"종이접기와 삼각형의 닮음(2) 정사각형 접기",desc:"..."},"KC-SIM-T11":{jungdanwon:"도형의 닮음",sodanwon:"삼각형의 닮음 조건",label:"종이접기와 삼각형의 닮음(3) 직사각형 접기",desc:"..."},"KC-SIM-PL1":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"삼각형에서 평행선 사이의 선분의 길이의 비(1) 한 각이 공통각인 두 삼각형",desc:"..."},"KC-SIM-PL2":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"삼각형에서 평행선 사이의 선분의 길이의 비(2) 한 각이 맞꼭지각인 두 삼각형",desc:"..."},"KC-SIM-PL3":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"삼각형에서 평행선 사이의 선분의 길이의 비의 응용(1) 평행선을 지나는 선분이 있을 때",desc:"..."},"KC-SIM-PL4":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"삼각형에서 평행선 사이의 선분의 길이의 비의 응용(2) 평행선이 두 쌍일 때",desc:"..."},"KC-SIM-PL5":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"평행선 찾기",desc:"..."},"KC-SIM-PL6":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"삼각형의 내각의 이등분선과 변의 길이",desc:"..."},"KC-SIM-PL7":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"삼각형의 내각의 이등분선과 삼각형의 넓이",desc:"..."},"KC-SIM-PL8":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"삼각형의 외각의 이등분선과 변의 길이",desc:"..."},"KC-SIM-PL9":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"삼각형의 외각의 이등분선과 삼각형의 넓이",desc:"..."},"KC-SIM-PL10":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"평행선 사이의 길이의 비(1)",desc:"..."},"KC-SIM-PL11":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"평행선 사이의 길이의 비(2)",desc:"..."},"KC-SIM-PL12":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"사다리꼴에서 평행선 사이의 선분의 길이의 비",desc:"..."},"KC-SIM-PL13":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"사다리꼴에서 평행선과 한 대각선의 길이",desc:"..."},"KC-SIM-PL14":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"사다리꼴에서 평행선과 두 대각선의 길이(1) 평행선이 대각선의 교점을 지나지 않을 때",desc:"..."},"KC-SIM-PL15":{jungdanwon:"닮은 도형의 성질",sodanwon:"평행선과 선분의 길이의 비",label:"사다리꼴에서 평행선과 두 대각선의 길이(2) 평행선이 대각선의 교점을 지날 때",desc:"..."},"KC-SIM-PC1":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"삼각형의 두 변의 중점을 연결한 선분의 성질(1)",desc:"..."},"KC-SIM-PC2":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"삼각형의 두 변의 중점을 연결한 선분의 성질(2)",desc:"..."},"KC-SIM-PC3":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"삼각형의 중점을 연결한 선분 응용(1) 중점",desc:"..."},"KC-SIM-PC4":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"삼각형의 중점을 연결한 선분 응용(2) 삼등분선",desc:"..."},"KC-SIM-PC5":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"삼각형의 중점을 연결한 선분 응용(3) 넓이",desc:"..."},"KC-SIM-PC6":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"삼각형의 세 변의 중점을 연결한 삼각형(1) 둘레의 길이",desc:"..."},"KC-SIM-PC7":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"삼각형의 세 변의 중점을 연결한 삼각형(2) 넓이",desc:"..."},"KC-SIM-PC8":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"사각형의 각 변의 중점을 연결하여 만든 사각형",desc:"..."},"KC-SIM-PC9":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"사다리꼴의 두 변의 중점을 연결한 선분의 성질",desc:"..."},"KC-SIM-PC10":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"삼각형의 무게중심(1) △ABC의 무게중심",desc:"..."},"KC-SIM-PC11":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"삼각형의 무게중심(2) △ABC, △GBC의 무게중심",desc:"..."},"KC-SIM-PC12":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"삼각형의 무게중심의 응용(1)",desc:"..."},"KC-SIM-PC13":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"삼각형의 무게중심의 응용(2)",desc:"..."},"KC-SIM-PC14":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"삼각형의 무게중심의 응용(3)",desc:"..."},"KC-SIM-PC15":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"삼각형의 무게중심과 넓이의 관계(1) △ABC의 무게중심",desc:"..."},"KC-SIM-PC16":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"삼각형의 무게중심과 넓이의 관계(2) △ABC, △GBC의 무게중심",desc:"..."},"KC-SIM-PC17":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"평행사변형에서 삼각형의 무게중심의 응용(1) 길이",desc:"..."},"KC-SIM-PC18":{jungdanwon:"닮은 도형의 성질",sodanwon:"삼각형의 무게중심",label:"평행사변형에서 삼각형의 무게중심의 응용(2) 넓이",desc:"..."},"KC-SIM-PA1":{jungdanwon:"닮은 도형의 성질",sodanwon:"닮은 도형의 넓이와 부피",label:"닮은 두 평면도형의 넓이의 비(1) 닮음비가 주어진 경우",desc:"..."},"KC-SIM-PA2":{jungdanwon:"닮은 도형의 성질",sodanwon:"닮은 도형의 넓이와 부피",label:"닮은 두 평면도형의 넓이의 비(2) 닮은 도형을 이용하여 도형의 넓이 구하기",desc:"..."},"KC-SIM-PA3":{jungdanwon:"닮은 도형의 성질",sodanwon:"닮은 도형의 넓이와 부피",label:"닮은 두 평면도형의 넓이의 비의 활용",desc:"..."},"KC-SIM-PA4":{jungdanwon:"닮은 도형의 성질",sodanwon:"닮은 도형의 넓이와 부피",label:"닮은 두 입체도형의 겉넓이의 비",desc:"..."},"KC-SIM-PA5":{jungdanwon:"닮은 도형의 성질",sodanwon:"닮은 도형의 넓이와 부피",label:"닮은 두 입체도형의 겉넓이의 비의 활용",desc:"..."},"KC-SIM-PA6":{jungdanwon:"닮은 도형의 성질",sodanwon:"닮은 도형의 넓이와 부피",label:"닮은 두 입체도형의 부피의 비",desc:"..."},"KC-SIM-PA7":{jungdanwon:"닮은 도형의 성질",sodanwon:"닮은 도형의 넓이와 부피",label:"닮은 두 입체도형의 부피의 비의 활용",desc:"..."},"KC-SIM-PA8":{jungdanwon:"닮은 도형의 성질",sodanwon:"닮은 도형의 넓이와 부피",label:"닮음의 활용(1) 높이의 측정",desc:"..."},"KC-SIM-PA9":{jungdanwon:"닮은 도형의 성질",sodanwon:"닮은 도형의 넓이와 부피",label:"닮음의 활용(2) 축도와 축척",desc:"..."},"KC-SIM-TB1":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"삼각형의 변의 길이 구하기(1)",desc:"..."},"KC-SIM-TB2":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"삼각형의 변의 길이 구하기(2)",desc:"..."},"KC-SIM-TB3":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"삼각형의 변의 길이 구하기(3)",desc:"..."},"KC-SIM-TB4":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"직각삼각형의 닮음과 피타고라스 정리",desc:"..."},"KC-SIM-TB5":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"사각형에서 피타고라스 정리의 이용(1) 대각선을 그어 푸는 경우",desc:"..."},"KC-SIM-TB6":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"사각형에서 피타고라스 정리의 이용(2) 수선을 그어 푸는 경우",desc:"..."},"KC-SIM-TB7":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"직사각형의 대각선의 길이",desc:"..."},"KC-SIM-TB8":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"이등변삼각형의 높이와 넓이",desc:"..."},"KC-SIM-TB9":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"피타고라스 정리의 설명(1) 유클리드의 방법",desc:"..."},"KC-SIM-TB10":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"피타고라스 정리의 설명(2) 피타고라스의 방법",desc:"..."},"KC-SIM-TB11":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"피타고라스 정리의 설명(3) 가필드의 방법",desc:"..."},"KC-SIM-TB12":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"피타고라스 정리의 설명(4) 바스카라의 방법",desc:"..."},"KC-SIM-TB13":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"직각삼각형이 되기 위한 조건",desc:"..."},"KC-SIM-TB14":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"변의 길이에 따른 삼각형의 종류",desc:"..."},"KC-SIM-TB15":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스의 정리",label:"각의 크기에 따른 삼각형의 변의 길이",desc:"..."},"KC-SIM-TA1":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스 정리의 활용",label:"피타고라스 정리의 활용(1) 직각삼각형",desc:"..."},"KC-SIM-TA2":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스 정리의 활용",label:"피타고라스 정리의 활용(2) 사각형",desc:"..."},"KC-SIM-TA3":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스 정리의 활용",label:"피타고라스 정리의 활용(3) 직사각형 내부의 점",desc:"..."},"KC-SIM-TA4":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스 정리의 활용",label:"피타고라스 정리의 활용(4) 직각삼각형의 세 반원 사이의 관계",desc:"..."},"KC-SIM-TA5":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스 정리의 활용",label:"피타고라스 정리의 활용(5) 직각삼각형의 반원이 아닌 세 닮음 도형",desc:"..."},"KC-SIM-TA6":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스 정리의 활용",label:"피타고라스 정리의 활용(6) 히포크라테스의 원의 넓이",desc:"..."},"KC-SIM-TA7":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스 정리의 활용",label:"피타고라스 나무 문제",desc:"..."},"KC-SIM-TA8":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스 정리의 활용",label:"종이접기와 피타고라스 정리",desc:"..."},"KC-SIM-TA9":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스 정리의 활용",label:"입체도형에서의 피타고라스 정리",desc:"..."},"KC-SIM-TA10":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스 정리의 활용",label:"좌표평면에서의 최단 거리",desc:"..."},"KC-SIM-TA11":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스 정리의 활용",label:"각기둥에서의 최단 거리",desc:"..."},"KC-SIM-TA12":{jungdanwon:"피타고라스의 정리",sodanwon:"피타고라스 정리의 활용",label:"원기둥에서의 최단 거리",desc:"..."}};
+      Object.entries(fullKcMeta).forEach(([key, value]) => { kcMeta[key] = value; });
+
+
+      // ======== 2. 헬퍼 함수 및 데이터 계산 ========
+      const getScoreColor = (score) => {
+        if (score === null || score === undefined) return 'var(--muted)';
+        if (score >= 85) return 'var(--green)';
+        if (score >= 60) return 'var(--yellow)';
+        return 'var(--red)';
+      };
+
+      const totalCorrectProblems = problemRawData.filter(p => p.correct).length;
+      const totalProblems = problemRawData.length;
+      const correctRate = totalProblems > 0 ? (totalCorrectProblems / totalProblems) * 100 : 0;
+
+      const totalPossibleWeightedScore = problemRawData.reduce((sum, p) => sum + p.difficulty, 0);
+      const totalEarnedWeightedScore = problemRawData.reduce((sum, p) => sum + (p.correct ? p.difficulty : 0), 0);
+      const weightedAchievement = totalPossibleWeightedScore > 0 ? (totalEarnedWeightedScore / totalPossibleWeightedScore) * 100 : 0;
+
+      let allKCsInReport = [];
+      function collectKCs(unit) {
+        const isKc = unit.name.startsWith('KC-SIM-');
+        if (isKc) {
+          allKCsInReport.push(unit);
+          return;
+        }
+        if (unit.children) unit.children.forEach(collectKCs);
+      }
+      collectKCs(achievementData);
+      
+      const assessedKcCodes = new Set(allKCsInReport.map(kc => (kc.name.match(/KC-SIM-[A-Z]+\d+/) || [])[0]));
+
+      // ======== 3. 렌더링 함수 ========
+
+      function renderSummary() {
+        const container = document.getElementById('summary-section');
+        if (!container) return;
+        const [weakest, strongest] = [...achievementData.children].sort((a, b) => a.score - b.score);
+
+        container.innerHTML = `
+          <div class="card stat-card">
+            <h3>종합 성취도 (가중치 적용)</h3>
+            <div class="score" style="color:${getScoreColor(weightedAchievement)}">${weightedAchievement.toFixed(1)}%</div>
+            <div class="desc">${totalEarnedWeightedScore}/${totalPossibleWeightedScore} 점</div>
+          </div>
+          <div class="card stat-card">
+            <h3>전체 정답률</h3>
+            <div class="score" style="color: ${getScoreColor(correctRate)}">${correctRate.toFixed(0)}%</div>
+            <div class="desc">${totalCorrectProblems}/${totalProblems} 문항</div>
+          </div>
+          <div class="card stat-card">
+            <h3>가장 자신 있는 단원</h3>
+            <div class="score" style="color:${getScoreColor(strongest.score)}">${strongest.score.toFixed(1)}%</div>
+            <div class="desc">${strongest.name.replace('중단원: ', '')}</div>
+          </div>
+          <div class="card stat-card">
+            <h3>가장 시급한 단원</h3>
+            <div class="score" style="color:${getScoreColor(weakest.score)}">${weakest.score.toFixed(1)}%</div>
+            <div class="desc">${weakest.name.replace('중단원: ', '')}</div>
+          </div>
+        `;
+      }
+
+      function createUnitElement(unitData, depth) {
+        const isKc = unitData.name.startsWith('KC-SIM-');
+        const element = document.createElement('div');
+        element.style.paddingLeft = `${depth * 20}px`;
+
+        let displayName, counts, score, scoreColor;
+        
+        if (isKc) {
+          const kcCode = (unitData.name.match(/KC-SIM-[A-Z]+\d+/) || [])[0];
+          const kcName = (fullKcMeta[kcCode] && fullKcMeta[kcCode].label) ? fullKcMeta[kcCode].label : 'N/A';
+          displayName = `<strong>${kcCode}:</strong> <span>${kcName}</span>`;
+          counts = `${unitData.correct}/${unitData.total} 문항`;
+          score = unitData.score;
+        } else {
+          displayName = unitData.name.replace(/대단원:|중단원:|소단원:/, '').trim();
+          counts = unitData.children ? `${unitData.correct}/${unitData.total} 문항` : '';
+          score = unitData.score;
+        }
+        scoreColor = getScoreColor(score);
+
+        const content = `
+          <summary>
+            <div class="unit-info">
+              <div class="name">${displayName}</div>
+              <div class="counts">${counts}</div>
+            </div>
+            <div class="unit-score" style="color:${scoreColor}">${score.toFixed(1)}%</div>
+          </summary>
+          <div class="unit-hbar"><div class="hbar"><span style="width:${score}%; background-color:${scoreColor};"></span></div></div>
+        `;
+
+        if (unitData.children && unitData.children.length > 0) {
+          const details = document.createElement('details');
+          if (depth < 2) details.open = true;
+          details.innerHTML = content;
+          unitData.children.forEach(child => details.appendChild(createUnitElement(child, depth + 1)));
+          
+          if (unitData.name.startsWith('소단원:')) {
+              const allKcsInSodanwon = Object.entries(fullKcMeta).filter(([_, meta]) => meta.sodanwon === displayName).map(([kcCode, _]) => kcCode);
+              const assessedKcsInSodanwon = unitData.children.map(c => (c.name.match(/KC-SIM-[A-Z]+\d+/) || [])[0]);
+              const unassessed = allKcsInSodanwon.filter(kc => !assessedKcsInSodanwon.includes(kc));
+              unassessed.forEach(kcCode => details.appendChild(createUnassessedKcElement(kcCode, depth + 1)));
+          }
+          element.appendChild(details);
+        } else {
+          element.innerHTML = `<div class="kc-card"><div style="flex-grow:1;">${content.replace(/<summary>|<\/summary>/g, '')}</div></div>`;
+        }
+        return element;
+      }
+
+      function createUnassessedKcElement(kcCode, depth) {
+          const kcName = (fullKcMeta[kcCode] && fullKcMeta[kcCode].label) ? fullKcMeta[kcCode].label : 'N/A';
+          const displayName = `<strong>${kcCode}:</strong> <span>${kcName}</span>`;
+          const element = document.createElement('div');
+          element.style.paddingLeft = `${depth * 20}px`;
+          element.innerHTML = `
+            <div class="kc-card">
+              <div class="kc-card-header">
+                <div class="kc-name">${displayName}</div>
+                <span class="pill" style="background-color: var(--border); color: var(--muted);">미평가</span>
+              </div>
+            </div>
+          `;
+          return element;
+      }
+
+      function renderTree() {
+        const container = document.getElementById('tree-view');
+        if (!container) return;
+        container.innerHTML = '';
+        achievementData.children.forEach(jungdanwon => {
+          container.appendChild(createUnitElement(jungdanwon, 0));
+        });
+      }
+
+      function renderActionItems() {
+        const container = document.getElementById('action-items');
+        if (!container) return;
+        
+        const weakKCs = allKCsInReport
+          .filter(kc => kc.score < 60)
+          .sort((a, b) => a.score - b.score)
+          .slice(0, 3);
+
+        if (weakKCs.length === 0) {
+          container.innerHTML = `<p style="color:var(--muted); margin-top:12px;">🎉 특별히 부족한 KC가 없습니다. 훌륭합니다!</p>`;
+          return;
+        }
+
+        const list = document.createElement('ol');
+        weakKCs.forEach(kc => {
+          const kcCode = (kc.name.match(/KC-SIM-[A-Z]+\d+/) || [])[0];
+          const meta = fullKcMeta[kcCode] || {};
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <strong>${kcCode}: ${meta.label || ''}</strong>
+            <div class="sub-title" style="margin-top:-2px;">성취도: <span style="font-weight:700; color:${getScoreColor(kc.score)}">${kc.score.toFixed(1)}%</span> (${kc.correct}/${kc.total} 문항)</div>
+            <div class="goal"><strong>학습 목표:</strong> ${meta.desc || '관련 개념을 복습하세요.'}</div>
+          `;
+          list.appendChild(li);
+        });
+        container.innerHTML = '';
+        container.appendChild(list);
+      }
+      
+      // ======== 4. 초기 실행 ========
+      renderSummary();
+      renderTree();
+      renderActionItems();
+    });
+  </script>
+</body>
+</html>
