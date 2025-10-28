@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>중등 수학 · 입체도형 성취도 대시보드</title>
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#ffffff; --border:#e6e8ef; --text:#0f172a; --muted:#64748b;
+      --indigo:#4f46e5; --green:#16a34a; --yellow:#f59e0b; --red:#ef4444; --blue:#3b82f6;
+      --green-100:#dcfce7; --yellow-100:#fef9c3; --red-100:#fee2e2; --gray-100:#f1f5f9; --blue-100:#dbeafe;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#ffffff,var(--bg));
+      color:var(--text);
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR",Apple SD Gothic Neo,Pretendard,Helvetica,Arial,sans-serif
+    }
+    .container{max-width:1120px;margin:0 auto;padding:24px}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .between{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:20px;
+      box-shadow:0 4px 12px rgba(15,23,42,.04)
+    }
+    .p-16{padding:16px}.p-20{padding:20px}.p-24{padding:24px}
+    .btn{
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-size:14px;
+      line-height:1.2;
+      font-weight:600;
+      color:var(--text)
+    }
+    .btn.active{
+      background:var(--indigo);
+      color:#fff;
+      border-color:var(--indigo)
+    }
+    .input{
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:12px;
+      padding:10px 12px;
+      min-width:260px;
+      font-size:14px;
+      line-height:1.2
+    }
+    .grid{display:grid;gap:16px}
+    @media(min-width:640px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}}
+    @media(min-width:1024px){.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}}
+
+    .stat{min-width:240px}
+    .hbar{
+      height:8px;
+      background:var(--gray-100);
+      border-radius:999px;
+      overflow:hidden
+    }
+    .hbar > span{display:block;height:100%}
+
+    .pill{
+      padding:3px 8px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      display:inline-block;
+      line-height:1.2;
+      border:0
+    }
+    .legend .pill{border:1px solid var(--border);}
+
+    .muted{color:var(--muted)}
+    .title{font-weight:800;letter-spacing:-.3px}
+    .sub{font-size:12px;color:var(--muted);line-height:1.4}
+
+    .kc-card{display:flex;gap:12px}
+    .kc-ico{
+      flex:0 0 auto;
+      width:36px;height:36px;
+      border-radius:12px;
+      background:#f8fafc;
+      display:grid;
+      place-items:center;
+      border:1px solid var(--border);
+      font-size:16px;
+      line-height:1
+    }
+    .small{font-size:12px;line-height:1.4}
+    .kbd{font-variant-numeric:tabular-nums}
+    .type-card{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .footer{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:flex-start}
+    .section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .section-left{min-width:0;flex:1}
+    .section-right{text-align:right;font-size:12px;line-height:1.4}
+    .badge-gray{
+      background:#f3f4f6;
+      color:#374151;
+      border-radius:999px;
+      padding:3px 8px;
+      font-size:11px;
+      font-weight:600;
+      display:inline-block
+    }
+
+    .feedback-section h3{
+      font-size:20px;
+      margin:0 0 16px 0;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-weight:700
+    }
+    .feedback-section h4{
+      font-size:16px;
+      margin:24px 0 8px 0;
+      color:var(--indigo);
+      border-left:3px solid var(--indigo);
+      padding-left:8px;
+      line-height:1.4;
+      font-weight:700
+    }
+    .feedback-section .summary{
+      font-size:14px;
+      color:var(--muted);
+      margin-top:-12px;
+      margin-bottom:24px;
+      line-height:1.5
+    }
+    .feedback-section hr{
+      border:0;
+      border-top:1px solid var(--border);
+      margin:24px 0
+    }
+    .feedback-section blockquote{
+      margin:12px 0;
+      padding:12px;
+      background-color:var(--gray-100);
+      border-left:4px solid var(--border);
+      border-radius:8px;
+      font-size:13px;
+      line-height:1.5
+    }
+    .feedback-section .analysis{
+      margin-top:8px;
+      font-size:13px;
+      line-height:1.5
+    }
+    .feedback-section .analysis strong{color:var(--text)}
+
+    @media print{
+      .btn,.input{display:none !important;}
+      .container{padding:0 12px 40px 12px;max-width:900px}
+      body{background:#fff}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 헤더 -->
+    <div class="between" style="gap:16px;">
+      <div>
+        <div class="title" style="font-size:24px">
+          [3] 입체도형의 성질 · KC & 학습요소 성취도 대시보드
+        </div>
+        <div id="subHeader" class="sub">
+          학생: <strong>이름 미기재</strong> · 진단 단원: <strong>[3-1][3-2]</strong> · 기준일: <strong>2025-10-28</strong>
+        </div>
+      </div>
+      <div class="row">
+        <button id="printBtn" class="btn">내보내기/인쇄</button>
+      </div>
+    </div>
+
+    <!-- 뷰 전환 & 검색 -->
+    <div class="row" style="margin-top:16px;align-items:center">
+      <div class="row">
+        <button data-view="all" class="btn view-btn active">전체</button>
+        <button data-view="shape" class="btn view-btn">다면체·회전체</button>
+        <button data-view="volume" class="btn view-btn">겉넓이·부피</button>
+        <button data-view="feedback" class="btn view-btn">피드백</button>
+      </div>
+      <div style="flex:1"></div>
+      <input id="search" class="input" placeholder="학습요소 / 설명 검색" />
+    </div>
+
+    <!-- 요약 통계 -->
+    <div class="grid grid-3" style="margin-top:16px">
+      <div class="card p-16 stat">
+        <div class="muted small">전체 KC 성취도 (가중 평균)</div>
+        <div class="row" style="align-items:center;gap:6px">
+          <div id="overallKC" class="title" style="font-size:22px;margin-top:4px">—</div>
+          <div class="pill" style="background:var(--blue-100);color:var(--blue);font-size:11px;font-weight:700">NEW</div>
+        </div>
+        <div class="hbar" style="margin-top:8px"><span id="overallKCBar" style="width:0"></span></div>
+        <div id="overallKCRaw" class="small muted" style="margin-top:6px"></div>
+      </div>
+
+      <div class="card p-16 stat">
+        <div class="muted small">중단원별 평균 성취도</div>
+        <div class="row" style="align-items:center;gap:6px">
+          <div id="avgGroup" class="title" style="font-size:22px;margin-top:4px">—</div>
+          <div class="pill" style="background:var(--blue-100);color:var(--blue);font-size:11px;font-weight:700">NEW</div>
+        </div>
+        <div class="hbar" style="margin-top:8px"><span id="avgGroupBar" style="width:0"></span></div>
+        <div class="small muted" style="margin-top:6px">다면체·회전체 / 겉넓이·부피 영역의 평균</div>
+      </div>
+
+      <div class="card p-16 stat">
+        <div class="muted small">총 득점 / 총 배점</div>
+        <div class="row" style="align-items:baseline;gap:6px">
+          <div id="totalRate" class="title" style="font-size:22px;margin-top:4px">—</div>
+          <div id="totalCount" class="muted" style="font-weight:600;font-size:14px;"></div>
+        </div>
+        <div class="hbar" style="margin-top:8px"><span id="totalRateBar" style="width:0"></span></div>
+      </div>
+    </div>
+
+    <!-- 범례 -->
+    <div class="legend row card p-16" style="margin-top:16px">
+      <div class="muted small">범례:</div>
+      <span class="pill" style="background:var(--green-100);color:var(--green)">우수 ≥ 85%</span>
+      <span class="pill" style="background:var(--yellow-100);color:var(--yellow)">60–84%</span>
+      <span class="pill" style="background:var(--red-100);color:var(--red)">1–59%</span>
+      <span class="pill" style="background:#e5e7eb;color:#374151">미학습</span>
+      <span class="pill" style="background:var(--blue-100);color:var(--blue)">KC 성취도(소계)</span>
+    </div>
+
+    <!-- 동적 마운트 영역 -->
+    <div id="mount"></div>
+
+    <!-- 집중 보완 영역 -->
+    <section class="card p-20" style="margin-top:16px" id="focusBox">
+      <div class="between">
+        <div>
+          <div class="title" style="font-size:18px">📌 집중 보완 영역 (우선순위 TOP 3)</div>
+          <div class="sub">성취도가 낮은 학습요소를 기준으로 자동 제시</div>
+        </div>
+      </div>
+      <ol id="focusList" class="small" style="margin-top:8px;padding-left:18px"></ol>
+    </section>
+
+    <div class="footer" style="margin-top:16px">
+      <span>색상 기준: 🟢 85% 이상, 🟡 60–84%, 🟥 1–59%, 회색=미학습. 상단 버튼으로 영역별로 필터링할 수 있습니다. 인쇄 버튼으로 PDF 저장 가능.</span>
+    </div>
+  </div>
+
+  <script>
+  (() => { 'use strict';
+
+    // =========================
+    // 1. 데이터 정의
+    // =========================
+
+    // 그룹(중단원/소단원) 요약: "소계"를 KC 성취도로 사용
+    // summaryScore: 소계 %
+    // summaryCorrect/summaryTotal: (획득 / 배점)
+    const groupMeta = {
+      poly: {
+        icon: "📦",
+        title: "A. 다면체",
+        subtitle: "다면체의 성질 · 정다면체 · 오일러 관점",
+        summaryScore: 41.7,
+        summaryCorrect: 30.0,
+        summaryTotal: 72.0
+      },
+      solidRot: {
+        icon: "🔄",
+        title: "B. 회전체",
+        subtitle: "평면도형을 회전해 만든 입체와 전개도",
+        summaryScore: 44.3,
+        summaryCorrect: 31.0,
+        summaryTotal: 70.0
+      },
+      pillar: {
+        icon: "🏛️",
+        title: "C-1. 기둥의 겉넓이와 부피",
+        subtitle: "각기둥 · 원기둥",
+        summaryScore: 44.8,
+        summaryCorrect: 13.0,
+        summaryTotal: 29.0
+      },
+      pyramid: {
+        icon: "🔺",
+        title: "C-2. 뿔의 겉넓이와 부피",
+        subtitle: "각뿔 · 원뿔 · 원뿔대",
+        summaryScore: 44.0,
+        summaryCorrect: 33.0,
+        summaryTotal: 75.0
+      },
+      sphere: {
+        icon: "⚪",
+        title: "C-3. 구의 겉넓이와 부피",
+        subtitle: "구 · 내접 도형 관계",
+        summaryScore: 21.5,
+        summaryCorrect: 12.0,
+        summaryTotal: 45.5
+      }
+    };
+
+    // KC 세부 (각 학습요소)
+    // score: 성취도(%)
+    // correct/total: 득점/배점 (문제 맞은 개수 / 출제 개수처럼 표시)
+    // desc: 학습 요소 설명(판단 기준)
+    const kcItems = [
+      // 다면체 영역
+      {
+        id:"poly-01", group:"poly",
+        label:"다면체",
+        desc:"'다각형인 면으로만 둘러싸인 입체도형(다면체)'과 곡면을 포함하는 입체도형(원기둥·원뿔·구 등)을 구분할 수 있는가?",
+        score:100.0, correct:1.0, total:1.0
+      },
+      {
+        id:"poly-02", group:"poly",
+        label:"다면체의 면의 개수",
+        desc:"n각기둥, n각뿔, n각뿔대의 '면의 개수'를 각각 n+2, n+1, n+2로 계산할 수 있는가?",
+        score:50.0, correct:3.0, total:6.0
+      },
+      {
+        id:"poly-03", group:"poly",
+        label:"다면체의 모서리의 개수",
+        desc:"n각기둥, n각뿔, n각뿔대의 '모서리 개수'를 3n, 2n, 3n으로 계산할 수 있는가?",
+        score:100.0, correct:1.0, total:1.0
+      },
+      {
+        id:"poly-04", group:"poly",
+        label:"다면체의 꼭짓점의 개수",
+        desc:"n각기둥, n각뿔, n각뿔대의 '꼭짓점 개수'를 2n, n+1, 2n으로 계산할 수 있는가?",
+        score:100.0, correct:2.0, total:2.0
+      },
+      {
+        id:"poly-05", group:"poly",
+        label:"면·모서리·꼭짓점 개수의 활용",
+        desc:"면/모서리/꼭짓점의 개수 중 일부 정보로, 해당 도형이 각기둥인지 각뿔인지 각뿔대인지 판별할 수 있는가?",
+        score:37.5, correct:3.0, total:8.0
+      },
+      {
+        id:"poly-06", group:"poly",
+        label:"다면체의 옆면의 모양",
+        desc:"각기둥의 옆면은 직사각형, 각뿔은 삼각형, 각뿔대는 사다리꼴임을 설명할 수 있는가?",
+        score:100.0, correct:2.0, total:2.0
+      },
+      {
+        id:"poly-07", group:"poly",
+        label:"다면체의 이해",
+        desc:"각기둥/각뿔/각뿔대의 정의(밑면의 관계, 옆면의 모양)를 문장으로 정확히 설명할 수 있는가?",
+        score:0.0, correct:0.0, total:8.0
+      },
+      {
+        id:"poly-08", group:"poly",
+        label:"조건을 만족시키는 다면체 찾기",
+        desc:"옆면 모양, 밑면 모양, 면·모서리·꼭짓점의 개수 등 조건을 종합해 어떤 다면체인지 이름을 말할 수 있는가?",
+        score:100.0, correct:10.0, total:10.0
+      },
+      {
+        id:"poly-09", group:"poly",
+        label:"다면체의 꼭짓점·모서리·면의 개수 사이의 관계 (오일러 공식)",
+        desc:"v-e+f=2 (오일러 공식)을 이해하고 활용할 수 있는가?",
+        score:null, correct:null, total:null // 미학습
+      },
+      {
+        id:"poly-10", group:"poly",
+        label:"정다면체",
+        desc:"정다면체의 두 조건(①모든 면이 합동인 정다각형 ②각 꼭짓점에 모인 면의 개수가 같다)을 모두 설명하고, 둘 중 하나만 만족하는 경우 왜 정다면체가 아닌지 말할 수 있는가?",
+        score:0.0, correct:0.0, total:3.0
+      },
+      {
+        id:"poly-11", group:"poly",
+        label:"정다면체의 이해 (꼭짓점에 모인 면의 개수 / 면의 모양)",
+        desc:"5가지 정다면체 각각에 대해 면의 모양과 한 꼭짓점에 모이는 면의 개수를 정확히 연결할 수 있는가?",
+        score:28.6, correct:2.0, total:7.0
+      },
+      {
+        id:"poly-12", group:"poly",
+        label:"정다면체의 면·모서리·꼭짓점의 개수",
+        desc:"정사면체, 정육면체, 정팔면체 등 5가지 정다면체의 면/모서리/꼭짓점의 개수를 말할 수 있는가?",
+        score:0.0, correct:0.0, total:9.0
+      },
+      {
+        id:"poly-13", group:"poly",
+        label:"정다면체의 전개도",
+        desc:"전개도를 보고 어떤 정다면체를 만들 수 있는지, 겹치거나 부족한 면이 있는지 구별할 수 있는가?",
+        score:100.0, correct:1.0, total:1.0
+      },
+      {
+        id:"poly-14", group:"poly",
+        label:"정다면체 전개도와 구성 요소 연결",
+        desc:"전개도의 면 개수로 정다면체를 파악하고, 그 정다면체의 모서리 수와 꼭짓점 수를 구할 수 있는가?",
+        score:100.0, correct:7.0, total:7.0
+      },
+      {
+        id:"poly-15", group:"poly",
+        label:"정다면체의 각 면의 한가운데 점을 연결한 입체도형",
+        desc:"특정 정다면체의 각 면의 중심을 연결해 새로 생기는 입체도형(예: 정육면체 → 정팔면체)을 설명할 수 있는가?",
+        score:100.0, correct:8.0, total:8.0
+      },
+      {
+        id:"poly-16", group:"poly",
+        label:"정다면체의 단면",
+        desc:"정육면체를 평면으로 잘랐을 때 단면이 삼각형, 사각형, 오각형, 육각형 등 다양한 다각형이 될 수 있음을 이해하는가?",
+        score:0.0, correct:0.0, total:9.0
+      },
+
+      // 회전체 영역
+      {
+        id:"rot-01", group:"solidRot",
+        label:"회전체",
+        desc:"평면도형을 한 직선을 축으로 1회전하여 생기는 입체(회전체)와 다면체를 구분할 수 있는가?",
+        score:100.0, correct:1.0, total:1.0
+      },
+      {
+        id:"rot-02", group:"solidRot",
+        label:"평면도형과 회전체",
+        desc:"직사각형→원기둥, 직각삼각형→원뿔, 사다리꼴→원뿔대, 반원→구의 대응 관계를 설명할 수 있는가?",
+        score:33.3, correct:3.0, total:9.0
+      },
+      {
+        id:"rot-03", group:"solidRot",
+        label:"회전축",
+        desc:"주어진 입체를 만들기 위해 어떤 평면도형의 어느 변(또는 어떤 선분)을 회전축으로 삼아야 하는지 말할 수 있는가?",
+        score:100.0, correct:2.0, total:2.0
+      },
+      {
+        id:"rot-04", group:"solidRot",
+        label:"회전체의 단면의 모양 (1)",
+        desc:"회전체를 회전축에 수직인 평면으로 자르면 원, 회전축을 포함하는 평면으로 자르면 선대칭도형이 나옴을 설명할 수 있는가?",
+        score:100.0, correct:3.0, total:3.0
+      },
+      {
+        id:"rot-05", group:"solidRot",
+        label:"회전체의 단면의 모양 (2)",
+        desc:"원기둥을 자르는 방향에 따라 단면이 직사각형/원/타원 등 다양하게 나올 수 있음을 이해하는가?",
+        score:37.5, correct:3.0, total:8.0
+      },
+      {
+        id:"rot-06", group:"solidRot",
+        label:"회전체의 단면의 넓이와 둘레의 길이",
+        desc:"잘린 단면의 넓이와 둘레의 길이를, 회전시키기 전의 평면도형에서 얻은 길이 정보를 이용하여 계산할 수 있는가?",
+        score:28.6, correct:2.0, total:7.0
+      },
+      {
+        id:"rot-07", group:"solidRot",
+        label:"회전체의 전개도",
+        desc:"원기둥·원뿔·원뿔대의 전개도를 (원, 직사각형, 부채꼴 등) 올바르게 그릴 수 있는가?",
+        score:0.0, correct:0.0, total:6.0
+      },
+      {
+        id:"rot-08", group:"solidRot",
+        label:"원기둥의 전개도의 성질",
+        desc:"원기둥 전개도에서 옆면 직사각형의 가로 길이가 밑면 원의 둘레 길이와 같음을 이용해 문제를 해결할 수 있는가?",
+        score:100.0, correct:1.0, total:1.0
+      },
+      {
+        id:"rot-09", group:"solidRot",
+        label:"원뿔의 전개도의 성질",
+        desc:"원뿔 전개도에서 옆면 부채꼴의 호의 길이가 밑면 원의 둘레 길이와 같음을 설명할 수 있는가?",
+        score:42.9, correct:3.0, total:7.0
+      },
+      {
+        id:"rot-10", group:"solidRot",
+        label:"원뿔대의 전개도의 성질",
+        desc:"원뿔대 전개도에서 옆면을 이루는 두 호의 길이가 각각 두 밑면 원의 둘레 길이와 같음을 설명할 수 있는가?",
+        score:0.0, correct:0.0, total:10.0
+      },
+      {
+        id:"rot-11", group:"solidRot",
+        label:"회전체의 이해",
+        desc:"회전체의 기본 성질(단면 모양, 선대칭 등)에 대한 설명의 참/거짓을 판별할 수 있는가?",
+        score:100.0, correct:2.0, total:2.0
+      },
+
+      // 기둥의 겉넓이와 부피
+      {
+        id:"col-01", group:"pillar",
+        label:"각기둥의 겉넓이",
+        desc:"각기둥의 전개도를 이용하여 밑넓이×2와 옆넓이의 합으로 겉넓이를 계산할 수 있는가?",
+        score:0.0, correct:0.0, total:5.0
+      },
+      {
+        id:"col-02", group:"pillar",
+        label:"원기둥의 겉넓이",
+        desc:"원기둥의 겉넓이 공식 2πr² + 2πrh 를 사용해 값을 구할 수 있는가?",
+        score:0.0, correct:0.0, total:5.0
+      },
+      {
+        id:"col-03", group:"pillar",
+        label:"각기둥의 부피",
+        desc:"각기둥의 부피가 (밑넓이)×(높이)임을 알고 계산할 수 있는가?",
+        score:100.0, correct:2.0, total:2.0
+      },
+      {
+        id:"col-04", group:"pillar",
+        label:"원기둥의 부피",
+        desc:"원기둥의 부피 공식 πr²h 를 사용하여 값을 계산할 수 있는가?",
+        score:100.0, correct:5.0, total:5.0
+      },
+      {
+        id:"col-05", group:"pillar",
+        label:"밑면이 부채꼴인 기둥의 겉넓이와 부피",
+        desc:"밑면이 부채꼴일 때도 겉넓이/부피를 분해하여 동일한 원리로 계산할 수 있는가?",
+        score:100.0, correct:4.0, total:4.0
+      },
+      {
+        id:"col-06", group:"pillar",
+        label:"구멍이 뚫린 기둥의 겉넓이와 부피",
+        desc:"겉넓이 = 두 밑넓이 + 바깥 옆넓이 + 안쪽 옆넓이, 부피 = (큰 기둥 부피) - (작은 기둥 부피) 로 계산할 수 있는가?",
+        score:100.0, correct:3.0, total:3.0
+      },
+      {
+        id:"col-07", group:"pillar",
+        label:"일부분을 잘라 낸 기둥의 겉넓이와 부피",
+        desc:"잘려 나간 부분을 전체에서 빼거나, 각 면을 나누어 따로 계산해 합치는 방식으로 겉넓이와 부피를 구할 수 있는가?",
+        score:0.0, correct:0.0, total:5.0
+      },
+      {
+        id:"col-08", group:"pillar",
+        label:"회전체의 겉넓이와 부피; 원기둥",
+        desc:"직사각형을 회전시켜 만든 원기둥의 겉넓이와 부피를 구할 수 있는가?",
+        score:100.0, correct:2.0, total:2.0
+      },
+
+      // 뿔의 겉넓이와 부피
+      {
+        id:"py-01", group:"pyramid",
+        label:"각뿔의 겉넓이",
+        desc:"각뿔의 겉넓이를 (밑넓이)+(모든 옆면의 넓이의 합)으로 구할 수 있는가?",
+        score:0.0, correct:0.0, total:2.0
+      },
+      {
+        id:"py-02", group:"pyramid",
+        label:"원뿔의 겉넓이",
+        desc:"원뿔의 겉넓이 공식 πr² + πrl 을 이용해 계산할 수 있는가?",
+        score:28.6, correct:2.0, total:7.0
+      },
+      {
+        id:"py-03", group:"pyramid",
+        label:"원뿔의 겉넓이; 전개도",
+        desc:"원뿔의 전개도(밑면 원과 옆면 부채꼴)의 관계를 이용하여 겉넓이를 구할 수 있는가?",
+        score:100.0, correct:4.0, total:4.0
+      },
+      {
+        id:"py-04", group:"pyramid",
+        label:"뿔대의 겉넓이",
+        desc:"뿔대의 겉넓이를 (두 밑넓이의 합)+(옆넓이)로 계산할 수 있는가?",
+        score:37.5, correct:3.0, total:8.0
+      },
+      {
+        id:"py-05", group:"pyramid",
+        label:"각뿔의 부피",
+        desc:"각뿔의 부피 (1/3)×(밑넓이)×(높이)를 이용해 계산할 수 있는가?",
+        score:55.6, correct:5.0, total:9.0
+      },
+      {
+        id:"py-06", group:"pyramid",
+        label:"직육면체 내부의 각뿔 부피",
+        desc:"직육면체 내부에 포함된 각뿔의 밑넓이와 높이가 주어졌을 때 그 부피 관계를 이해하고 계산할 수 있는가?",
+        score:100.0, correct:3.0, total:3.0
+      },
+      {
+        id:"py-07", group:"pyramid",
+        label:"각기둥에서 잘라 낸 각뿔의 부피",
+        desc:"각기둥(직육면체 등) 일부를 잘라내 생기는 각뿔의 부피를 전체-일부로 계산할 수 있는가?",
+        score:0.0, correct:0.0, total:5.0
+      },
+      {
+        id:"py-08", group:"pyramid",
+        label:"그릇에 담긴 물의 부피",
+        desc:"기울어진 그릇 속 물의 모양이 삼각뿔 형태로 볼 수 있음을 이해하고 그 부피를 구할 수 있는가?",
+        score:33.3, correct:2.0, total:5.0
+      },
+      {
+        id:"py-09", group:"pyramid",
+        label:"원뿔의 부피",
+        desc:"원뿔의 부피 (1/3)πr²h 를 이용하여 계산할 수 있는가?",
+        score:100.0, correct:2.0, total:2.0
+      },
+      {
+        id:"py-10", group:"pyramid",
+        label:"뿔대의 부피",
+        desc:"뿔대의 부피를 (큰 뿔의 부피)-(작은 뿔의 부피)로 계산할 수 있는가?",
+        score:0.0, correct:0.0, total:7.0
+      },
+      {
+        id:"py-11", group:"pyramid",
+        label:"회전체의 겉넓이와 부피 (1) 원뿔",
+        desc:"직각삼각형을 회전시켜 생기는 원뿔의 겉넓이와 부피를 구할 수 있는가?",
+        score:0.0, correct:0.0, total:5.0
+      },
+      {
+        id:"py-12", group:"pyramid",
+        label:"회전체의 겉넓이와 부피 (2) 원뿔대",
+        desc:"사다리꼴을 회전시켜 생기는 원뿔대의 겉넓이와 부피를 구할 수 있는가?",
+        score:100.0, correct:2.0, total:2.0
+      },
+
+      // 구의 겉넓이와 부피
+      {
+        id:"sp-01", group:"sphere",
+        label:"구의 겉넓이",
+        desc:"반지름 r인 구의 겉넓이 4πr², 반구의 겉넓이 3πr²을 이용해 값을 계산할 수 있는가?",
+        score:13.0, correct:2.0, total:14.5
+      },
+      {
+        id:"sp-02", group:"sphere",
+        label:"구의 부피",
+        desc:"구의 부피 (4/3)πr³ 을 이용해 계산할 수 있는가?",
+        score:0.0, correct:0.0, total:7.5
+      },
+      {
+        id:"sp-03", group:"sphere",
+        label:"회전체의 겉넓이와 부피; 구",
+        desc:"반원을 회전시켜 만든 구의 겉넓이와 부피를 구할 수 있는가?",
+        score:100.0, correct:2.0, total:2.0
+      },
+      {
+        id:"sp-04", group:"sphere",
+        label:"원기둥에 꼭 맞게 들어가는 구·원뿔",
+        desc:"원기둥 안에 꼭 맞는 구/원뿔/원기둥의 부피 비가 1:2:3임을 이용해 문제를 해결할 수 있는가?",
+        score:0.0, correct:0.0, total:3.0
+      },
+      {
+        id:"sp-05", group:"sphere",
+        label:"입체도형에 꼭 맞게 들어가는 입체도형",
+        desc:"한 입체도형 안에 꼭 맞게 들어가는 다른 입체도형(예: 반구 안의 원뿔)의 부피 관계를 이용해 문제를 해결할 수 있는가?",
+        score:0.0, correct:0.0, total:5.0
+      }
+    ];
+
+    // 뷰 그룹핑 (어느 섹션에서 어떤 group을 보여줄지)
+    const viewToGroups = {
+      all:    ["poly","solidRot","pillar","pyramid","sphere"],
+      shape:  ["poly","solidRot"],
+      volume: ["pillar","pyramid","sphere"],
+      feedback: [] // 렌더 시 별도 처리
+    };
+
+    // =========================
+    // 2. 헬퍼 함수
+    // =========================
+    const thresholds = { excellent:85, ok:60 };
+    const clamp = (n) => Math.max(0, Math.min(100, Number(n||0)));
+
+    function statusColor(v){
+      if(v==null) return "background:#e5e7eb;color:#374151";
+      if(v>=thresholds.excellent) return "background:var(--green-100);color:var(--green)";
+      if(v>=thresholds.ok) return "background:var(--yellow-100);color:var(--yellow)";
+      return "background:var(--red-100);color:var(--red)";
+    }
+    function barColor(v){
+      if(v==null) return "#e5e7eb";
+      if(v>=thresholds.excellent) return "var(--green)";
+      if(v>=thresholds.ok) return "var(--yellow)";
+      return "var(--red)";
+    }
+    function scoreLabel(v){
+      if(v==null) return "미학습";
+      const n = +v;
+      if(n === 100) return "100%";
+      return n.toFixed(1)+"%";
+    }
+    function average(nums){
+      const vals = nums.filter(v => v!=null && !Number.isNaN(Number(v)));
+      if(!vals.length) return null;
+      return vals.reduce((a,b)=>a+Number(b),0)/vals.length;
+    }
+    function weightedPct(correct,total){
+      if(!total || total===0) return null;
+      return (correct/total)*100;
+    }
+
+    // 집중 보완 가이드 메시지 (일부 주요 취약 요소에 대해 커스텀)
+    const tips = {
+      "다면체의 이해":
+        "각기둥/각뿔/각뿔대의 정의(밑면의 수와 모양, 옆면이 어떤 도형인지)를 말로 설명하는 연습이 필요합니다. '그림 없이 말로 설명' 훈련 추천.",
+      "정다면체":
+        "정다면체의 2가지 조건(①모든 면이 합동인 정다각형 ②한 꼭짓점에 모이는 면의 개수가 같다)을 표로 정리해 반복해서 확인하세요.",
+      "정다면체의 면·모서리·꼭짓점의 개수":
+        "정다면체 5종(정사면체, 정육면체, 정팔면체, 정이십면체, 정십이면체)의 면/모서리/꼭짓점을 표처럼 외우고, 오일러 공식 v−e+f=2 로 점검하는 연습이 효과적입니다.",
+      "구의 겉넓이":
+        "4πr², 반구 3πr² 공식 암기 후 실제 숫자를 넣어 계산하는 단계까지 반복하세요. 계산 실수 여부까지 체크하세요."
+    };
+
+    // =========================
+    // 3. 렌더링 함수
+    // =========================
+    const mount = document.getElementById('mount');
+    const searchEl = document.getElementById('search');
+    const focusBox = document.getElementById('focusBox');
+    let currentView = 'all';
+
+    function renderKCItem(item){
+      // 개별 KC 카드
+      // NEW 표시: 현재는 비교 데이터가 없으므로 모두 NEW로 본다
+      const isNewHTML = `<span class="pill" style="background:var(--blue-100);color:var(--blue);">NEW</span>`;
+
+      const correctInfo = (item.correct!=null && item.total!=null)
+        ? `(${item.correct}/${item.total})`
+        : `(미학습)`;
+
+      const el = document.createElement('div');
+      el.className = 'card p-16';
+      el.style.borderColor = '#e5e7eb';
+
+      // 그룹별 아이콘
+      let icon="📦";
+      if(item.group==="solidRot") icon="🔄";
+      else if(item.group==="pillar") icon="🏛️";
+      else if(item.group==="pyramid") icon="🔺";
+      else if(item.group==="sphere") icon="⚪";
+
+      el.innerHTML = `
+        <div class="kc-card">
+          <div class="kc-ico">${icon}</div>
+          <div style="flex:1;min-width:0">
+            <div class="row" style="align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="small" style="font-weight:700;line-height:1.4">${item.label}</span>
+              <span class="pill" style="${statusColor(item.score)}">${scoreLabel(item.score)}</span>
+              <span class="small muted" style="font-weight:600;line-height:1.4">${correctInfo}</span>
+              ${isNewHTML}
+            </div>
+
+            <div class="small muted" style="margin-top:4px;line-height:1.5">
+              ${item.desc}
+            </div>
+
+            <div class="hbar" style="margin-top:8px">
+              <span style="width:${clamp(item.score||0)}%; background:${barColor(item.score)}"></span>
+            </div>
+          </div>
+        </div>`;
+      return el;
+    }
+
+    // 섹션(중단원/소단원) 카드
+    function renderGroupSection(groupId, q){
+      const meta = groupMeta[groupId];
+      if(!meta) return null;
+
+      // 검색 필터
+      const items = kcItems.filter(x => x.group===groupId).filter(x=>{
+        if(!q) return true;
+        const hay = (x.label+" "+x.desc).toLowerCase();
+        return hay.includes(q);
+      });
+
+      if(!items.length) return null;
+
+      const sec = document.createElement('section');
+      sec.className = 'card p-20';
+      sec.style.marginTop = '16px';
+
+      // 그룹 헤더 우측: KC 성취도(소계) / 득점
+      // summaryScore = 소계 %
+      // summaryCorrect / summaryTotal = (획득/배점)
+      const summaryInfo = `
+        <div class="row" style="justify-content:flex-end;gap:6px;flex-wrap:wrap">
+          <span class="pill" style="${statusColor(meta.summaryScore)}">${scoreLabel(meta.summaryScore)}</span>
+          <span class="pill" style="background:#f3f4f6;color:#374151">${meta.summaryCorrect}/${meta.summaryTotal}</span>
+          <span class="pill" style="background:var(--blue-100);color:var(--blue);">KC 성취도</span>
+        </div>
+      `;
+
+      sec.innerHTML = `
+        <div class="section-head">
+          <div class="section-left">
+            <div class="title" style="font-size:18px;line-height:1.3">${meta.icon} ${meta.title}</div>
+            <div class="sub">${meta.subtitle}</div>
+          </div>
+          <div class="section-right small">
+            ${summaryInfo}
+          </div>
+        </div>
+      `;
+
+      const grid = document.createElement('div');
+      grid.className = 'grid grid-2 grid-3';
+      grid.style.marginTop = '12px';
+      items.forEach(it => grid.appendChild(renderKCItem(it)));
+
+      sec.appendChild(grid);
+      return sec;
+    }
+
+    // 피드백 섹션 (하단 분석 카드)
+    function getFeedbackHTML(){
+      return `
+        <h3>📊 상세 분석 및 맞춤 피드백</h3>
+
+        <div style="font-size:14px;line-height:1.5;">
+          <p style="padding:12px;background-color:var(--gray-100);border-radius:12px;margin-top:0;">
+            <strong>총평:</strong>
+            전반적으로 '공식 적용형 계산 문제'(예: 원기둥의 부피, 원뿔의 부피)는 매우 안정적으로 해결하고 있습니다 (해당 영역은 100% 성취도가 다수).
+            반면, <strong>정의·구조를 문장으로 설명하는 문제</strong>와
+            <strong>입체의 전개도 / 단면 해석 문제</strong>에서 크게 점수가 떨어집니다.
+            이 두 영역은 서술형/고난도 사고력 문제에서 자주 반복되므로 우선 보완이 필요합니다.
+          </p>
+        </div>
+
+        <hr>
+
+        <h4>1️⃣ 정다면체·다면체 개념 설명 파트 (거의 미완성 상태)</h4>
+        <p class="summary">
+          '다면체의 이해', '정다면체', '정다면체의 면·모서리·꼭짓점의 개수', '정다면체의 단면' 등은 모두 0% 또는 매우 낮은 점수입니다.
+          이는 공식을 외우는 단계 이전인 <strong>용어 이해 / 개념 정의 말하기</strong> 단계에서 막힌 상태라는 뜻입니다.
+        </p>
+        <blockquote>
+          <p><strong>예:</strong> “정다면체란?”에 대해
+          단순히 ‘예쁜 도형’이 아니라
+          <strong>① 모든 면이 합동인 정다각형, ② 한 꼭짓점에 모인 면의 개수(배열)가 모두 같다</strong>
+          라는 두 가지 조건을 동시에 말할 수 있어야 정답입니다.</p>
+          <p>또한 정사면체·정육면체·정팔면체 등 5가지 정다면체의
+          면/모서리/꼭짓점 개수를 표로 묶어 기억하는 훈련도 요구됩니다.</p>
+        </blockquote>
+        <p class="analysis">
+          <strong>학습 전략:</strong>
+          (1) 정다면체 5종에 대해 “면 수 / 모서리 수 / 꼭짓점 수”를 한눈에 보는 표를 작성하세요.<br>
+          (2) 각 도형의 전개도를 실제로 스케치하며,
+          “이 전개도가 닫히면 어떤 입체가 되지?”를 말로 설명해보세요.<br>
+          (3) 오일러 공식 v−e+f=2를 이용해 표의 수치를 스스로 검증해보면 훨씬 빠르게 암기됩니다.
+        </p>
+
+        <hr>
+
+        <h4>2️⃣ 회전체 단면·전개도 파트 (시각화 요구)</h4>
+        <p class="summary">
+          '회전체의 전개도'(0%), '원뿔대의 전개도의 성질'(0%), '회전체의 단면의 넓이와 둘레'(28.6%) 등은,
+          실제로 머릿속에서 3D를 2D로 '펼치거나 잘라보는' 상상력이 요구되는 파트입니다.
+        </p>
+        <blockquote>
+          <p><strong>예:</strong> “원뿔을 평면으로 잘랐을 때 단면은 어떤 도형인가?”<br>
+          “원뿔대를 전개도 형태로 펼치면 부채꼴 2개가 어떻게 연결돼 있는가?”</p>
+        </blockquote>
+        <p class="analysis">
+          <strong>학습 전략:</strong>
+          실제로 휴지심(원기둥)이나 종이컵(원뿔대)을 잘라 보거나 도면처럼 펴서 그리는 연습을 권장합니다.
+          눈으로 본 경험이 생기면 암기 형태가 아니라 '직관'으로 문제를 풀 수 있게 됩니다.
+        </p>
+
+        <hr>
+
+        <h4>3️⃣ 구 관련 공식 (겉넓이·부피)</h4>
+        <p class="summary">
+          '구의 겉넓이'(13.0%), '구의 부피'(0%) 등은 공식(4πr², (4/3)πr³) 자체를 아직 안정적으로 적용하지 못한 상태로 보입니다.
+        </p>
+        <blockquote>
+          <p><strong>예:</strong> “반지름이 r인 구의 겉넓이는?” → 4πr²<br>
+          “반구(반쪽짜리 구)의 겉넓이는?” → 밑면 원의 넓이 πr²까지 포함하므로 3πr²</p>
+        </blockquote>
+        <p class="analysis">
+          <strong>학습 전략:</strong>
+          (1) 공식을 외우는 것에서 끝내지 말고 실제 숫자를 넣어 직접 계산해보세요.<br>
+          (2) 구, 반구, 원기둥에 '꼭 맞는' 입체들의 부피 비 1:2:3 관계를 스케치와 함께 적어보면
+          공간감이 빠르게 올라갑니다.
+        </p>
+      `;
+    }
+
+    function renderView(){
+      const q = (searchEl.value||'').trim().toLowerCase();
+      mount.innerHTML = '';
+
+      // focus 박스 숨김 여부
+      focusBox.style.display = currentView === 'feedback' ? 'none' : 'block';
+
+      // 1) 그룹 섹션들
+      const groupsToShow = viewToGroups[currentView] || [];
+      groupsToShow.forEach(gid=>{
+        const sec = renderGroupSection(gid, q);
+        if(sec) mount.appendChild(sec);
+      });
+
+      // 2) 피드백 카드
+      if(currentView === 'all' || currentView === 'feedback'){
+        const sec = document.createElement('section');
+        sec.className = 'card p-24 feedback-section';
+        sec.style.marginTop = '16px';
+        sec.innerHTML = getFeedbackHTML();
+        mount.appendChild(sec);
+      }
+
+      // 3) 상단 통계 업데이트
+      updateStats();
+
+      // 4) 집중 보완 업데이트
+      renderFocus();
+    }
+
+    // =========================
+    // 4. 상단 통계 계산
+    // =========================
+    function updateStats(){
+      // 전체 득점/배점 (모든 group 소계 기준)
+      const totals = Object.values(groupMeta).reduce((acc,g)=>{
+        acc.correct += (g.summaryCorrect||0);
+        acc.total   += (g.summaryTotal||0);
+        return acc;
+      },{correct:0,total:0});
+      const overallPct = weightedPct(totals.correct, totals.total); // 가중 평균 KC 성취도
+      const avgGroupPct = average(Object.values(groupMeta).map(g=>g.summaryScore));
+
+      // 전체 KC 성취도
+      const overallKCEl = document.getElementById('overallKC');
+      const overallKCBar = document.getElementById('overallKCBar');
+      const overallKCRaw = document.getElementById('overallKCRaw');
+      overallKCEl.textContent = overallPct==null? '미학습' : scoreLabel(overallPct);
+      overallKCBar.style.width = (overallPct==null?0:clamp(overallPct))+'%';
+      overallKCBar.style.background = barColor(overallPct);
+      overallKCRaw.textContent = totals.total
+        ? `전체 KC 가중치 기준 · ${totals.correct}/${totals.total}`
+        : '';
+
+      // 중단원별 평균 성취도
+      const avgGroupEl = document.getElementById('avgGroup');
+      const avgGroupBar = document.getElementById('avgGroupBar');
+      avgGroupEl.textContent = avgGroupPct==null? '미학습' : scoreLabel(avgGroupPct);
+      avgGroupBar.style.width = (avgGroupPct==null?0:clamp(avgGroupPct))+'%';
+      avgGroupBar.style.background = barColor(avgGroupPct);
+
+      // 총 득점 / 총 배점
+      const totalRateEl = document.getElementById('totalRate');
+      const totalRateBar = document.getElementById('totalRateBar');
+      const totalCountEl = document.getElementById('totalCount');
+      const totalPct = overallPct;
+      totalRateEl.textContent = totalPct==null? '미학습' : scoreLabel(totalPct);
+      totalRateBar.style.width = (totalPct==null?0:clamp(totalPct))+'%';
+      totalRateBar.style.background = barColor(totalPct);
+      totalCountEl.textContent = `(${totals.correct}/${totals.total})`;
+    }
+
+    // =========================
+    // 5. 집중 보완 리스트
+    // =========================
+    function renderFocus(){
+      const list = document.getElementById('focusList');
+
+      // 점수가 존재하고 85 미만인 학습요소만 추림
+      const weak = kcItems
+        .filter(k => k.score!=null)
+        .filter(k => k.score < 85)
+        .sort((a,b)=> (a.score - b.score) || (a.label > b.label ? 1 : -1))
+        .slice(0,3);
+
+      if(!weak.length){
+        list.innerHTML = `<li class="muted">집중 보완이 필요한 영역이 없습니다. 훌륭합니다!</li>`;
+        return;
+      }
+
+      list.innerHTML = weak.map(k=>{
+        const tip = tips[k.label] || "핵심 개념을 문장으로 설명하고, 예시 문제를 직접 풀며 스스로 채점해보세요.";
+        return `
+          <li style="margin:6px 0;line-height:1.5">
+            <strong>${k.label}</strong>
+            <span class="pill" style="${statusColor(k.score)};margin-left:4px">${scoreLabel(k.score)}</span>
+            <br><span class="muted">처방: ${tip}</span>
+          </li>
+        `;
+      }).join('');
+    }
+
+    // =========================
+    // 6. 초기화 / 이벤트
+    // =========================
+    function init(){
+      document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+      document.body.addEventListener('click', (e)=>{
+        const btn = e.target.closest('.view-btn');
+        if(!btn) return;
+        document.querySelectorAll('.view-btn').forEach(b=>{
+          b.classList.remove('active');
+          b.setAttribute('aria-pressed','false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed','true');
+        currentView = btn.dataset.view || 'all';
+        renderView();
+      });
+
+      searchEl.addEventListener('input', renderView);
+
+      renderView();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+
+  })();
+  </script>
+</body>
+</html>
