@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생 맞춤형 5분 보완 학습지 예시</title>
+    <style>
+        /* 기본 스타일 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;
+            line-height: 1.7;
+            background-color: #f8f9fa;
+            color: #343a40;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 페이지 전체 컨테이너 */
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        /* 페이지 제목 */
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #004a99;
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        /* 각 약점 예시 시트 */
+        .feedback-sheet {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            overflow: hidden; /* 자식 요소의 border-radius 적용 */
+        }
+
+        /* 각 예시 시트의 제목 */
+        .sheet-title {
+            background-color: #e9ecef;
+            padding: 20px 25px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .sheet-title h2 {
+            margin: 0;
+            color: #004a99;
+            font-size: 1.6rem;
+        }
+
+        /* 4개로 나뉘는 내부 섹션 */
+        .feedback-part {
+            padding: 25px;
+            border-bottom: 1px dashed #ced4da;
+        }
+        .feedback-sheet > .feedback-part:last-child {
+            border-bottom: none;
+        }
+
+        /* 내부 섹션 제목 */
+        .feedback-part h3 {
+            font-size: 1.35rem;
+            color: #0056b3;
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f1f3f5;
+        }
+
+        /* 1. 학습 분석 리포트 */
+        .report-item {
+            margin-bottom: 15px;
+        }
+        .report-item .label {
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .report-item.strength .label {
+            color: #09855c; /* 우수: Green */
+        }
+        .report-item.weakness .label {
+            color: #d9534f; /* 보완: Red */
+        }
+
+        /* 2. 보완 학습 자료 */
+        .text-passage, .dialogue-passage {
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 20px 0;
+        }
+        .text-passage blockquote {
+            margin: 0;
+            padding: 0;
+            font-style: italic;
+        }
+        .dialogue-passage p {
+            margin: 5px 0;
+        }
+
+        .material-section {
+            margin-top: 20px;
+        }
+        .material-section h4 {
+            font-size: 1.1rem;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        /* 3. 연습 문제 */
+        .problem-list {
+            list-style-type: decimal;
+            padding-left: 30px;
+            margin: 0;
+        }
+        .problem-list > li {
+            margin-bottom: 15px;
+        }
+        .problem-list ol {
+            list-style-type: lower-alpha; /* (a), (b) */
+            padding-left: 20px;
+        }
+
+        /* 4. 정답 및 해설 */
+        .answer-section {
+            background-color: #fff9e6; /* Light yellow */
+        }
+        .answer-section h3 {
+            color: #8a6d3b;
+            border-bottom-color: #fcf8e3;
+        }
+        .answer-list {
+            list-style-type: decimal;
+            padding-left: 30px;
+            margin: 0;
+        }
+        .answer-list > li {
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .answer-list p {
+            font-weight: normal;
+            margin: 5px 0 0 0;
+            color: #555;
+        }
+
+        /* 푸터 */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <h1>학생 맞춤형 5분 보완 학습지 예시 (4가지)</h1>
+        </header>
+
+        <section class="feedback-sheet">
+            <div class="sheet-title">
+                <h2>예시 1: 중1 문법 (비교급과 최상급)</h2>
+            </div>
+            
+            <div class="feedback-part">
+                <h3>⭐️ 학습 분석 리포트</h3>
+                <div class="report-item strength">
+                    <span class="label">우수한 부분</span>
+                    <p>'허락 구하기' 및 '금지하기'와 관련된 의사소통 기능을 잘 이해하고 있으며, 특히 '대화문' 이해도가 매우 뛰어납니다. (대화문 1, 3, 5 성취도 100%)</p>
+                </div>
+                <div class="report-item weakness">
+                    <span class="label">보완이 필요한 부분</span>
+                    <p>문법 영역, 특히 <strong>'비교급과 최상급'</strong> 개념에 대한 이해도가 39.24%로, 학습 전반에서 가장 시급한 보완이 필요한 것으로 분석됩니다.</p>
+                    <p><strong>원인 분석:</strong> 두 대상을 비교하거나(비교급), 셋 이상 중 최고를 나타내는(최상급) 문법 규칙의 기초가 약한 상태입니다. 이로 인해 해당 문법이 사용된 문장의 의미를 파악하거나, 어법상 올바른 문장을 고르는 문제에서 어려움을 겪고 있습니다.</p>
+                </div>
+            </div>
+
+            <div class="feedback-part">
+                <h3>⏰ 5분 집중 보완 학습 자료</h3>
+                <p>'비교급'과 '최상급'은 누군가를 비교할 때 사용하는 아주 중요한 문법 '짝꿍'입니다.</p>
+                
+                <div class="material-section">
+                    <h4>1. 비교급 (더 ~한): 두 명의 짝꿍을 비교할 때 씁니다.</h4>
+                    <p>"A가 B보다 더 ~하다"는 의미입니다.</p>
+                    <ul>
+                        <li><strong>규칙 1:</strong> 대부분의 경우 단어 뒤에 <strong>-er</strong>을 붙이고, 짝꿍 <strong>than</strong>을 사용합니다.<br>
+                            <em>tall (키가 큰) → taller than (~보다 키가 더 큰)</em><br>
+                            <em>fast (빠른) → faster than (~보다 더 빠른)</em></li>
+                        <li><strong>규칙 2:</strong> 단어가 조금 길면(e.g., 3음절 이상) <strong>more</strong>를 앞에 붙입니다.<br>
+                            <em>beautiful (아름다운) → more beautiful than (~보다 더 아름다운)</em></li>
+                    </ul>
+                </div>
+
+                <div class="material-section">
+                    <h4>2. 최상급 (가장 ~한): 반 전체(셋 이상) 모둠에서 1등을 뽑을 때 씁니다.</h4>
+                    <p>"가장 ~하다"는 의미입니다.</p>
+                    <ul>
+                        <li><strong>규칙 1:</strong> '1등'은 정해져 있으므로 <strong>the</strong>를 꼭 붙이고, 단어 뒤에 <strong>-est</strong>를 붙입니다.<br>
+                            <em>tall (키가 큰) → the tallest (가장 키가 큰)</em><br>
+                            <em>fast (빠른) → the fastest (가장 빠른)</em></li>
+                        <li><strong>규칙 2:</strong> 단어가 길면 <strong>the most</strong>를 앞에 붙입니다.<br>
+                            <em>beautiful (아름다운) → the most beautiful (가장 아름다운)</em></li>
+                    </ul>
+                </div>
+
+                <div class="material-section">
+                    <h4>[중요!] 불규칙 짝꿍</h4>
+                    <ul>
+                        <li>good (좋은) → better (더 좋은) → best (가장 좋은)</li>
+                        <li>bad (나쁜) → worse (더 나쁜) → worst (가장 나쁜)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="feedback-part">
+                <h3>✏️ 5분 보완 연습 문제</h3>
+                <p>다음 문장의 괄호 안 단어를 알맞은 형태로 바꾸거나, 빈칸에 알맞은 말을 쓰시오.</p>
+                <ol class="problem-list">
+                    <li>An elephant is (big) ______ a mouse.</li>
+                    <li>I ran (fast) ______ him, but I couldn’t catch him.</li>
+                    <li>She is (popular) ______ student in our class.</li>
+                    <li>This painting is (good) ______ that one.</li>
+                    <li>
+                        다음 문장 중 어법상 <em>틀린</em> 것을 고르시오.
+                        <ol>
+                            <li>(1) He is the tallest boy in his class.</li>
+                            <li>(2) This book is more interesting than that one.</li>
+                            <li>(3) She speaks English gooder than me.</li>
+                            <li>(4) Today is the happiest day of my life.</li>
+                        </ol>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="feedback-part answer-section">
+                <h3>🔑 정답 및 해설</h3>
+                <ol class="answer-list">
+                    <li>
+                        <strong>bigger than</strong>
+                        <p>(코끼리와 쥐, 두 대상을 비교하므로 'big'의 비교급 'bigger'와 짝꿍 'than'을 사용합니다.)</p>
+                    </li>
+                    <li>
+                        <strong>faster than</strong>
+                        <p>(나와 그, 두 사람을 비교하므로 'fast'의 비교급 'faster'와 짝꿍 'than'을 사용합니다.)</p>
+                    </li>
+                    <li>
+                        <strong>the most popular</strong>
+                        <p>(우리 반 전체(셋 이상)에서 1등으로 인기가 많다는 의미이므로 'popular'의 최상급 'the most popular'를 사용합니다.)</p>
+                    </li>
+                    <li>
+                        <strong>better than</strong>
+                        <p>('good'은 불규칙하게 변합니다. '더 좋은'은 'better'입니다.)</p>
+                    </li>
+                    <li>
+                        <strong>(3)</strong>
+                        <p>('good'의 비교급은 'gooder'가 아니라 'better'입니다.)</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="feedback-sheet">
+            <div class="sheet-title">
+                <h2>예시 2: 중1 대화문 (금지/불필요 구분)</h2>
+            </div>
+            
+            <div class="feedback-part">
+                <h3>⭐️ 학습 분석 리포트</h3>
+                <div class="report-item strength">
+                    <span class="label">우수한 부분</span>
+                    <p>`must not`를 사용한 '금지하기'(KC-5C2)나 `May I...`를 사용한 '허락 구하기'(KC-5C1) 등, 개별 표현의 의미는 80% 이상의 성취도로 잘 알고 있습니다.</p>
+                </div>
+                <div class="report-item weakness">
+                    <span class="label">보완이 필요한 부분</span>
+                    <p><strong>'대화문 1'</strong>(KC-5D1)의 내용 이해도가 낮게 분석되었습니다.</p>
+                    <p><strong>원인 분석:</strong> '금지' 표현 자체는 알고 있지만, 실제 대화 상황에서 <strong>`must not`</strong> (강한 금지: ~하면 <strong>절대</strong> 안 돼)과 <strong>`don't have to`</strong> (불필요: ~할 <strong>필요는</strong> 없어)의 미묘한 의미 차이를 구분하는 데 어려움을 겪고 있습니다. 이 대화문은 두 표현의 차이를 구분하는 것이 핵심입니다.</p>
+                </div>
+            </div>
+
+            <div class="feedback-part">
+                <h3>⏰ 5분 집중 보완 학습 자료</h3>
+                
+                <div class="material-section">
+                    <h4>[지문 다시 읽기]</h4>
+                    <p>먼저, '대화문 1'을 다시 한번 천천히 읽어봅니다.</p>
+                    <div class="dialogue-passage">
+                        <p>W: Excuse me, but you <strong>must not talk</strong> on the phone here.</p>
+                        <p>B: I’m terribly sorry. I’ll turn off my phone.</p>
+                        <p>W: You <strong>don’t have to</strong>. Texting is OK.</p>
+                        <p>B: I see. Thank you.</p>
+                    </div>
+                </div>
+
+                <div class="material-section">
+                    <h4>[핵심 원인 분석: `must not` vs. `don't have to`]</h4>
+                    <p>이 대화에서 두 가지 중요한 '규칙'이 나옵니다.</p>
+                    <ol>
+                        <li><strong>`must not talk`</strong>: "여기서 전화 통화를 <strong>하면 안 됩니다</strong>."
+                            <ul><li>이것은 <strong>'강한 금지'</strong>입니다. 이 행동은 허용되지 않습니다.</li></ul>
+                        </li>
+                        <li><strong>`don't have to (turn off)`</strong>: "(하지만) (폰을) <strong>끌 필요는 없습니다</strong>."
+                            <ul><li>이것은 '금지'가 아니라 <strong>'불필요'</strong>입니다. 꺼도 되지만, 굳이 그럴 필요는 없다는 뜻입니다. (왜냐하면? "Texting is OK." 문자 메시지는 괜찮으니까요.)</li></ul>
+                        </li>
+                    </ol>
+                    <p>즉, `must not`은 <strong>"절대 하지 마!"</strong>이고, `don't have to`는 <strong>"굳이 할 필요 없어."</strong>라는 차이가 있습니다.</p>
+                </div>
+            </div>
+
+            <div class="feedback-part">
+                <h3>✏️ 5분 보완 연습 문제</h3>
+                <p>위 대화문(대화문 1)을 바탕으로 다음 문제에 답하시오.</p>
+                <ol class="problem-list">
+                    <li>
+                        이 대화가 벌어지는 장소(here)에서 <em>허용되는</em> 행동은 무엇인가요?
+                        <ol>
+                            <li>(1) 전화 통화하기</li>
+                            <li>(2) 문자 메시지 보내기</li>
+                            <li>(3) 휴대전화 전원 끄기</li>
+                        </ol>
+                    </li>
+                    <li>
+                        대화의 흐름상 빈칸에 알맞은 말을 쓰시오.<br>
+                        `You ______ talk on the phone, but you ______ turn off your phone.`
+                        <ol>
+                            <li>(1) must not / must not</li>
+                            <li>(2) must not / don't have to</li>
+                            <li>(3) don't have to / must not</li>
+                        </ol>
+                    </li>
+                    <li>
+                        다음 문장의 의미가 <em>잘못</em> 짝지어진 것은?
+                        <ol>
+                            <li>(1) You must not run. (뛰면 안 된다.)</li>
+                            <li>(2) You don't have to run. (뛸 필요가 없다.)</li>
+                            <li>(3) You must not run. (뛸 필요가 없다.)</li>
+                        </ol>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="feedback-part answer-section">
+                <h3>🔑 정답 및 해설</h3>
+                <ol class="answer-list">
+                    <li>
+                        <strong>(2) 문자 메시지 보내기</strong>
+                        <p>("Texting is OK."라고 했습니다.)</p>
+                    </li>
+                    <li>
+                        <strong>(2)</strong>
+                        <p>(전화 통화는 '하면 안 되고'(must not), 폰을 끌 '필요는 없다'(don't have to)고 했습니다.)</p>
+                    </li>
+                    <li>
+                        <strong>(3)</strong>
+                        <p>(`must not run`은 '뛰면 안 된다'는 강한 금지입니다. '뛸 필요가 없다'는 `don't have to run`입니다.)</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="feedback-sheet">
+            <div class="sheet-title">
+                <h2>예시 3: 고1 독해 (밴드 결성 / 'what')</h2>
+            </div>
+            
+            <div class="feedback-part">
+                <h3>⭐️ 학습 분석 리포트</h3>
+                <div class="report-item strength">
+                    <span class="label">우수한 부분</span>
+                    <p>'온라인 소통 및 밴드 활동 관련 어휘'(KC-1V1)의 성취도(83.02%)가 높고, '본문 1: 발견과 연결'(KC-1R1) 단락의 이해도(94.12%)가 매우 뛰어납니다. 글의 도입부와 배경지식을 잘 파악하고 있습니다.</p>
+                </div>
+                <div class="report-item weakness">
+                    <span class="label">보완이 필요한 부분</span>
+                    <p><strong>'본문 2: 밴드 결성'</strong>(KC-1R2) 단락의 내용 이해도가 낮게 분석되었습니다.</p>
+                    <p><strong>원인 분석:</strong> 이 단락은 글쓴이를 포함해 싱가포르, 캐나다, 미국 출신의 총 4명(The Sam Lees)이 어떻게 밴드를 결성하게 되었는지 설명하는 부분입니다. 특히, 글쓴이가 밴드를 제안하는 핵심 내용이 <strong>`Here is what I wrote: ...`</strong> (이것이 / 내가 썼던 / <strong>것</strong>입니다)와 같이 '관계대명사 what' 구문(KC-1G2)을 통해 제시됩니다. 여러 인물의 역할을 파악하는 동시에 이 핵심 문법(what 절)이 이끄는 제안 내용을 정확히 해석하는 데 어려움을 겪어, 밴드 결성 과정을 놓친 것으로 보입니다.</p>
+                </div>
+            </div>
+
+            <div class="feedback-part">
+                <h3>⏰ 5분 집중 보완 학습 자료</h3>
+                
+                <div class="material-section">
+                    <h4>[지문 다시 읽기]</h4>
+                    <p>먼저, '본문 2' 단락을 다시 한번 천천히 읽어봅니다.</p>
+                    <div class="text-passage">
+                        <blockquote>
+                            A lot of them accepted my friend request. While looking through their profiles, I noticed something interesting. Several Sam Lees of various ages and nationalities were interested in music. There was a Sam Lee in his mid-30s from Singapore who enjoyed singing and writing lyrics. And there was a 42-year-old Canadian Sam Lee who was a drummer. According to her profile, everyone called her Sam even though her real name was Samantha. Finally, there was an American Sam Lee who played the electric guitar. Suddenly, I had a great idea. I sent a message to all three. <strong>Here is what I wrote: “Hi! I’m Sam Lee from Korea. I write songs and play the keyboard. How about making a virtual band called The Sam Lees?”</strong> To my surprise, all three eagerly agreed. That was the start of our band’s journey.
+                        </blockquote>
+                    </div>
+                </div>
+
+                <div class="material-section">
+                    <h4>[핵심 원인 분석: '관계대명사 what']</h4>
+                    <p>이 단락의 핵심은 <strong>`Here is what I wrote`</strong>입니다.</p>
+                    <ul>
+                        <li>`what`은 '선행사(명사)'를 포함하여, 그 자체로 <strong>"...하는 것"</strong>이라고 해석됩니다.</li>
+                        <li>`what I wrote` = `the thing that(which) I wrote` (내가 썼던 <strong>것</strong>)</li>
+                        <li>따라서 이 문장은 "여기 / 있습니다 / [내가 썼던 <strong>것</strong>이]"라는 의미이며, 밴드를 제안하는 <strong>메시지 내용 전체</strong>가 `what I wrote`가 의미하는 '것'이 됩니다.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="feedback-part">
+                <h3>✏️ 5분 보완 연습 문제</h3>
+                <p>위 지문(본문 2)을 바탕으로 다음 문제에 답하시오.</p>
+                <ol class="problem-list">
+                    <li>
+                        <strong>밴드 멤버들의 역할이 <em>아닌</em> 것은?</strong>
+                        <ol>
+                            <li>(1) 키보드 연주</li>
+                            <li>(2) 드럼 연주</li>
+                            <li>(3) 베이스 연주</li>
+                            <li>(4) 작사 및 노래</li>
+                        </ol>
+                    </li>
+                    <li>
+                        <strong>글쓴이가 다른 Sam Lee들에게 보낸 제안의 핵심 내용은 무엇인가요?</strong><br>
+                        → 'The Sam Lees'라는 이름의 ______ _____를 만들자는 것.
+                    </li>
+                    <li>
+                        <strong>다음 빈칸에 `what` 또는 `that` 중 알맞은 것을 쓰시오.</strong><br>
+                        `This is ______ I want.` (이것이 내가 원하는 <strong>것</strong>이다.)
+                    </li>
+                </ol>
+            </div>
+
+            <div class="feedback-part answer-section">
+                <h3>🔑 정답 및 해설</h3>
+                <ol class="answer-list">
+                    <li>
+                        <strong>(3) 베이스 연주</strong>
+                        <p>(지문에서 키보드, 드럼, 작사/노래, 일렉 기타는 언급되었으나 베이스는 언급되지 않았습니다.)</p>
+                    </li>
+                    <li>
+                        <strong>가상 밴드 (virtual band)</strong>
+                    </li>
+                    <li>
+                        <strong>what</strong>
+                        <p>('내가 원하는 것'이라는 의미가 되어야 하고, `want`의 목적어 자리가 비어 있으므로 선행사를 포함하는 `what`이 필요합니다.)</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="feedback-sheet">
+            <div class="sheet-title">
+                <h2>예시 4: 고1 문법 (부정어 도치)</h2>
+            </div>
+            
+            <div class="feedback-part">
+                <h3>⭐️ 학습 분석 리포트</h3>
+                <div class="report-item strength">
+                    <span class="label">우수한 부분</span>
+                    <p>'온라인 소통 및 밴드 활동 관련 어휘' (성취도 83.02%)를 잘 숙지하고 있으며, 이를 바탕으로 '본문 1: 발견과 연결' (94.12%), '본문 2: 밴드 결성' (84.00%) 등 이야기의 도입부 내용을 매우 잘 이해하고 있습니다.</p>
+                </div>
+                <div class="report-item weakness">
+                    <span class="label">보완이 필요한 부분</span>
+                    <p>문법 영역 전반의 성취도가 60%대로 다소 불안정하며, 특히 <strong>'부정어(구) 도치'</strong> (성취도 60.00%)가 가장 시급한 보완이 필요한 지점으로 확인됩니다.</p>
+                    <p><strong>원인 분석:</strong> 'Little', 'Never'와 같은 부정의 의미를 가진 어구가 문장 맨 앞으로 이동할 때, 주어와 동사의 어순이 바뀌는 '도치' 규칙 적용에 어려움을 겪고 있습니다. 이 핵심 문법(KC-1G1)의 이해도가 낮다 보니, 해당 구문이 실제로 사용된 '본문 4: 시련과 우정' (67.50%), '본문 5: 성찰과 의미' (69.70%)의 해석 및 관련 어법 문제 풀이에서도 연쇄적으로 어려움이 발생하는 것으로 분석됩니다.</p>
+                </div>
+            </div>
+
+            <div class="feedback-part">
+                <h3>⏰ 5분 집중 보완 학습 자료</h3>
+                <p>'부정어 도치'는 <strong>'강조'</strong>를 위해 사용하는 특별한 어순 규칙입니다.</p>
+                <p>'절대 ~않다', '거의 ~않다'와 같은 부정적인 의미(Never, Little, Not only, Seldom 등)를 문장 맨 앞에 내세워 강조할 때, 뒤따르는 <strong>'주어'와 '동사' 짝꿍의 순서</strong>가 바뀌게 됩니다.</p>
+                
+                <div class="material-section">
+                    <h4>1. 규칙 1: (be동사 / 조동사)</h4>
+                    <p>가장 간단한 짝꿍입니다. 주어와 be동사(is, are, was...) 또는 조동사(can, will, have...)의 <strong>위치만</strong> 바꾸면 됩니다.</p>
+                    <ul>
+                        <li>He <strong>is</strong> never late. → <strong>Never is</strong> he late. (절대로 그는 늦지 않는다.)</li>
+                        <li>I <strong>have</strong> never seen such a thing. → <strong>Never have</strong> I seen such a thing.</li>
+                    </ul>
+                </div>
+
+                <div class="material-section">
+                    <h4>2. 규칙 2: (일반동사)</h4>
+                    <p>주어와 일반동사(know, expect, go...)는 <strong>직접</strong> 자리를 바꾸지 않습니다. 대신, 의문문을 만들 때처럼 '조수'인 <strong>`do`, `does`, `did`</strong>가 주어 앞으로 튀어나와 자리를 바꿉니다.</p>
+                    <ul>
+                        <li>I <strong>little</strong> imagined the result. (나는 그 결과를 거의 상상하지 못했다.)<br>
+                            → <strong>Little did</strong> I imagine the result. (O)</li>
+                        <li>(주의!) <em>Little imagined I the result.</em> (X)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="feedback-part">
+                <h3>✏️ 5분 보완 연습 문제</h3>
+                <p>다음 문장을 부정어 도치 구문으로 바르게 고치거나, 빈칸에 알맞은 말을 쓰시오.</p>
+                <ol class="problem-list">
+                    <li>
+                        I never expected that we would build such strong relationships. (본문 5)<br>
+                        → <strong>Never</strong> ______ ______ ______ that we would build such strong relationships.
+                    </li>
+                    <li>
+                        She little knew about the truth.<br>
+                        → <strong>Little</strong> ______ ______ ______ about the truth.
+                    </li>
+                    <li>
+                        다음 문장 중 어법상 <em>틀린</em> 것을 고르시오.
+                        <ol>
+                            <li>(1) Seldom is the weather so nice here.</li>
+                            <li>(2) Little I knew that he was the criminal.</li>
+                            <li>(3) Never have I heard such a story.</li>
+                            <li>(4) Not only did he study hard, but he also exercised.</li>
+                        </ol>
+                    </li>
+                    <li>
+                        주어진 단어들을 바르게 배열하여 문장을 완성하시오.<br>
+                        (did / little / that / I / know / I would pass the test)<br>
+                        → ______ ______ ______ ______ ______ ______ ______ .
+                    </li>
+                </ol>
+            </div>
+
+            <div class="feedback-part answer-section">
+                <h3>🔑 정답 및 해설</h3>
+                <ol class="answer-list">
+                    <li>
+                        <strong>Never did I expect</strong>
+                        <p>부정어 'Never'가 문장 앞으로 이동했습니다. 'expected'(과거)는 일반동사이므로 '조수' <strong>did</strong>가 필요하며, 주어 'I'가 뒤따르고, 동사는 원형 <strong>expect</strong>로 돌아옵니다.</p>
+                    </li>
+                    <li>
+                        <strong>Little did she know</strong>
+                        <p>부정어 'Little'이 앞으로 이동했습니다. 'knew'(과거)는 일반동사이므로 '조수' <strong>did</strong>가 필요하며, 주어 'she'가 뒤따르고, 동사는 원형 <strong>know</strong>로 바뀝니다.</p>
+                    </li>
+                    <li>
+                        <strong>(2)</strong>
+                        <p>'Little'이 문장 앞에 왔으므로, 주어 'I'와 일반동사 'knew'가 도치되어야 합니다. (2)번은 'Little I knew'로 도치가 일어나지 않아 틀렸습니다. 'Little <strong>did I know</strong>'가 올바른 형태입니다.</p>
+                    </li>
+                    <li>
+                        <strong>Little did I know that I would pass the test</strong>
+                        <p>'Little'이 문두에 오면서 'did(조수) + I(주어) + know(동사원형)'의 어순이 됩니다.</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <footer>
+            <p>맞춤형 학습지 예시 (HTML)</p>
+        </footer>
+
+    </div></body>
+</html>
