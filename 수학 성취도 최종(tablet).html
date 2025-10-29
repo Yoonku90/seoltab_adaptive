@@ -364,7 +364,7 @@
     margin-top:.25rem;
   }
 
-  /* KC 리스트 */
+  /* 유형(기존 KC) 리스트 */
   .kc-list-wrapper {
     width:100%;
   }
@@ -693,7 +693,7 @@
                   "KC-M1_2-4-1-1-04"
                 ]
               }
-              // 이어서 다른 소단원 넣을 수 있음
+              // 필요하면 더 추가
             ]
           }
         ]
@@ -702,7 +702,7 @@
   };
 
 
-  // KC 상세 데이터 (지금은 [3]쪽 위주)
+  // KC 상세 데이터 (→ '유형' 상세 데이터)
   const kcDetails = {
     "KC-M1_2-3-1-1-01":{
       num:"01", name:"다면체",
@@ -1046,7 +1046,6 @@
 
   // (0) 전체 단원 합산 카드
   function renderGlobalOverview(bigUnits){
-    // 합산 값 계산
     let totalGot = 0;
     let totalTotal = 0;
     let totalCorrect = 0;
@@ -1082,7 +1081,7 @@
   }
 
 
-  // (A) 대단원 상단 카드 (그 대단원 전용)
+  // (A) 대단원 상단 카드
   function renderOverviewCards(bigUnit){
     const ov = bigUnit.overall;
 
@@ -1126,11 +1125,11 @@
     `;
   }
 
-  // (B) KC 카드
+  // (B) 유형 카드 (예: KC 카드)
   function renderKCCard(kcCode){
     const kc = kcDetails[kcCode];
-    if(!kc) return "";                 // 아직 정의 안된 KC는 스킵
-    if(!kc.attempts || kc.attempts===0) return ""; // 안 푼 KC는 숨김
+    if(!kc) return "";
+    if(!kc.attempts || kc.attempts===0) return "";
 
     const achieveText = pctText(kc.achieve);
     const achieveRatio = (kc.got!=null && kc.total!=null)
@@ -1202,7 +1201,7 @@
               type="button"
             >
               <span class="chevron">▶</span>
-              <span class="toggle-label">KC 자세히 보기</span>
+              <span class="toggle-label">유형 자세히 보기</span>
             </button>
           </div>
 
@@ -1298,11 +1297,11 @@
     const globalSection = document.getElementById("globalOverview");
     globalSection.innerHTML = renderGlobalOverview(dashboardData.bigUnits);
 
-    // 2) 대단원들
+    // 2) 대단원 섹션들
     const container = document.getElementById("bigUnitsContainer");
     container.innerHTML = dashboardData.bigUnits.map(renderBigUnitSection).join("");
 
-    // 3) KC 토글 이벤트 연결
+    // 3) "유형 자세히 보기" 토글 기능 연결
     dashboardData.bigUnits.forEach(big=>{
       big.midUnits.forEach(mid=>{
         mid.subUnits.forEach(sub=>{
@@ -1312,13 +1311,15 @@
             btn.addEventListener("click",()=>{
               const expanded = btn.getAttribute("aria-expanded")==="true";
               if(expanded){
+                // 닫기
                 btn.setAttribute("aria-expanded","false");
                 listWrap.hidden = true;
-                btn.querySelector(".toggle-label").textContent = "KC 자세히 보기";
+                btn.querySelector(".toggle-label").textContent = "유형 자세히 보기";
               }else{
+                // 열기
                 btn.setAttribute("aria-expanded","true");
                 listWrap.hidden = false;
-                btn.querySelector(".toggle-label").textContent = "KC 접기";
+                btn.querySelector(".toggle-label").textContent = "유형 접기";
               }
             });
           }
