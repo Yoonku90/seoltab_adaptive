@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<title>성취도 리포트</title>
+<style>
+  :root {
+    font-size:16px;
+
+    --bg-main:#0f172a;
+    --bg-card:#1e293b;
+    --bg-card-alt:#334155;
+    --text-main:#f8fafc;
+    --text-dim:#94a3b8;
+    --text-mid:#cbd5e1;
+    --accent-bar-start:#38bdf8;
+    --accent-bar-end:#6366f1;
+    --radius-lg:1rem;
+    --radius-md:.5rem;
+    --gap-xl:2rem;
+    --gap-lg:1.5rem;
+    --gap-md:1rem;
+    --gap-sm:.5rem;
+    --font-main:"Inter","Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+
+  * {
+    box-sizing:border-box;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  body {
+    margin:0;
+    background:
+      radial-gradient(circle at 20% 20%,rgba(99,102,241,.15) 0%,rgba(15,23,42,0) 60%),
+      radial-gradient(circle at 80% 0%,rgba(56,189,248,.12) 0%,rgba(15,23,42,0) 60%),
+      var(--bg-main);
+    font-family:var(--font-main);
+    color:var(--text-main);
+    line-height:1.45;
+    padding:var(--gap-lg);
+    display:flex;
+    justify-content:center;
+  }
+
+  .page {
+    width:100%;
+    max-width:1000px;
+  }
+
+  header.main-header {
+    margin-bottom:var(--gap-xl);
+  }
+
+  header.main-header .unit-path {
+    font-size:.9rem;
+    color:var(--text-dim);
+    font-weight:500;
+    margin-bottom:.25rem;
+  }
+
+  header.main-header h1 {
+    font-size:1.3rem;
+    font-weight:600;
+    color:var(--text-main);
+    margin:0 0 .5rem 0;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    gap:.5rem;
+  }
+
+  header.main-header .meta-line {
+    font-size:.8rem;
+    color:var(--text-dim);
+    font-weight:400;
+  }
+
+  /* --- 공통 카드 레이아웃 --- */
+  .overview-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));
+    gap:var(--gap-md);
+    margin-bottom:var(--gap-xl);
+  }
+
+  .card {
+    background:linear-gradient(145deg,rgba(30,41,59,.9) 0%,rgba(15,23,42,.8) 100%);
+    border:1px solid rgba(148,163,184,.18);
+    border-radius:var(--radius-lg);
+    padding:var(--gap-md) var(--gap-lg);
+    box-shadow:0 30px 80px -10px rgba(0,0,0,.9),
+               0 2px 2px rgba(255,255,255,.05) inset;
+  }
+  .card + .card { margin-top:var(--gap-md); }
+
+  .overview-card-title {
+    font-size:.8rem;
+    color:var(--text-dim);
+    font-weight:500;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:.5rem;
+    flex-wrap:wrap;
+  }
+
+  .big-number {
+    font-size:2rem;
+    font-weight:600;
+    color:var(--text-main);
+    line-height:1.2;
+    margin-top:.25rem;
+  }
+
+  .sub-detail {
+    font-size:.8rem;
+    font-weight:400;
+    color:var(--text-mid);
+    margin-top:.25rem;
+  }
+
+  .mini-breakdown {
+    margin-top:.75rem;
+    font-size:.8rem;
+    display:flex;
+    flex-direction:column;
+    gap:.5rem;
+  }
+
+  .mini-row {
+    display:flex;
+    justify-content:space-between;
+    color:var(--text-mid);
+    flex-wrap:wrap;
+    row-gap:.25rem;
+  }
+
+  .mini-row .label {
+    color:var(--text-dim);
+    font-weight:500;
+    min-width:0;
+  }
+  .mini-row .value {
+    font-weight:500;
+    color:var(--text-main);
+  }
+
+  /* --- 대단원 섹션 --- */
+  .bigunit-section {
+    margin-bottom:var(--gap-xl);
+  }
+
+  .bigunit-header {
+    margin-bottom:var(--gap-md);
+  }
+
+  .bigunit-title {
+    font-size:1.1rem;
+    font-weight:600;
+    color:var(--text-main);
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    gap:.5rem;
+  }
+
+  .bigunit-id {
+    font-size:.8rem;
+    font-weight:500;
+    color:var(--text-dim);
+  }
+
+  .bigunit-subline {
+    font-size:.8rem;
+    font-weight:400;
+    color:var(--text-dim);
+    margin-top:.25rem;
+  }
+
+  /* --- 중단원 카드 --- */
+  .midunit-card {
+    border:1px solid rgba(148,163,184,.18);
+    border-radius:var(--radius-lg);
+    padding:var(--gap-lg);
+    margin-bottom:var(--gap-lg);
+    background:
+      radial-gradient(circle at 0% 0%,rgba(99,102,241,.18) 0%,rgba(0,0,0,0) 60%),
+      radial-gradient(circle at 100% 0%,rgba(56,189,248,.12) 0%,rgba(0,0,0,0) 60%),
+      var(--bg-card);
+    box-shadow:0 24px 64px rgba(0,0,0,.8);
+  }
+
+  .midunit-headline {
+    display:flex;
+    flex-wrap:wrap;
+    gap:var(--gap-md);
+    align-items:flex-start;
+    justify-content:space-between;
+    margin-bottom:var(--gap-md);
+  }
+
+  .midunit-left h2 {
+    margin:0;
+    font-size:1.1rem;
+    font-weight:600;
+    color:var(--text-main);
+    display:flex;
+    flex-wrap:wrap;
+    gap:.5rem;
+    align-items:baseline;
+  }
+
+  .midunit-left .midunit-id {
+    font-size:.8rem;
+    color:var(--text-dim);
+    font-weight:500;
+  }
+
+  .midunit-metrics {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:.75rem;
+    font-size:.8rem;
+    min-width:260px;
+  }
+
+  .metric-box {
+    background:var(--bg-card-alt);
+    border-radius:var(--radius-md);
+    padding:.75rem .9rem;
+    border:1px solid rgba(148,163,184,.2);
+    box-shadow:0 10px 24px rgba(0,0,0,.6);
+  }
+
+  .metric-label {
+    font-size:.7rem;
+    font-weight:500;
+    color:var(--text-dim);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+  }
+  .metric-main {
+    font-weight:600;
+    color:var(--text-main);
+    margin-top:.4rem;
+    font-size:1rem;
+    line-height:1.2;
+  }
+  .metric-sub {
+    color:var(--text-mid);
+    font-size:.7rem;
+    margin-top:.25rem;
+    font-weight:400;
+  }
+
+  /* --- 소단원 카드 --- */
+  .subunits-wrapper {
+    margin-top:var(--gap-lg);
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));
+    gap:var(--gap-md);
+  }
+
+  .subunit-card {
+    background:var(--bg-card-alt);
+    border-radius:var(--radius-md);
+    border:1px solid rgba(148,163,184,.25);
+    box-shadow:0 16px 40px rgba(0,0,0,.8);
+    padding:var(--gap-md);
+    display:flex;
+    flex-direction:column;
+    gap:var(--gap-md);
+  }
+
+  .subunit-header {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:.75rem;
+  }
+
+  .subunit-title-wrap {
+    display:flex;
+    flex-direction:column;
+    gap:.6rem;
+    min-width:0;
+  }
+
+  .subunit-title {
+    font-size:.95rem;
+    font-weight:600;
+    color:var(--text-main);
+    line-height:1.3;
+    display:flex;
+    flex-wrap:wrap;
+    gap:.5rem;
+  }
+
+  .toggle-btn {
+    appearance:none;
+    border:1px solid rgba(148,163,184,.4);
+    background:rgba(15,23,42,.4);
+    color:var(--text-main);
+    border-radius:var(--radius-md);
+    font-size:.8rem;
+    line-height:1.3;
+    padding:.6rem .8rem;
+    font-weight:500;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+    box-shadow:0 10px 24px rgba(0,0,0,.7);
+    min-height:2.5rem;
+  }
+  .toggle-btn .chevron {
+    display:inline-block;
+    transition:transform .2s ease;
+    font-size:1rem;
+  }
+  .toggle-btn[aria-expanded="true"] .chevron {
+    transform:rotate(90deg);
+  }
+
+  .subunit-metrics {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:.75rem;
+    width:100%;
+    font-size:.8rem;
+  }
+
+  .subunit-metric-block {
+    background:rgba(15,23,42,.4);
+    border-radius:var(--radius-md);
+    border:1px solid rgba(148,163,184,.2);
+    padding:.75rem .8rem;
+    min-width:0;
+  }
+
+  .subunit-metric-label {
+    color:var(--text-dim);
+    font-weight:500;
+    font-size:.7rem;
+    margin-bottom:.25rem;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    align-items:flex-end;
+  }
+
+  .subunit-metric-main {
+    font-size:.9rem;
+    font-weight:600;
+    color:var(--text-main);
+    line-height:1.2;
+  }
+
+  .subunit-metric-sub {
+    font-size:.7rem;
+    font-weight:400;
+    color:var(--text-mid);
+    margin-top:.25rem;
+  }
+
+  /* 유형(기존 KC) 리스트 */
+  .kc-list-wrapper {
+    width:100%;
+  }
+
+  .kc-list-inner {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));
+    gap:var(--gap-md);
+    width:100%;
+  }
+
+  .kc-list-wrapper[hidden] {
+    display:none;
+  }
+
+  .kc-card {
+    background:rgba(15,23,42,.5);
+    border-radius:var(--radius-md);
+    border:1px solid rgba(148,163,184,.25);
+    box-shadow:0 20px 40px rgba(0,0,0,.85);
+    padding:var(--gap-md);
+    display:flex;
+    flex-direction:column;
+    font-size:.8rem;
+    min-width:0;
+  }
+
+  .kc-header-top {
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:.5rem;
+    line-height:1.3;
+  }
+
+  .kc-left {
+    max-width:70%;
+  }
+
+  .kc-numname {
+    font-weight:600;
+    color:var(--text-main);
+    font-size:.9rem;
+  }
+
+  .kc-acc {
+    font-size:.75rem;
+    font-weight:500;
+    color:var(--text-main);
+    background:rgba(0,0,0,.4);
+    border:1px solid rgba(148,163,184,.3);
+    border-radius:999px;
+    padding:.4rem .6rem;
+    white-space:nowrap;
+    line-height:1.2;
+  }
+
+  .kc-desc {
+    color:var(--text-mid);
+    font-size:.8rem;
+    line-height:1.45;
+    margin-top:.6rem;
+    word-break:keep-all;
+  }
+
+  .kc-stats-row {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:.75rem;
+    margin-top:.9rem;
+    font-size:.75rem;
+    color:var(--text-mid);
+    line-height:1.4;
+  }
+
+  .kc-col {
+    flex:1 1 140px;
+    min-width:0;
+  }
+
+  .kc-label {
+    font-weight:500;
+    color:var(--text-dim);
+    margin-bottom:.3rem;
+    font-size:.7rem;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+  }
+
+  .kc-main-val {
+    font-weight:600;
+    color:var(--text-main);
+    font-size:.9rem;
+    line-height:1.2;
+  }
+
+  .kc-sub-val {
+    font-size:.7rem;
+    margin-top:.2rem;
+    font-weight:400;
+    color:var(--text-mid);
+  }
+
+  /* 진행도 막대 공통 */
+  .progress-wrap {
+    margin-top:1rem;
+  }
+
+  .progress-label-row {
+    display:flex;
+    justify-content:space-between;
+    font-size:.7rem;
+    line-height:1.2;
+    margin-bottom:.5rem;
+  }
+
+  .progress-label-row span {
+    color:var(--text-dim);
+    font-weight:500;
+  }
+
+  .progress-bar {
+    position:relative;
+    width:100%;
+    height:.5rem;
+    border-radius:999px;
+    background:rgba(148,163,184,.2);
+    overflow:hidden;
+  }
+
+  .progress-bar-fill {
+    height:100%;
+    border-radius:999px;
+    background:linear-gradient(90deg,var(--accent-bar-start) 0%,var(--accent-bar-end) 100%);
+    box-shadow:0 0 10px rgba(99,102,241,.6),
+               0 0 30px rgba(56,189,248,.4);
+  }
+
+  @media (min-width:768px){
+    header.main-header h1 { font-size:1.4rem; }
+    .big-number { font-size:2.2rem; }
+  }
+
+  @media (min-width:1024px){
+    header.main-header h1 { font-size:1.5rem; }
+    .big-number { font-size:2.3rem; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <!-- 상단 공통 정보 -->
+  <header class="main-header">
+    <div class="unit-path">전체 단원 종합 리포트</div>
+    <h1>
+      학생 성취도 리포트
+      <span class="midunit-id">(회차별 종합)</span>
+    </h1>
+    <div class="meta-line">
+      대상: S0001 · 시험일: 2025-10-28
+    </div>
+  </header>
+
+  <!-- (신규) 전체 대단원 합산 요약 -->
+  <section id="globalOverview" class="overview-grid"></section>
+
+  <!-- 대단원별 섹션들 -->
+  <div id="bigUnitsContainer"></div>
+</div>
+
+<script>
+(function(){
+
+  // -----------------------------
+  // 1. 데이터
+  // -----------------------------
+  const dashboardData = {
+    bigUnits: [
+      // 대단원 [3]
+      {
+        overall:{
+          bigUnitId:"[3]",
+          bigUnitTitle:"입체도형의 성질",
+          achievementPct:40.8,
+          got:119.0,
+          total:291.5,
+          correctPct:52.6,
+          correct:40,
+          attempts:76
+        },
+        midUnits:[
+          {
+            id:"3-1",
+            title:"[3-1] 다면체와 회전체",
+            achievementPct:43.0,
+            got:61.0,
+            total:142.0,
+            attempts:43,
+            correct:25,
+            subUnits:[
+              {
+                domId:"sub-3-1-1",
+                order:1,
+                name:"다면체",
+                achievementPct:41.7,
+                got:30.0,
+                total:72.0,
+                attempts:25,
+                correct:15,
+                kcCodes:[
+                  "KC-M1_2-3-1-1-01","KC-M1_2-3-1-1-02","KC-M1_2-3-1-1-03",
+                  "KC-M1_2-3-1-1-04","KC-M1_2-3-1-1-05","KC-M1_2-3-1-1-06",
+                  "KC-M1_2-3-1-1-07","KC-M1_2-3-1-1-08","KC-M1_2-3-1-1-10",
+                  "KC-M1_2-3-1-1-11","KC-M1_2-3-1-1-12","KC-M1_2-3-1-1-13",
+                  "KC-M1_2-3-1-1-14","KC-M1_2-3-1-1-15","KC-M1_2-3-1-1-16"
+                ]
+              },
+              {
+                domId:"sub-3-1-2",
+                order:2,
+                name:"회전체",
+                achievementPct:44.3,
+                got:31.0,
+                total:70.0,
+                attempts:18,
+                correct:10,
+                kcCodes:[
+                  "KC-M1_2-3-1-2-01","KC-M1_2-3-1-2-02","KC-M1_2-3-1-2-03",
+                  "KC-M1_2-3-1-2-04","KC-M1_2-3-1-2-05","KC-M1_2-3-1-2-06",
+                  "KC-M1_2-3-1-2-07","KC-M1_2-3-1-2-08","KC-M1_2-3-1-2-09",
+                  "KC-M1_2-3-1-2-10","KC-M1_2-3-1-2-11"
+                ]
+              }
+            ]
+          },
+          {
+            id:"3-2",
+            title:"[3-2] 입체도형의 겉넓이와 부피",
+            achievementPct:38.7,
+            got:58.0,
+            total:149.5,
+            attempts:33,
+            correct:15,
+            subUnits:[
+              {
+                domId:"sub-3-2-1",
+                order:1,
+                name:"기둥의 겉넓이와 부피",
+                achievementPct:44.8,
+                got:13.0,
+                total:29.0,
+                attempts:8,
+                correct:5,
+                kcCodes:[
+                  "KC-M1_2-3-2-1-01","KC-M1_2-3-2-1-02","KC-M1_2-3-2-1-03","KC-M1_2-3-2-1-04",
+                  "KC-M1_2-3-2-1-05","KC-M1_2-3-2-1-06","KC-M1_2-3-2-1-07","KC-M1_2-3-2-1-08"
+                ]
+              },
+              {
+                domId:"sub-3-2-2",
+                order:2,
+                name:"뿔의 겉넓이와 부피",
+                achievementPct:44.0,
+                got:33.0,
+                total:75.0,
+                attempts:17,
+                correct:8,
+                kcCodes:[
+                  "KC-M1_2-3-2-2-01","KC-M1_2-3-2-2-02","KC-M1_2-3-2-2-03","KC-M1_2-3-2-2-04",
+                  "KC-M1_2-3-2-2-05","KC-M1_2-3-2-2-06","KC-M1_2-3-2-2-07","KC-M1_2-3-2-2-08",
+                  "KC-M1_2-3-2-2-09","KC-M1_2-3-2-2-10","KC-M1_2-3-2-2-11","KC-M1_2-3-2-2-12"
+                ]
+              },
+              {
+                domId:"sub-3-2-3",
+                order:3,
+                name:"구의 겉넓이와 부피",
+                achievementPct:21.5,
+                got:12.0,
+                total:45.5,
+                attempts:8,
+                correct:2,
+                kcCodes:[
+                  "KC-M1_2-3-2-3-01","KC-M1_2-3-2-3-02","KC-M1_2-3-2-3-03",
+                  "KC-M1_2-3-2-3-04","KC-M1_2-3-2-3-05"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+
+      // 대단원 [4] (예시)
+      {
+        overall:{
+          bigUnitId:"[4]",
+          bigUnitTitle:"자료의 정리와 해석",
+          achievementPct:61.2,
+          got:111.0,
+          total:181.5,
+          correctPct:68.8,
+          correct:44,
+          attempts:64
+        },
+        midUnits:[
+          {
+            id:"4-1",
+            title:"[4-1] 자료의 정리와 해석",
+            achievementPct:61.2,
+            got:111.0,
+            total:181.5,
+            attempts:64,
+            correct:44,
+            subUnits:[
+              {
+                domId:"sub-4-1-1",
+                order:1,
+                name:"대푯값",
+                achievementPct:68.8,
+                got:44.0,
+                total:64.0,
+                attempts:20,
+                correct:14,
+                kcCodes:[
+                  "KC-M1_2-4-1-1-02",
+                  "KC-M1_2-4-1-1-03",
+                  "KC-M1_2-4-1-1-04"
+                ]
+              }
+              // 필요하면 sub-4-1-2 등 추가 가능
+            ]
+          }
+        ]
+      }
+    ]
+  };
+
+
+  // 유형 상세 데이터 (기존 kcDetails)
+  // attempts:0 이거나 항목이 없으면 "미확인"으로 보여줄 거라서
+  // 4단원 쪽 유형도 기본 설명 채워 넣어줌
+  const kcDetails = {
+    "KC-M1_2-3-1-1-01":{
+      num:"01", name:"다면체",
+      desc:"다각형인 면으로만 둘러싸인 입체도형과 원기둥·원뿔·구처럼 곡면을 포함한 입체도형을 구분하는가?",
+      achieve:100.0, got:1.0, total:1.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-1-1-02":{
+      num:"02", name:"다면체의 면의 개수",
+      desc:"n각기둥, n각뿔, n각뿔대의 면의 개수를 각각 n+2, n+1, n+2로 계산하는가?",
+      achieve:50.0, got:3.0, total:6.0,
+      correctPct:50.0, correct:1, attempts:2
+    },
+    "KC-M1_2-3-1-1-03":{
+      num:"03", name:"다면체의 모서리의 개수",
+      desc:"n각기둥, n각뿔, n각뿔대의 모서리 수를 3n, 2n, 3n으로 계산하는가?",
+      achieve:100.0, got:1.0, total:1.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-1-1-04":{
+      num:"04", name:"다면체의 꼭짓점의 개수",
+      desc:"n각기둥, n각뿔, n각뿔대의 꼭짓점 수를 2n, n+1, 2n으로 계산하는가?",
+      achieve:100.0, got:2.0, total:2.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-1-1-05":{
+      num:"05", name:"다면체의 면·모서리·꼭짓점의 개수의 활용",
+      desc:"면/모서리/꼭짓점의 개수가 주어졌을 때 해당 다면체(각기둥·각뿔·각뿔대)를 결정하는가?",
+      achieve:37.5, got:3.0, total:8.0,
+      correctPct:50.0, correct:1, attempts:2
+    },
+    "KC-M1_2-3-1-1-06":{
+      num:"06", name:"다면체의 옆면의 모양",
+      desc:"각기둥의 옆면은 직사각형, 각뿔은 삼각형, 각뿔대는 사다리꼴임을 설명하는가?",
+      achieve:100.0, got:2.0, total:2.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-1-1-07":{
+      num:"07", name:"다면체의 이해",
+      desc:"각기둥·각뿔·각뿔대의 정의(밑면 관계, 옆면 모양)를 명확히 설명하는가?",
+      achieve:0.0, got:0.0, total:8.0,
+      correctPct:0.0, correct:0, attempts:2
+    },
+    "KC-M1_2-3-1-1-08":{
+      num:"08", name:"조건을 만족시키는 다면체 찾기",
+      desc:"주어진 조건(옆면 모양, 밑면 모양, 면/모서리/꼭짓점 개수 등)을 종합해 해당 다면체 이름을 말하는가?",
+      achieve:100.0, got:10.0, total:10.0,
+      correctPct:100.0, correct:2, attempts:2
+    },
+    "KC-M1_2-3-1-1-10":{
+      num:"10", name:"정다면체",
+      desc:"정다면체의 두 조건을 모두 설명하고, 하나만 만족할 때 왜 안 되는지 말하는가?",
+      achieve:0.0, got:0.0, total:3.0,
+      correctPct:0.0, correct:0, attempts:1
+    },
+    "KC-M1_2-3-1-1-11":{
+      num:"11", name:"정다면체의 이해",
+      desc:"5가지 정다면체의 이름 / 각 면의 모양 / 한 꼭짓점에 모인 면의 개수를 연결해서 설명하는가?",
+      achieve:28.6, got:2.0, total:7.0,
+      correctPct:50.0, correct:1, attempts:2
+    },
+    "KC-M1_2-3-1-1-12":{
+      num:"12", name:"정다면체의 면·모서리·꼭짓점의 개수",
+      desc:"5가지 정다면체 각각의 면/모서리/꼭짓점 개수를 정확히 말하는가?",
+      achieve:0.0, got:0.0, total:9.0,
+      correctPct:0.0, correct:0, attempts:2
+    },
+    "KC-M1_2-3-1-1-13":{
+      num:"13", name:"정다면체의 전개도",
+      desc:"전개도를 보고 만들 수 있는 정다면체를 판단하고, 잘못된 전개도(겹치거나 부족)를 구별하는가?",
+      achieve:100.0, got:1.0, total:1.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-1-1-14":{
+      num:"14", name:"정다면체의 면·모서리·꼭짓점의 개수; 전개도",
+      desc:"전개도의 면 개수로 정다면체를 파악하고 그 정다면체의 모서리/꼭짓점 개수를 구하는가?",
+      achieve:100.0, got:7.0, total:7.0,
+      correctPct:100.0, correct:2, attempts:2
+    },
+    "KC-M1_2-3-1-1-15":{
+      num:"15", name:"정다면체의 면 중심을 연결한 입체도형",
+      desc:"정육면체의 면 중심을 이으면 정팔면체 등, 면 중심을 연결해 생기는 새로운 입체도형을 설명하는가?",
+      achieve:100.0, got:8.0, total:8.0,
+      correctPct:100.0, correct:2, attempts:2
+    },
+    "KC-M1_2-3-1-1-16":{
+      num:"16", name:"정다면체의 단면",
+      desc:"정육면체를 평면으로 잘랐을 때 가능한 단면(삼각형~육각형)을 이해하는가?",
+      achieve:0.0, got:0.0, total:9.0,
+      correctPct:0.0, correct:0, attempts:2
+    },
+
+    "KC-M1_2-3-1-2-01":{
+      num:"01", name:"회전체",
+      desc:"평면도형을 회전시켜 만든 입체도형(회전체)과 다면체를 구분하는가?",
+      achieve:100.0, got:1.0, total:1.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-1-2-02":{
+      num:"02", name:"평면도형과 회전체",
+      desc:"직사각형→원기둥, 직각삼각형→원뿔, 사다리꼴→원뿔대, 반원→구처럼 '회전 결과'를 연결하는가?",
+      achieve:33.3, got:3.0, total:9.0,
+      correctPct:50.0, correct:1, attempts:2
+    },
+    "KC-M1_2-3-1-2-03":{
+      num:"03", name:"회전축",
+      desc:"주어진 회전체를 만들기 위해 어느 변을 회전축으로 삼아야 하는지 설명하는가?",
+      achieve:100.0, got:2.0, total:2.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-1-2-04":{
+      num:"04", name:"회전체의 단면의 모양(1)",
+      desc:"회전체를 회전축에 수직/포함하는 평면으로 잘랐을 때 단면의 성질(원 또는 선대칭도형)을 설명하는가?",
+      achieve:100.0, got:3.0, total:3.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-1-2-05":{
+      num:"05", name:"회전체의 단면의 모양(2)",
+      desc:"원기둥을 자르는 방향에 따라 단면이 직사각형, 원, 타원 등 다양하게 나올 수 있음을 설명하는가?",
+      achieve:37.5, got:3.0, total:8.0,
+      correctPct:50.0, correct:1, attempts:2
+    },
+    "KC-M1_2-3-1-2-06":{
+      num:"06", name:"회전체의 단면의 넓이와 둘레의 길이",
+      desc:"잘린 단면의 넓이/둘레 길이를 원래 평면도형의 변 길이 등으로 계산하는가?",
+      achieve:28.6, got:2.0, total:7.0,
+      correctPct:50.0, correct:1, attempts:2
+    },
+    "KC-M1_2-3-1-2-07":{
+      num:"07", name:"회전체의 전개도",
+      desc:"원기둥·원뿔·원뿔대 전개도의 구성 도형(원, 직사각형, 부채꼴 등)을 정확히 그리는가?",
+      achieve:0.0, got:0.0, total:6.0,
+      correctPct:0.0, correct:0, attempts:2
+    },
+    "KC-M1_2-3-1-2-08":{
+      num:"08", name:"원기둥의 전개도의 성질",
+      desc:"원기둥 전개도에서 옆면 직사각형의 한 변 길이가 밑면 원의 둘레와 같다는 사실을 이용하는가?",
+      achieve:100.0, got:1.0, total:1.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-1-2-09":{
+      num:"09", name:"원뿔의 전개도의 성질",
+      desc:"원뿔 전개도에서 부채꼴 호의 길이가 밑면 원 둘레 길이와 같다는 사실을 이용하는가?",
+      achieve:42.9, got:3.0, total:7.0,
+      correctPct:50.0, correct:1, attempts:2
+    },
+    "KC-M1_2-3-1-2-10":{
+      num:"10", name:"원뿔대의 전개도의 성질",
+      desc:"원뿔대 전개도에서 옆면 도형의 두 호 길이가 각각 두 밑면 원의 둘레와 같음을 설명하는가?",
+      achieve:0.0, got:0.0, total:10.0,
+      correctPct:0.0, correct:0, attempts:2
+    },
+    "KC-M1_2-3-1-2-11":{
+      num:"11", name:"회전체의 이해",
+      desc:"회전체의 기본 성질(단면 모양, 선대칭 등)에 대한 설명이 옳은지 판별하는가?",
+      achieve:100.0, got:2.0, total:2.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+
+    "KC-M1_2-3-2-1-01":{
+      num:"01", name:"각기둥의 겉넓이",
+      desc:"각기둥 전개도를 이용해 두 밑넓이와 옆넓이의 합으로 겉넓이를 구하는가?",
+      achieve:0.0, got:0.0, total:5.0,
+      correctPct:0.0, correct:0, attempts:1
+    },
+    "KC-M1_2-3-2-1-02":{
+      num:"02", name:"원기둥의 겉넓이",
+      desc:"원기둥의 겉넓이 식(2·π·r² + 2·π·r·h)으로 계산하는가?",
+      achieve:0.0, got:0.0, total:5.0,
+      correctPct:0.0, correct:0, attempts:1
+    },
+    "KC-M1_2-3-2-1-03":{
+      num:"03", name:"각기둥의 부피",
+      desc:"각기둥의 부피 (밑넓이 × 높이)를 계산하는가?",
+      achieve:100.0, got:2.0, total:2.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-2-1-04":{
+      num:"04", name:"원기둥의 부피",
+      desc:"원기둥의 부피 식 (π·r²·h)을 계산하는가?",
+      achieve:100.0, got:5.0, total:5.0,
+      correctPct:100.0, correct:2, attempts:2
+    },
+    "KC-M1_2-3-2-1-05":{
+      num:"05", name:"밑면이 부채꼴인 기둥의 겉넓이와 부피",
+      desc:"밑면이 부채꼴인 기둥의 겉넓이/부피를 응용해 구하는가?",
+      achieve:100.0, got:4.0, total:4.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-2-1-06":{
+      num:"06", name:"구멍이 뚫린 기둥의 겉넓이와 부피",
+      desc:"(큰 기둥 - 작은 기둥) 방식으로 겉넓이/부피를 구하는가?",
+      achieve:100.0, got:3.0, total:3.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-2-1-07":{
+      num:"07", name:"일부분을 잘라 낸 기둥의 겉넓이와 부피",
+      desc:"잘려나간 부분을 더하고 빼며 겉넓이/부피를 계산하는가?",
+      achieve:0.0, got:0.0, total:5.0,
+      correctPct:0.0, correct:0, attempts:1
+    },
+    "KC-M1_2-3-2-1-08":{
+      num:"08", name:"회전체의 겉넓이와 부피; 원기둥",
+      desc:"직사각형을 회전시켜 만든 원기둥의 겉넓이와 부피를 구하는가?",
+      achieve:100.0, got:2.0, total:2.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+
+    "KC-M1_2-3-2-2-01":{
+      num:"01", name:"각뿔의 겉넓이",
+      desc:"각뿔의 밑넓이와 모든 옆면 넓이의 합으로 겉넓이를 구하는가?",
+      achieve:0.0, got:0.0, total:2.0,
+      correctPct:0.0, correct:0, attempts:1
+    },
+    "KC-M1_2-3-2-2-02":{
+      num:"02", name:"원뿔의 겉넓이",
+      desc:"원뿔의 겉넓이 식 (π·r² + π·r·l)로 계산하는가?",
+      achieve:28.6, got:2.0, total:7.0,
+      correctPct:50.0, correct:1, attempts:2
+    },
+    "KC-M1_2-3-2-2-03":{
+      num:"03", name:"원뿔의 겉넓이; 전개도",
+      desc:"원뿔 전개도의 부채꼴/원 관계를 이용해 겉넓이를 구하는가?",
+      achieve:100.0, got:4.0, total:4.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-2-2-04":{
+      num:"04", name:"뿔대의 겉넓이",
+      desc:"뿔대의 겉넓이를 (두 밑넓이 합 + 옆넓이)로 계산하는가?",
+      achieve:37.5, got:3.0, total:8.0,
+      correctPct:50.0, correct:1, attempts:2
+    },
+    "KC-M1_2-3-2-2-05":{
+      num:"05", name:"각뿔의 부피",
+      desc:"각뿔의 부피 (1/3 × 밑넓이 × 높이)를 계산하는가?",
+      achieve:55.6, got:5.0, total:9.0,
+      correctPct:50.0, correct:1, attempts:2
+    },
+    "KC-M1_2-3-2-2-06":{
+      num:"06", name:"직육면체의 내부에 있는 각뿔의 부피",
+      desc:"직육면체 내부의 각뿔 부피 관계를 이용해 값을 구하는가?",
+      achieve:100.0, got:3.0, total:3.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-2-2-07":{
+      num:"07", name:"각기둥에서 잘라 낸 각뿔의 부피",
+      desc:"잘라 낸 각뿔의 부피를 구하는가?",
+      achieve:0.0, got:0.0, total:5.0,
+      correctPct:0.0, correct:0, attempts:1
+    },
+    "KC-M1_2-3-2-2-08":{
+      num:"08", name:"그릇에 담긴 물의 부피",
+      desc:"기울어진 그릇에 담긴 물의 모양을 삼각뿔로 보고 그 부피를 구하는가?",
+      achieve:33.3, got:2.0, total:5.0,
+      correctPct:50.0, correct:1, attempts:2
+    },
+    "KC-M1_2-3-2-2-09":{
+      num:"09", name:"원뿔의 부피",
+      desc:"원뿔의 부피 (1/3 × π × r² × h)를 계산하는가?",
+      achieve:100.0, got:2.0, total:2.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-2-2-10":{
+      num:"10", name:"뿔대의 부피",
+      desc:"뿔대의 부피를 (큰 뿔 - 작은 뿔)로 계산하는가?",
+      achieve:0.0, got:0.0, total:7.0,
+      correctPct:0.0, correct:0, attempts:2
+    },
+    "KC-M1_2-3-2-2-11":{
+      num:"11", name:"회전체의 겉넓이와 부피(1) 원뿔",
+      desc:"직각삼각형을 회전시켜 만든 원뿔의 겉넓이/부피를 구하는가?",
+      achieve:0.0, got:0.0, total:5.0,
+      correctPct:0.0, correct:0, attempts:1
+    },
+    "KC-M1_2-3-2-2-12":{
+      num:"12", name:"회전체의 겉넓이와 부피(2) 원뿔대",
+      desc:"사다리꼴을 회전시켜 만든 원뿔대의 겉넓이/부피를 구하는가?",
+      achieve:100.0, got:2.0, total:2.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+
+    "KC-M1_2-3-2-3-01":{
+      num:"01", name:"구의 겉넓이",
+      desc:"구의 겉넓이 4πr² (반구는 3πr²)을 계산하는가?",
+      achieve:13.0, got:2.0, total:14.5,
+      correctPct:33.3, correct:1, attempts:3
+    },
+    "KC-M1_2-3-2-3-02":{
+      num:"02", name:"구의 부피",
+      desc:"구의 부피 (4/3 × π × r³)을 계산하는가?",
+      achieve:0.0, got:0.0, total:7.5,
+      correctPct:0.0, correct:0, attempts:2
+    },
+    "KC-M1_2-3-2-3-03":{
+      num:"03", name:"회전체의 겉넓이와 부피; 구",
+      desc:"반원을 회전시켜 만든 구의 겉넓이와 부피를 구하는가?",
+      achieve:100.0, got:2.0, total:2.0,
+      correctPct:100.0, correct:1, attempts:1
+    },
+    "KC-M1_2-3-2-3-04":{
+      num:"04", name:"원기둥에 꼭 맞게 들어가는 구, 원뿔",
+      desc:"원기둥에 꼭 맞는 구/원뿔/원기둥의 부피 비 1:2:3을 활용하는가?",
+      achieve:0.0, got:0.0, total:3.0,
+      correctPct:0.0, correct:0, attempts:1
+    },
+    "KC-M1_2-3-2-3-05":{
+      num:"05", name:"입체도형에 꼭 맞게 들어가는 입체도형",
+      desc:"한 입체 안에 꼭 맞게 들어가는 다른 입체의 부피 관계를 이용해 문제를 해결하는가?",
+      achieve:0.0, got:0.0, total:5.0,
+      correctPct:0.0, correct:0, attempts:1
+    },
+
+    /* -------- 4단원 예시 유형들 -------- */
+    "KC-M1_2-4-1-1-02":{
+      num:"02", name:"평균·중앙값·최빈값",
+      desc:"주어진 자료에서 평균 / 중앙값 / 최빈값을 계산하고 각각이 의미하는 바를 말할 수 있는가?",
+      achieve:0.0, got:0.0, total:0.0,
+      correctPct:0.0, correct:0, attempts:0
+    },
+    "KC-M1_2-4-1-1-03":{
+      num:"03", name:"대푯값 비교",
+      desc:"왜 특정 상황에서는 평균보다 중앙값이 더 적절한 대푯값인지 등, 알맞은 대푯값을 고를 수 있는가?",
+      achieve:0.0, got:0.0, total:0.0,
+      correctPct:0.0, correct:0, attempts:0
+    },
+    "KC-M1_2-4-1-1-04":{
+      num:"04", name:"자료 해석",
+      desc:"도수분포표나 그래프를 보고 '자료가 어떤 경향을 보이는지' 언어로 설명할 수 있는가?",
+      achieve:0.0, got:0.0, total:0.0,
+      correctPct:0.0, correct:0, attempts:0
+    }
+  };
+
+
+  // -----------------------------
+  // 2. 유틸 함수
+  // -----------------------------
+  function pctText(val){
+    if(val===null||val===undefined||Number.isNaN(val)) return "미학습";
+    return val.toFixed(1) + "%";
+  }
+
+  function safePct(val){
+    // 미학습/미확인용: null이나 NaN이면 0으로 취급해 막대만 0 나와도 되게
+    if(val===null||val===undefined||Number.isNaN(val)) return 0;
+    return val;
+  }
+
+  function makeProgressBarHTML(pct){
+    if(pct===null||pct===undefined||Number.isNaN(pct)){
+      return `
+        <div class="progress-bar"><div class="progress-bar-fill" style="width:0%"></div></div>
+      `;
+    }
+    const safe = Math.max(0, Math.min(100, pct));
+    return `
+      <div class="progress-bar">
+        <div class="progress-bar-fill" style="width:${safe}%"></div>
+      </div>
+    `;
+  }
+
+
+  // -----------------------------
+  // 3. 렌더 함수
+  // -----------------------------
+
+  // (0) 전체 단원 합산 카드
+  function renderGlobalOverview(bigUnits){
+    let totalGot = 0;
+    let totalTotal = 0;
+    let totalCorrect = 0;
+    let totalAttempts = 0;
+
+    bigUnits.forEach(bu => {
+      totalGot += bu.overall.got;
+      totalTotal += bu.overall.total;
+      totalCorrect += bu.overall.correct;
+      totalAttempts += bu.overall.attempts;
+    });
+
+    const globalAchPct = totalTotal>0 ? (totalGot/totalTotal*100) : 0;
+    const globalCorrectPct = totalAttempts>0 ? (totalCorrect/totalAttempts*100) : 0;
+
+    return `
+      <div class="card">
+        <div class="overview-card-title">
+          <span>전체 대단원 합산 성취도 (득점률)</span>
+        </div>
+        <div class="big-number">${globalAchPct.toFixed(1)}%</div>
+        <div class="sub-detail">획득 / 배점 ${totalGot.toFixed(1)} / ${totalTotal.toFixed(1)}</div>
+        <div class="progress-wrap">
+          <div class="progress-label-row">
+            <span>진행도</span>
+            <span>${globalAchPct.toFixed(1)}%</span>
+          </div>
+          ${makeProgressBarHTML(globalAchPct)}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="overview-card-title">
+          <span>전체 대단원 합산 정답률</span>
+        </div>
+        <div class="big-number">${globalCorrectPct.toFixed(1)}%</div>
+        <div class="sub-detail">맞힌 문제 ${totalCorrect} / 푼 문제 ${totalAttempts}</div>
+      </div>
+    `;
+  }
+
+
+  // (A) 대단원 상단 카드 (대단원별 성취도/정답률 + 중단원별 현황)
+  function renderOverviewCards(bigUnit){
+    const ov = bigUnit.overall;
+
+    const midMini = bigUnit.midUnits.map(mid=>{
+      const midCorrectPct = (mid.correct/mid.attempts*100).toFixed(1);
+      return `
+        <div class="mini-row">
+          <span class="label">${mid.title}</span>
+          <span class="value">${midCorrectPct}% (${mid.correct}/${mid.attempts})</span>
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <div class="overview-grid">
+        <div class="card">
+          <div class="overview-card-title">
+            <span>전체 성취도 (득점률)</span>
+          </div>
+          <div class="big-number">${ov.achievementPct.toFixed(1)}%</div>
+          <div class="sub-detail">획득 / 배점 ${ov.got.toFixed(1)} / ${ov.total.toFixed(1)}</div>
+
+          <div class="progress-wrap">
+            <div class="progress-label-row">
+              <span>진행도</span>
+              <span>${ov.achievementPct.toFixed(1)}%</span>
+            </div>
+            ${makeProgressBarHTML(ov.achievementPct)}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="overview-card-title">
+            <span>전체 정답률</span>
+          </div>
+          <div class="big-number">${ov.correctPct.toFixed(1)}%</div>
+          <div class="sub-detail">맞힌 문제 ${ov.correct} / 푼 문제 ${ov.attempts}</div>
+        </div>
+
+        <div class="card">
+          <div class="overview-card-title">
+            <span>중단원별 정답 현황</span>
+          </div>
+          <div class="mini-breakdown">
+            ${midMini}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+
+  // (B) 유형 카드 (예: KC 카드)
+  // - 시도 안 한 유형도 "미확인"으로 보여준다
+  function renderKCCard(kcCode){
+    const kc = kcDetails[kcCode];
+
+    // kc가 아예 없을 수도 있으므로 방어적으로 처리
+    const attempts = kc && kc.attempts !== undefined ? kc.attempts : 0;
+    const tried = attempts > 0;
+
+    const name = kc ? kc.name : "유형 확인 필요";
+    const num  = kc ? kc.num  : "?";
+    const desc = kc ? kc.desc : "아직 진단된 내용이 없습니다.";
+
+    const achieveVal = kc ? kc.achieve : 0;
+    const correctPctVal = kc ? kc.correctPct : 0;
+    const gotVal = kc ? kc.got : 0;
+    const totalVal = kc ? kc.total : 0;
+    const correctVal = kc ? kc.correct : 0;
+
+    const badgeText = tried
+      ? `${pctText(correctPctVal)} (${correctVal}/${attempts})`
+      : "미확인";
+
+    const achieveText = tried ? pctText(achieveVal) : "미확인";
+    const achieveRatio = tried ? `(${gotVal}/${totalVal})` : "(0/0)";
+
+    const correctPctText = tried ? pctText(correctPctVal) : "미확인";
+    const correctRatio = tried ? `(${correctVal}/${attempts})` : "(0/0)";
+
+    const progressPct = tried ? achieveVal : 0;
+
+    return `
+      <div class="kc-card">
+        <div class="kc-header-top">
+          <div class="kc-left">
+            <div class="kc-numname">${num}. ${name}</div>
+          </div>
+          <div class="kc-acc">${badgeText}</div>
+        </div>
+
+        <div class="kc-desc">
+          ${desc}
+        </div>
+
+        <div class="kc-stats-row">
+          <div class="kc-col">
+            <div class="kc-label">
+              <span>성취도(득점률)</span>
+            </div>
+            <div class="kc-main-val">${achieveText}</div>
+            <div class="kc-sub-val">${achieveRatio}</div>
+          </div>
+          <div class="kc-col">
+            <div class="kc-label">
+              <span>정답률</span>
+            </div>
+            <div class="kc-main-val">${correctPctText}</div>
+            <div class="kc-sub-val">${correctRatio}</div>
+          </div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-label-row">
+            <span>성취도 진행도</span>
+            <span>${tried ? pctText(progressPct) : "0.0%"}</span>
+          </div>
+          ${makeProgressBarHTML(safePct(progressPct))}
+        </div>
+      </div>
+    `;
+  }
+
+
+  // (C) 소단원 카드
+  // - 소단원 성취도에도 진행도 바 추가
+  function renderSubunitCard(sub){
+    const subCorrectPct = (sub.correct/sub.attempts*100).toFixed(1);
+
+    const toggleBtnId = sub.domId + "-toggle";
+    const kcWrapperId = sub.domId + "-kclist";
+
+    const kcListHtml = sub.kcCodes.map(renderKCCard).join("");
+
+    return `
+      <div class="subunit-card" id="${sub.domId}">
+        <div class="subunit-header">
+          <div class="subunit-title-wrap">
+            <div class="subunit-title">
+              소단원 ${sub.order}. ${sub.name}
+            </div>
+
+            <button
+              class="toggle-btn"
+              id="${toggleBtnId}"
+              aria-expanded="false"
+              aria-controls="${kcWrapperId}"
+              type="button"
+            >
+              <span class="chevron">▶</span>
+              <span class="toggle-label">유형 자세히 보기</span>
+            </button>
+          </div>
+
+          <div class="subunit-metrics">
+            <div class="subunit-metric-block">
+              <div class="subunit-metric-label">
+                <span>성취도(득점률)</span>
+                <span>${sub.achievementPct.toFixed(1)}%</span>
+              </div>
+              <div class="subunit-metric-main">${sub.achievementPct.toFixed(1)}%</div>
+              <div class="subunit-metric-sub">획득/배점 ${sub.got}/${sub.total}</div>
+
+              <div class="progress-wrap">
+                <div class="progress-label-row">
+                  <span>진행도</span>
+                  <span>${sub.achievementPct.toFixed(1)}%</span>
+                </div>
+                ${makeProgressBarHTML(sub.achievementPct)}
+              </div>
+            </div>
+
+            <div class="subunit-metric-block">
+              <div class="subunit-metric-label">
+                <span>정답률</span>
+                <span>${subCorrectPct}%</span>
+              </div>
+              <div class="subunit-metric-main">${subCorrectPct}%</div>
+              <div class="subunit-metric-sub">맞힘/시도 ${sub.correct}/${sub.attempts}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="kc-list-wrapper" id="${kcWrapperId}" hidden>
+          <div class="kc-list-inner">
+            ${kcListHtml}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+
+  // (D) 중단원 카드
+  // - 중단원 성취도에도 진행도 바 추가
+  function renderMidUnit(mid){
+    const midCorrectPct = (mid.correct/mid.attempts*100).toFixed(1);
+    const subunitsHtml = mid.subUnits.map(renderSubunitCard).join("");
+
+    return `
+      <article class="midunit-card">
+        <div class="midunit-headline">
+          <div class="midunit-left">
+            <h2>${mid.title}</h2>
+            <div class="midunit-id">중단원 정리</div>
+          </div>
+          <div class="midunit-metrics">
+            <div class="metric-box">
+              <div class="metric-label">
+                <span>성취도(득점률)</span>
+                <span>${mid.achievementPct.toFixed(1)}%</span>
+              </div>
+              <div class="metric-main">${mid.achievementPct.toFixed(1)}%</div>
+              <div class="metric-sub">획득/배점 ${mid.got}/${mid.total}</div>
+
+              <div class="progress-wrap">
+                <div class="progress-label-row">
+                  <span>진행도</span>
+                  <span>${mid.achievementPct.toFixed(1)}%</span>
+                </div>
+                ${makeProgressBarHTML(mid.achievementPct)}
+              </div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-label">
+                <span>정답률</span>
+                <span>${midCorrectPct}%</span>
+              </div>
+              <div class="metric-main">${midCorrectPct}%</div>
+              <div class="metric-sub">맞힘/시도 ${mid.correct}/${mid.attempts}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subunits-wrapper">
+          ${subunitsHtml}
+        </div>
+      </article>
+    `;
+  }
+
+
+  // (E) 대단원 섹션
+  function renderBigUnitSection(bigUnit){
+    const ovHTML = renderOverviewCards(bigUnit);
+    const midsHTML = bigUnit.midUnits.map(renderMidUnit).join("");
+
+    return `
+      <section class="bigunit-section">
+        <div class="bigunit-header">
+          <div class="bigunit-title">
+            <span>${bigUnit.overall.bigUnitId} ${bigUnit.overall.bigUnitTitle}</span>
+            <span class="bigunit-id">대단원 요약</span>
+          </div>
+          <div class="bigunit-subline">
+            이 대단원 내 성취 현황과 중단원/소단원별 상세 지표
+          </div>
+        </div>
+
+        ${ovHTML}
+
+        <div class="midUnitsWrapper">
+          ${midsHTML}
+        </div>
+      </section>
+    `;
+  }
+
+
+  // (F) 페이지 렌더 + 토글 바인딩
+  function renderAll(){
+    // 1) 전체 합산 카드
+    const globalSection = document.getElementById("globalOverview");
+    globalSection.innerHTML = renderGlobalOverview(dashboardData.bigUnits);
+
+    // 2) 대단원 섹션들
+    const container = document.getElementById("bigUnitsContainer");
+    container.innerHTML = dashboardData.bigUnits.map(renderBigUnitSection).join("");
+
+    // 3) "유형 자세히 보기" 토글 기능 연결
+    dashboardData.bigUnits.forEach(big=>{
+      big.midUnits.forEach(mid=>{
+        mid.subUnits.forEach(sub=>{
+          const btn = document.getElementById(sub.domId+"-toggle");
+          const listWrap = document.getElementById(sub.domId+"-kclist");
+          if(btn && listWrap){
+            btn.addEventListener("click",()=>{
+              const expanded = btn.getAttribute("aria-expanded")==="true";
+              if(expanded){
+                // 닫기
+                btn.setAttribute("aria-expanded","false");
+                listWrap.hidden = true;
+                btn.querySelector(".toggle-label").textContent = "유형 자세히 보기";
+                btn.querySelector(".chevron").textContent = "▶";
+              }else{
+                // 열기
+                btn.setAttribute("aria-expanded","true");
+                listWrap.hidden = false;
+                btn.querySelector(".toggle-label").textContent = "유형 접기";
+                btn.querySelector(".chevron").textContent = "▶";
+              }
+            });
+          }
+        });
+      });
+    });
+  }
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
